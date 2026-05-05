@@ -6,7 +6,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { NextSteps } from "@/components/next-steps"
-import { ArrowLeft, ArrowRight, Plus, Minus, CheckCircle } from "lucide-react"
+import { IntroStep } from "@/components/intro-step"
+import { ArrowLeft, ArrowRight, Plus, Minus, CheckCircle, Calculator } from "lucide-react"
 
 const categories = [
   { id: "food", label: "飲食", icon: "🍜" },
@@ -25,6 +26,7 @@ interface Entry {
 }
 
 export default function AccountingPage() {
+  const [hasStarted, setHasStarted] = useState(false)
   const [step, setStep] = useState(1)
   const [entries, setEntries] = useState<Entry[]>([])
   const [currentEntry, setCurrentEntry] = useState<Partial<Entry>>({})
@@ -63,6 +65,24 @@ export default function AccountingPage() {
     setCurrentEntry({})
     setStep(1)
     setIsCompleted(false)
+  }
+
+  if (!hasStarted) {
+    return (
+      <IntroStep
+        title="記帳助理"
+        description="這個工具會帶你一步步記錄收入或支出，先把今天發生的金錢流動整理下來。"
+        details={[
+          "先選收入或支出，再輸入金額與類別",
+          "可以連續新增多筆資料，方便快速整理日常收支",
+          "完成後會看到本次記錄的收入與支出小結",
+        ]}
+        notice="這裡的記錄目前用於本次整理與畫面顯示，請避免輸入完整帳號、身分證字號等敏感資訊。"
+        startLabel="開始記帳"
+        icon={Calculator}
+        onStart={() => setHasStarted(true)}
+      />
+    )
   }
 
   if (isCompleted) {

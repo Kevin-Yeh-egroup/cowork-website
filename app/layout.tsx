@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import { Navigation } from '@/components/navigation'
 import { FloatingAskButton } from '@/components/floating-ask-button'
+import { SiteBreadcrumbs } from '@/components/site-breadcrumbs'
 
 const notoSansTC = Noto_Sans_TC({ 
   subsets: ["latin"],
@@ -50,6 +51,7 @@ export default function RootLayout({
       <body className={`${notoSansTC.variable} font-sans antialiased`}>
         <Navigation />
         <main className="min-h-screen pt-16">
+          <SiteBreadcrumbs />
           {children}
         </main>
         <FloatingAskButton />

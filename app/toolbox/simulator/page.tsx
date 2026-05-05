@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { NextSteps } from "@/components/next-steps"
+import { IntroStep } from "@/components/intro-step"
 import { Calculator, ArrowRight } from "lucide-react"
 
 type SimulatorType = "loan" | "savings" | null
 
 export default function SimulatorPage() {
+  const [hasStarted, setHasStarted] = useState(false)
   const [type, setType] = useState<SimulatorType>(null)
   const [loanData, setLoanData] = useState({ principal: 0, rate: 0, months: 0 })
   const [savingsData, setSavingsData] = useState({ target: 0, monthly: 0, rate: 0 })
@@ -48,6 +50,24 @@ export default function SimulatorPage() {
     setResult(null)
     setLoanData({ principal: 0, rate: 0, months: 0 })
     setSavingsData({ target: 0, monthly: 0, rate: 0 })
+  }
+
+  if (!hasStarted) {
+    return (
+      <IntroStep
+        title="財務試算"
+        description="這個工具可以快速估算貸款還款或儲蓄目標，幫你先掌握大概的時間與金額。"
+        details={[
+          "可選擇貸款還款試算或儲蓄目標試算",
+          "輸入金額、期數或每月可存金額後即可估算",
+          "試算結果會顯示每月金額、總額或達成時間",
+        ]}
+        notice="試算結果會因利率、費用與實際條件不同而改變，請把它當作初步參考。"
+        startLabel="開始使用"
+        icon={Calculator}
+        onStart={() => setHasStarted(true)}
+      />
+    )
   }
 
   if (result) {

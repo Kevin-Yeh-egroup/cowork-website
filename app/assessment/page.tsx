@@ -1,10 +1,11 @@
 import Link from "next/link"
 import { Shield, Heart, AlertTriangle, ArrowRight } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
+import { assessmentLinks } from "@/lib/assessment-links"
 
 const assessments = [
   {
-    href: "/financial-resilience",
+    href: assessmentLinks.financialResilience,
     title: "財務韌性檢測",
     description: "看看你的生活承受能力",
     icon: Shield,
@@ -12,7 +13,7 @@ const assessments = [
     cta: "開始測試",
   },
   {
-    href: "/financial-anxiety",
+    href: assessmentLinks.financialAnxiety,
     title: "財務焦慮檢測",
     description: "了解壓力對你的影響",
     icon: Heart,
@@ -20,7 +21,7 @@ const assessments = [
     cta: "開始測試",
   },
   {
-    href: "/fraud-defense",
+    href: assessmentLinks.fraudDefense,
     title: "詐騙防禦檢測",
     description: "檢查你的風險意識",
     icon: AlertTriangle,

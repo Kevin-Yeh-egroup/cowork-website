@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { NextSteps } from "@/components/next-steps"
-import { Plus, Trash2, CheckCircle } from "lucide-react"
+import { IntroStep } from "@/components/intro-step"
+import { Plus, Trash2, CheckCircle, FileText } from "lucide-react"
 
 interface Debt {
   id: number
@@ -24,6 +25,7 @@ const debtTypes = [
 ]
 
 export default function DebtPage() {
+  const [hasStarted, setHasStarted] = useState(false)
   const [debts, setDebts] = useState<Debt[]>([])
   const [isCompleted, setIsCompleted] = useState(false)
   const [newDebt, setNewDebt] = useState({ name: "", amount: 0, monthlyPayment: 0 })
@@ -45,6 +47,24 @@ export default function DebtPage() {
 
   const totalDebt = debts.reduce((sum, d) => sum + d.amount, 0)
   const totalMonthly = debts.reduce((sum, d) => sum + d.monthlyPayment, 0)
+
+  if (!hasStarted) {
+    return (
+      <IntroStep
+        title="債務盤點"
+        description="這個工具會陪你把目前的債務一筆一筆列出來，先看清楚總額與每月壓力。"
+        details={[
+          "可選擇常見債務類型，輸入債務金額與每月還款",
+          "可以新增多筆債務，也可以刪除誤填項目",
+          "完成後會看到總債務與每月還款小結",
+        ]}
+        notice="整理債務可能會帶來壓力，你可以先從記得的項目開始；若已影響生活，建議搭配專人諮詢。"
+        startLabel="開始盤點"
+        icon={FileText}
+        onStart={() => setHasStarted(true)}
+      />
+    )
+  }
 
   if (isCompleted) {
     return (

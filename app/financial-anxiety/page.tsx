@@ -81,7 +81,14 @@ export default function FinancialAnxietyPage() {
   return (
     <AssessmentFlow
       title="財務焦慮檢測"
-      description="了解財務壓力對你的影響程度"
+      description="這份檢測會協助你整理財務壓力來臨時，自己比較容易出現的焦慮與反應傾向。"
+      introDetails={[
+        `共 ${questions.length} 題，約 2-3 分鐘完成`,
+        "題目沒有標準答案，請依照最近的真實感受作答",
+        "完成後會看到焦慮程度與可參考的下一步方向",
+      ]}
+      introNotice="結果僅供自我覺察參考，不能替代專業心理健康、財務諮詢或醫療建議。若壓力已影響生活，請優先尋求專業協助。"
+      startLabel="開始檢測"
       questions={questions}
       getResult={getResult}
     />

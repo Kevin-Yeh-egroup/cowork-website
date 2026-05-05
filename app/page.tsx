@@ -2,10 +2,12 @@ import Link from "next/link"
 import { ArrowRight, Shield, Heart, TrendingUp, MessageCircle, Headphones, BookOpen, Star } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { assessmentLinks } from "@/lib/assessment-links"
+import { externalLinks } from "@/lib/external-links"
 
 const heroCards = [
   {
-    href: "/financial-resilience",
+    href: assessmentLinks.financialResilience,
     title: "看看我的財務狀態",
     description: "了解目前的收支與承受能力",
     cta: "開始看看",
@@ -14,7 +16,7 @@ const heroCards = [
     highlight: false,
   },
   {
-    href: "/financial-anxiety",
+    href: assessmentLinks.financialAnxiety,
     title: "我最近有點焦慮",
     description: "看看金錢壓力對生活的影響",
     cta: "先了解",
@@ -23,7 +25,7 @@ const heroCards = [
     highlight: false,
   },
   {
-    href: "/fraud-defense",
+    href: assessmentLinks.fraudDefense,
     title: "檢查詐騙風險",
     description: "確認自己是否容易遇到金融風險",
     cta: "試試看",
@@ -32,9 +34,9 @@ const heroCards = [
     highlight: false,
   },
   {
-    href: "/ask-ai",
+    href: externalLinks.askIvy,
     title: "不確定從哪開始？",
-    description: "把你的狀況打出來，我幫你整理",
+    description: "到好理家在問問 AI，先整理你的狀況",
     cta: "先問看看",
     icon: MessageCircle,
     color: "bg-primary text-primary-foreground",
@@ -104,49 +106,17 @@ export default function HomePage() {
 
       {/* Trust Section */}
       <section className="px-4 py-12 bg-card">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-xl sm:text-2xl font-semibold text-foreground mb-2 text-balance">
-              已經有超過 60,000 人開始整理自己的財務
-            </h2>
-          </div>
-          
-          {/* Row 1 - 成果與合作 */}
-          <div className="mb-8">
-            <h3 className="text-sm font-medium text-muted-foreground mb-4 uppercase tracking-wide">成果與合作</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-4 bg-secondary/50 rounded-xl">
-                <p className="text-sm text-foreground">星展基金會（DBS Foundation）支持合作計畫</p>
-              </div>
-              <div className="p-4 bg-secondary/50 rounded-xl">
-                <p className="text-sm text-foreground">與全台多個社福單位、社工體系合作</p>
-              </div>
-              <div className="p-4 bg-secondary/50 rounded-xl">
-                <p className="text-sm text-foreground">累積服務超過 11,000 個家庭經濟案例</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Row 2 - 媒體怎麼看我們 */}
-          <div className="mb-8">
-            <h3 className="text-sm font-medium text-muted-foreground mb-4 uppercase tracking-wide">媒體怎麼看我們</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-4 bg-secondary/50 rounded-xl">
-                <p className="text-sm text-foreground">商業周刊專訪：從補助到韌性，重新理解家庭經濟</p>
-              </div>
-              <div className="p-4 bg-secondary/50 rounded-xl">
-                <p className="text-sm text-foreground">Podcast / 電台訪談：家庭財務與生活壓力的真實樣貌</p>
-              </div>
-              <div className="p-4 bg-secondary/50 rounded-xl">
-                <p className="text-sm text-foreground">多場公開分享與論壇交流（社工、教育、金融領域）</p>
-              </div>
-            </div>
-          </div>
-
+        <div className="max-w-3xl mx-auto">
           <div className="text-center">
+            <h2 className="text-xl sm:text-2xl font-semibold text-foreground mb-2 text-balance">
+              已經有超過 83,000 人開始整理自己的財務
+            </h2>
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-6">
+              目前已有 83,539 位使用者造訪好理家在，透過檢測、工具與內容開始整理自己的財務狀態。
+            </p>
             <Button asChild variant="outline" className="gap-2">
-              <Link href="/impact">
-                查看更多成果 <ArrowRight className="h-4 w-4" />
+              <Link href="/aboutus">
+                到關於我們看完整成果 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
           </div>

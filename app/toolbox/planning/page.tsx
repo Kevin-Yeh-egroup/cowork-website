@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { NextSteps } from "@/components/next-steps"
+import { IntroStep } from "@/components/intro-step"
 import { Target, CheckCircle, ArrowRight, ArrowLeft } from "lucide-react"
 
 const goalTypes = [
@@ -18,6 +19,7 @@ const goalTypes = [
 ]
 
 export default function PlanningPage() {
+  const [hasStarted, setHasStarted] = useState(false)
   const [step, setStep] = useState(1)
   const [goal, setGoal] = useState({ type: "", name: "", targetAmount: 0, currentAmount: 0, monthlyContribution: 0 })
   const [isCompleted, setIsCompleted] = useState(false)
@@ -37,6 +39,24 @@ export default function PlanningPage() {
   const monthsToGoal = goal.monthlyContribution > 0 
     ? Math.ceil((goal.targetAmount - goal.currentAmount) / goal.monthlyContribution)
     : 0
+
+  if (!hasStarted) {
+    return (
+      <IntroStep
+        title="財務規劃"
+        description="這個工具會協助你把想達成的財務目標拆成金額、現況與每月可投入的步驟。"
+        details={[
+          "先選擇目標類型，例如緊急預備金、進修或購屋",
+          "再輸入目標金額、已存金額與每月可存金額",
+          "完成後會估算距離目標還需要多久",
+        ]}
+        notice="估算結果會受到收入、支出與生活變化影響，請把它當作規劃參考，而不是固定承諾。"
+        startLabel="開始規劃"
+        icon={Target}
+        onStart={() => setHasStarted(true)}
+      />
+    )
+  }
 
   if (isCompleted) {
     const progressPercent = goal.targetAmount > 0 ? (goal.currentAmount / goal.targetAmount) * 100 : 0

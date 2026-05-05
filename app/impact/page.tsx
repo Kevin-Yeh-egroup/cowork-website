@@ -1,13 +1,9 @@
 import Link from "next/link"
-import { ArrowRight, Users, Building, Mic, Award, TrendingUp, Heart } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ArrowRight, Users, Mic, Award, TrendingUp, Heart } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-
-const stats = [
-  { number: "60,000+", label: "使用者", icon: Users },
-  { number: "11,000+", label: "家庭經濟案例", icon: Heart },
-  { number: "50+", label: "合作社福單位", icon: Building },
-]
+import { assessmentLinks } from "@/lib/assessment-links"
+import { audienceStats, engagementRanking, serviceStats, websiteStats } from "@/lib/impact-data"
 
 const partnerships = [
   {
@@ -57,20 +53,65 @@ export default function ImpactPage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-12">
-          {stats.map((stat) => {
-            const Icon = stat.icon
-            return (
-              <Card key={stat.label} className="text-center">
-                <CardContent className="pt-6">
-                  <Icon className="h-8 w-8 text-primary mx-auto mb-2" />
-                  <p className="text-2xl sm:text-3xl font-bold text-primary">{stat.number}</p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+        <section className="mb-12">
+          <div className="flex items-center gap-2 mb-4">
+            <Users className="h-5 w-5 text-primary" />
+            <h2 className="text-lg font-semibold text-foreground">受眾與註冊結構</h2>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {audienceStats.map((stat) => (
+              <Card key={stat.label}>
+                <CardContent className="p-6">
+                  <p className="text-sm text-muted-foreground mb-2">{stat.label}</p>
+                  <p className="text-3xl font-bold text-primary">{stat.value}</p>
                 </CardContent>
               </Card>
-            )
-          })}
-        </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mb-12">
+          <div className="flex items-center gap-2 mb-4">
+            <Heart className="h-5 w-5 text-primary" />
+            <h2 className="text-lg font-semibold text-foreground">服務觸及與網站觸及</h2>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {[...serviceStats, ...websiteStats].map((stat) => (
+              <Card key={stat.label}>
+                <CardContent className="p-6">
+                  <p className="text-sm text-muted-foreground mb-2">{stat.label}</p>
+                  <p className="text-3xl font-bold text-primary">{stat.value}</p>
+                  {"note" in stat && stat.note && <p className="text-xs text-muted-foreground mt-2">{stat.note}</p>}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        <section className="mb-12">
+          <div className="flex items-center gap-2 mb-4">
+            <TrendingUp className="h-5 w-5 text-primary" />
+            <h2 className="text-lg font-semibold text-foreground">互動來源完整排行</h2>
+          </div>
+          <div className="space-y-3">
+            {engagementRanking.map((item, index) => (
+              <Card key={item.label} className={index < 3 ? "bg-primary/5 border-primary/20" : ""}>
+                <CardContent className="p-4 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="shrink-0 rounded-full bg-secondary px-3 py-1 text-xs font-bold text-muted-foreground">
+                      #{index + 1}
+                    </span>
+                    <p className="font-medium text-foreground truncate">{item.label}</p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-lg font-bold text-foreground">{item.value}</p>
+                    <p className="text-xs text-muted-foreground">{item.percent}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
 
         {/* Partnerships */}
         <section className="mb-12">
@@ -113,7 +154,7 @@ export default function ImpactPage() {
             <p className="text-muted-foreground mb-6">無論你是個人、社工或機構，都歡迎一起加入</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button asChild>
-                <Link href="/financial-resilience">
+                <Link href={assessmentLinks.financialResilience}>
                   開始檢測 <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>

@@ -81,7 +81,14 @@ export default function FinancialResiliencePage() {
   return (
     <AssessmentFlow
       title="財務韌性檢測"
-      description="了解你面對財務壓力的承受能力"
+      description="這份檢測會用貼近日常的問題，陪你整理收入變動、緊急支出與日常收支帶來的壓力。"
+      introDetails={[
+        `共 ${questions.length} 題，約 2-3 分鐘完成`,
+        "不用輸入實際金額，只要選出最接近你現在狀況的答案",
+        "完成後會看到目前財務韌性的簡單提醒與下一步建議",
+      ]}
+      introNotice="這不是考試，也不是財務診斷；它只是協助你先確認現在的位置，再慢慢思考接下來可以怎麼做。"
+      startLabel="開始檢視"
       questions={questions}
       getResult={getResult}
     />

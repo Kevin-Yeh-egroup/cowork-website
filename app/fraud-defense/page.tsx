@@ -81,7 +81,14 @@ export default function FraudDefensePage() {
   return (
     <AssessmentFlow
       title="詐騙防禦檢測"
-      description="檢查你對詐騙的風險意識"
+      description="這份檢測會透過生活情境，協助你看見自己在壓力、熟人請求或投資訊息前的第一反應。"
+      introDetails={[
+        `共 ${questions.length} 題，約 2-3 分鐘完成`,
+        "每題請選出你最可能的第一反應，不需要背防詐技巧",
+        "完成後會看到防禦意識提醒與可採取的下一步",
+      ]}
+      introNotice="詐騙型態會持續變化，本檢測是覺察工具，不保證能判斷所有風險；遇到可疑狀況請先停下來查證。"
+      startLabel="開始測驗"
       questions={questions}
       getResult={getResult}
     />

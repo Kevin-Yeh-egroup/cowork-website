@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { NextSteps } from "@/components/next-steps"
-import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react"
+import { IntroStep } from "@/components/intro-step"
+import { ArrowLeft, ArrowRight, CheckCircle, ClipboardCheck } from "lucide-react"
 
 interface Question {
   id: number
@@ -16,11 +17,23 @@ interface Question {
 interface AssessmentFlowProps {
   title: string
   description: string
+  introDetails?: string[]
+  introNotice?: string
+  startLabel?: string
   questions: Question[]
   getResult: (score: number) => { status: string; message: string; level: "good" | "medium" | "warning" }
 }
 
-export function AssessmentFlow({ title, description, questions, getResult }: AssessmentFlowProps) {
+export function AssessmentFlow({
+  title,
+  description,
+  introDetails,
+  introNotice,
+  startLabel = "開始檢測",
+  questions,
+  getResult,
+}: AssessmentFlowProps) {
+  const [hasStarted, setHasStarted] = useState(false)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [isCompleted, setIsCompleted] = useState(false)
@@ -48,6 +61,20 @@ export function AssessmentFlow({ title, description, questions, getResult }: Ass
 
   const calculateScore = () => {
     return Object.values(answers).reduce((sum, val) => sum + val, 0)
+  }
+
+  if (!hasStarted) {
+    return (
+      <IntroStep
+        title={title}
+        description={description}
+        details={introDetails ?? [`共 ${questions.length} 題`, "依照最接近你現在狀況的感受作答", "完成後會看到一份簡單整理"]}
+        notice={introNotice ?? "這是一個自我整理工具，結果僅供參考，不構成財務、心理或法律建議。"}
+        startLabel={startLabel}
+        icon={ClipboardCheck}
+        onStart={() => setHasStarted(true)}
+      />
+    )
   }
 
   if (isCompleted) {

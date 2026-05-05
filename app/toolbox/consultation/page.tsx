@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { NextSteps } from "@/components/next-steps"
+import { IntroStep } from "@/components/intro-step"
 import { MessageSquare, CheckCircle, Calendar, Clock } from "lucide-react"
 
 const topics = [
@@ -22,6 +23,7 @@ const timeSlots = [
 ]
 
 export default function ConsultationPage() {
+  const [hasStarted, setHasStarted] = useState(false)
   const [step, setStep] = useState(1)
   const [booking, setBooking] = useState({
     topic: "",
@@ -45,6 +47,24 @@ export default function ConsultationPage() {
     if (booking.name && booking.phone && booking.preferredTime) {
       setIsCompleted(true)
     }
+  }
+
+  if (!hasStarted) {
+    return (
+      <IntroStep
+        title="線上諮詢"
+        description="這裡可以留下你想討論的主題與聯絡方式，讓專人協助你釐清財務問題。"
+        details={[
+          "先選擇諮詢主題，例如債務、收支、詐騙求助或財務規劃",
+          "再填寫姓名、電話與方便聯繫的時段",
+          "送出後會顯示預約資訊，方便你確認",
+        ]}
+        notice="送出前請確認聯絡資料正確；若是緊急詐騙或人身安全事件，請優先聯繫警方或當地緊急資源。"
+        startLabel="開始預約"
+        icon={MessageSquare}
+        onStart={() => setHasStarted(true)}
+      />
+    )
   }
 
   if (isCompleted) {

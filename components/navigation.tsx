@@ -1,8 +1,9 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useState } from "react"
-import { Menu, ClipboardCheck, Wrench, BookOpen, Calendar, Users, User } from "lucide-react"
+import { Menu, ClipboardCheck, Wrench, BookOpen, Calendar, Users, User, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
@@ -12,6 +13,7 @@ const navItems = [
   { href: "/content", label: "知識與內容", icon: BookOpen },
   { href: "/events", label: "活動與課程", icon: Calendar },
   { href: "/social-worker", label: "社工專區", icon: Users },
+  { href: "/aboutus", label: "關於我們", icon: Info },
   { href: "/personal-center", label: "個人中心", icon: User },
 ]
 
@@ -24,10 +26,14 @@ export function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">好</span>
-            </div>
-            <span className="font-semibold text-lg text-foreground">好理家在</span>
+            <Image
+              src="/logo.png"
+              alt="好理家在"
+              width={180}
+              height={52}
+              priority
+              className="h-10 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}

@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Wrench, BookOpen, MessageCircle, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { externalLinks } from "@/lib/external-links"
 
 interface NextStepsProps {
   title?: string
@@ -10,7 +11,7 @@ interface NextStepsProps {
 const steps = [
   { href: "/toolbox", label: "使用工具", icon: Wrench },
   { href: "/content/articles", label: "看看文章", icon: BookOpen },
-  { href: "/ask-ai", label: "問問AI", icon: MessageCircle },
+  { href: externalLinks.askIvy, label: "問問AI", icon: MessageCircle },
   { href: "/toolbox/consultation", label: "找人聊聊", icon: Users },
 ]
 
