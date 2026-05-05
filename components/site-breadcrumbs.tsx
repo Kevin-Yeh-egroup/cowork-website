@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/breadcrumb"
 
 const labelMap: Record<string, string> = {
-  aboutus: "關於我們",
   "ask-ai": "問問 AI",
   assessment: "開始檢測",
   content: "知識與內容",

@@ -1,7 +1,6 @@
 import Link from "next/link"
-import { ArrowRight, Shield, Heart, TrendingUp, MessageCircle, Headphones, BookOpen, Star } from "lucide-react"
+import { ArrowRight, Award, ExternalLink, Shield, Heart, TrendingUp, MessageCircle, Headphones, BookOpen, Star, Newspaper } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { assessmentLinks } from "@/lib/assessment-links"
 import { externalLinks } from "@/lib/external-links"
 
@@ -65,6 +64,14 @@ const exploreItems = [
   },
 ]
 
+const mediaLinks = [
+  {
+    title: "媒體報導與採訪彙整",
+    description: "查看好理家在獲得各界媒體關注與肯定的完整列表。",
+    href: "https://www.familyfinhealth.com/",
+  },
+]
+
 export default function HomePage() {
   return (
     <div className="min-h-screen">
@@ -106,19 +113,59 @@ export default function HomePage() {
 
       {/* Trust Section */}
       <section className="px-4 py-12 bg-card">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-8">
             <h2 className="text-xl sm:text-2xl font-semibold text-foreground mb-2 text-balance">
               已經有超過 83,000 人開始整理自己的財務
             </h2>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-6">
               目前已有 83,539 位使用者造訪好理家在，透過檢測、工具與內容開始整理自己的財務狀態。
             </p>
-            <Button asChild variant="outline" className="gap-2">
-              <Link href="/aboutus">
-                到關於我們看完整成果 <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
+          </div>
+
+          <Card className="mb-4 border-primary/20 bg-primary/5">
+            <CardContent className="p-6">
+              <div className="flex flex-col md:flex-row gap-5">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <Award className="h-7 w-7 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-primary mb-2">2025 IT Matters Awards</p>
+                  <h3 className="text-xl font-semibold text-foreground mb-3">
+                    AI Selected 社會影響力獎
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                    馴錢師以「好理家在–財務健檢網」獲頒第三屆 IT Matters Awards「AI Selected 社會影響力獎」，代表家庭財務與社會福利已成為 AI 社會影響力的重要議題。
+                  </p>
+                  <Link
+                    href="https://www.familyfinhealth.com/news/1"
+                    className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
+                  >
+                    2025 IT Matters Awards 完整獲獎報導 <ExternalLink className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="grid md:grid-cols-1 gap-4">
+            {mediaLinks.map((item) => (
+              <Card key={item.title}>
+                <CardContent className="p-6">
+                  <div className="w-11 h-11 rounded-xl bg-secondary flex items-center justify-center mb-4">
+                    <Newspaper className="h-5 w-5 text-foreground" />
+                  </div>
+                  <h3 className="font-semibold text-foreground mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{item.description}</p>
+                  <Link
+                    href={item.href}
+                    className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
+                  >
+                    前往查看 <ExternalLink className="h-4 w-4" />
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
