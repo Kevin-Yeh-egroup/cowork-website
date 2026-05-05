@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { ArrowLeft, Eye, EyeOff, Plus, Save, Trash2 } from "lucide-react"
+import { ArrowLeft, Eye, EyeOff, Plus, Save, ShieldCheck, Trash2, UserCog } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -80,6 +80,27 @@ export default function EventsAdminPage() {
             這裡可以新增、編輯、隱藏或刪除前台顯示的活動內容。資料會暫存在目前瀏覽器。
           </p>
         </div>
+
+        <Card className="mb-8 border-primary/20 bg-primary/5">
+          <CardContent className="p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <UserCog className="h-6 w-6 text-primary" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-primary mb-1">工作人員示意</p>
+                <h2 className="text-lg font-semibold text-foreground">內容營運人員登入中</h2>
+                <p className="text-sm text-muted-foreground">
+                  此頁僅作為內部管理示意，不會出現在一般前台活動頁。工作人員可調整標題、日期、名額與是否顯示。
+                </p>
+              </div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 text-sm text-foreground border border-border">
+                <ShieldCheck className="h-4 w-4 text-primary" />
+                管理權限
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card className="mb-8">
           <CardContent className="p-6">

@@ -1,8 +1,7 @@
 "use client"
 
-import Link from "next/link"
 import { useEffect, useState } from "react"
-import { Calendar, MapPin, Users, ArrowRight, Clock, Settings } from "lucide-react"
+import { Calendar, MapPin, Users, ArrowRight, Clock } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { eventAudienceLabels, getStoredEvents, type EventAudience, type ManagedEvent } from "@/lib/events-data"
@@ -33,11 +32,6 @@ export default function EventsPage() {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-3">活動與課程</h1>
           <p className="text-muted-foreground text-lg">參加活動，學習更多財務知識</p>
-          <Button asChild variant="outline" className="mt-4">
-            <Link href="/events/admin">
-              <Settings className="h-4 w-4 mr-2" /> 管理顯示內容
-            </Link>
-          </Button>
         </div>
 
         <div className="flex justify-center gap-2 mb-8">

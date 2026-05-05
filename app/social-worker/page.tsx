@@ -1,4 +1,7 @@
+"use client"
+
 import Link from "next/link"
+import { useState } from "react"
 import {
   ArrowRight,
   BookOpen,
@@ -9,12 +12,14 @@ import {
   LayoutDashboard,
   NotebookPen,
   ReceiptText,
+  Search,
   ShieldAlert,
   Users,
   Wrench,
 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 const resources = [
   {
@@ -119,6 +124,23 @@ const caseActions = [
 ]
 
 export default function SocialWorkerPage() {
+  const [searchTerm, setSearchTerm] = useState("")
+  const normalizedSearchTerm = searchTerm.trim().toLowerCase()
+  const filteredCases = cases.filter((caseItem) => {
+    const searchableText = [
+      caseItem.id,
+      caseItem.name,
+      caseItem.family,
+      caseItem.status,
+      caseItem.risk,
+      caseItem.note,
+    ]
+      .join(" ")
+      .toLowerCase()
+
+    return searchableText.includes(normalizedSearchTerm)
+  })
+
   return (
     <div className="min-h-screen px-4 py-12">
       <div className="max-w-6xl mx-auto">
@@ -170,15 +192,32 @@ export default function SocialWorkerPage() {
         </div>
 
         <section className="mb-10">
-          <div className="flex items-center justify-between gap-4 mb-4">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-4">
             <div>
               <h2 className="text-xl font-semibold text-foreground">個案列表</h2>
               <p className="text-sm text-muted-foreground">快速進入個案總覽、會談紀錄、風險快篩與記帳紀錄。</p>
             </div>
+            <div className="relative w-full md:max-w-sm">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="搜尋個案名稱、編號或關鍵字"
+                className="pl-9"
+              />
+            </div>
           </div>
 
           <div className="space-y-4">
-            {cases.map((caseItem) => (
+            {filteredCases.length === 0 && (
+              <Card>
+                <CardContent className="p-8 text-center text-muted-foreground">
+                  找不到符合「{searchTerm}」的個案，請換個關鍵字試試。
+                </CardContent>
+              </Card>
+            )}
+
+            {filteredCases.map((caseItem) => (
               <Card key={caseItem.id} className="border-border">
                 <CardContent className="p-6">
                   <div className="flex flex-col lg:flex-row gap-6">
@@ -205,14 +244,14 @@ export default function SocialWorkerPage() {
                           <Button
                             key={`${caseItem.id}-${action.label}`}
                             variant="outline"
-                            className="h-auto justify-start p-4 text-left"
+                            className="h-auto min-w-0 items-start justify-start whitespace-normal p-4 text-left"
                           >
                             <span className={`mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${action.color}`}>
                               <Icon className="h-5 w-5" />
                             </span>
-                            <span>
+                            <span className="min-w-0">
                               <span className="block font-medium text-foreground">{action.label}</span>
-                              <span className="mt-1 block text-xs text-muted-foreground font-normal leading-relaxed">
+                              <span className="mt-1 block break-words text-xs text-muted-foreground font-normal leading-relaxed">
                                 {action.description}
                               </span>
                             </span>
