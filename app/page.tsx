@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRight, Award, ExternalLink, Shield, Heart, TrendingUp, MessageCircle, Headphones, BookOpen, Star, Newspaper } from "lucide-react"
+import { ArrowRight, Award, ExternalLink, Shield, Heart, TrendingUp, Headphones, BookOpen, Star, Newspaper } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { assessmentLinks } from "@/lib/assessment-links"
 import { externalLinks } from "@/lib/external-links"
@@ -33,11 +33,11 @@ const heroCards = [
     highlight: false,
   },
   {
-    href: externalLinks.askIvy,
-    title: "不確定從哪開始？",
-    description: "到好理家在問問 AI，先整理你的狀況",
-    cta: "先問看看",
-    icon: MessageCircle,
+    href: externalLinks.emergencySupport,
+    title: "急難救助專區",
+    description: "遇到急難狀況時，協助整理需求並連結資源",
+    cta: "前往申請",
+    icon: Heart,
     color: "bg-primary text-primary-foreground",
     highlight: true,
   },
@@ -116,10 +116,10 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-xl sm:text-2xl font-semibold text-foreground mb-2 text-balance">
-              已經有超過 83,000 人開始整理自己的財務
+              已經有超過 84,000 人開始整理自己的財務
             </h2>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-6">
-              目前已有 83,539 位使用者造訪好理家在，透過檢測、工具與內容開始整理自己的財務狀態。
+              目前已有 84,642 位使用者造訪好理家在，透過檢測、工具與內容開始整理自己的財務狀態。
             </p>
           </div>
 
