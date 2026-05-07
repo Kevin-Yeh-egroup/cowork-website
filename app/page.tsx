@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRight, Award, ExternalLink, Shield, Heart, TrendingUp, Headphones, BookOpen, Star, Newspaper } from "lucide-react"
+import { ArrowRight, Award, ExternalLink, Shield, Heart, TrendingUp, Headphones, BookOpen, Newspaper } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { assessmentLinks } from "@/lib/assessment-links"
 import { externalLinks } from "@/lib/external-links"
@@ -43,32 +43,33 @@ const heroCards = [
   },
 ]
 
-const exploreItems = [
+const aboutLinks = [
   {
-    href: "/content/podcast",
-    title: "聽一集",
-    description: "為什麼明明有收入，還是存不到錢？",
-    icon: Headphones,
+    title: "新聞報導",
+    description: "查看好理家在獲得各界媒體關注與肯定的完整列表。",
+    href: externalLinks.mediaReports,
+    cta: "查看報導",
+    previewTitle: "媒體報導",
+    previewText: "42 篇媒體收錄",
+    icon: Newspaper,
   },
   {
-    href: "/content/articles",
-    title: "看一篇",
-    description: "錢不夠用，其實不只是你不夠努力",
+    title: "商周採訪",
+    description: "商業周刊專訪財務社工如何陪伴家庭脫困。",
+    href: externalLinks.businessWeeklyInterview,
+    cta: "閱讀採訪",
+    previewTitle: "商業周刊",
+    previewText: "讓金錢不再是陷阱的人",
     icon: BookOpen,
   },
   {
-    href: "/content/column",
-    title: "看專欄",
-    description: "多多益善：從生活重新看懂金錢",
-    icon: Star,
-  },
-]
-
-const mediaLinks = [
-  {
-    title: "媒體報導與採訪彙整",
-    description: "查看好理家在獲得各界媒體關注與肯定的完整列表。",
-    href: "https://www.familyfinhealth.com/",
+    title: "台北之音訪問",
+    description: "透過訪談了解好理家在推動財務健康的理念。",
+    href: externalLinks.taipeiRadioInterview,
+    cta: "觀看訪問",
+    previewTitle: "YouTube Live",
+    previewText: "台北之音訪問",
+    icon: Headphones,
   },
 ]
 
@@ -148,54 +149,42 @@ export default function HomePage() {
             </CardContent>
           </Card>
 
-          <div className="grid md:grid-cols-1 gap-4">
-            {mediaLinks.map((item) => (
-              <Card key={item.title}>
-                <CardContent className="p-6">
-                  <div className="w-11 h-11 rounded-xl bg-secondary flex items-center justify-center mb-4">
-                    <Newspaper className="h-5 w-5 text-foreground" />
-                  </div>
-                  <h3 className="font-semibold text-foreground mb-2">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{item.description}</p>
-                  <Link
-                    href={item.href}
-                    className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
-                  >
-                    前往查看 <ExternalLink className="h-4 w-4" />
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
+          <div>
+            <h2 className="text-xl sm:text-2xl font-semibold text-foreground mb-4 text-center">關於我們</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {aboutLinks.map((item) => {
+                const Icon = item.icon
+                return (
+                  <Card key={item.title} className="h-full overflow-hidden">
+                    <div className="h-32 bg-gradient-to-br from-primary/15 via-secondary to-accent/20 p-4">
+                      <div className="h-full rounded-xl border border-background/70 bg-background/80 p-3 shadow-sm">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Icon className="h-4 w-4 text-primary" />
+                          </div>
+                          <p className="text-xs font-medium text-muted-foreground">{item.previewTitle}</p>
+                        </div>
+                        <p className="text-sm font-semibold text-foreground line-clamp-2">{item.previewText}</p>
+                      </div>
+                    </div>
+                    <CardContent className="p-6">
+                      <h3 className="font-semibold text-foreground mb-2">{item.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{item.description}</p>
+                      <Link
+                        href={item.href}
+                        className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
+                      >
+                        {item.cta} <ExternalLink className="h-4 w-4" />
+                      </Link>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Explore Section */}
-      <section className="px-4 py-12">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-xl sm:text-2xl font-semibold text-foreground mb-2">如果你還想多了解</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {exploreItems.map((item) => {
-              const Icon = item.icon
-              return (
-                <Link key={item.href} href={item.href} className="group">
-                  <Card className="h-full border-border hover:border-primary/30 hover:shadow-md transition-all">
-                    <CardContent className="p-6">
-                      <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center mb-4">
-                        <Icon className="h-5 w-5 text-foreground" />
-                      </div>
-                      <h3 className="font-medium text-foreground mb-2">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground">{item.description}</p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
-      </section>
     </div>
   )
 }
