@@ -34,6 +34,12 @@ const categories = [
         icon: Banknote,
       },
       {
+        href: externalLinks.financialPlanning,
+        title: "夢想達成財務規劃",
+        description: "透過互動式步驟整理目標、金額與行動計畫。",
+        icon: Target,
+      },
+      {
         href: accountingToolLink("financial-health-dashboard", 3),
         title: "財務健康與安全儀表板",
         description: "評估收支平衡、資產負債、緊急預備金與保障指標。",
