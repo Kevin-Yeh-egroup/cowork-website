@@ -4,7 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { useState } from "react"
 import type { LucideIcon } from "lucide-react"
-import { Menu, ClipboardCheck, Wrench, BookOpen, Calendar, Users, User, ChevronDown } from "lucide-react"
+import { Menu, ClipboardCheck, Wrench, BookOpen, Calendar, Users, User, ChevronDown, HandCoins } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { externalLinks } from "@/lib/external-links"
@@ -29,6 +29,11 @@ const navItems: NavItem[] = [
       { href: "/financial-anxiety", label: "財務焦慮" },
       { href: "/fraud-defense", label: "詐騙防禦" },
     ],
+  },
+  {
+    href: externalLinks.onlineConsultation,
+    label: "免費線上財務諮詢",
+    icon: HandCoins,
   },
   {
     href: "/toolbox",

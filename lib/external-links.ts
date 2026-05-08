@@ -6,6 +6,8 @@ export const externalLinks = {
   financialResilience: "https://www.familyfinhealth.com/financial-resilience",
   financialAnxiety: "https://www.familyfinhealth.com/financial-anxiety",
   fraudDefense: "https://www.familyfinhealth.com/fraud-defense",
+  onlineConsultation: "https://www.familyfinhealth.com/online-consultation",
+  callForArticles: "https://www.familyfinhealth.com/call-for-articles",
   voiceToText: "https://www.familyfinhealth.com/toolbox/voice-to-text",
   financeScreening: "https://www.familyfinhealth.com/social-worker/toolbox/finance-screening",
   mediaReports: "/media-reports",

@@ -1,6 +1,7 @@
 import Link from "next/link"
-import { BookOpen, Headphones, Star, ArrowRight } from "lucide-react"
+import { BookOpen, Headphones, Star, ArrowRight, PenLine } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
+import { externalLinks } from "@/lib/external-links"
 
 const contentTypes = [
   {
@@ -8,6 +9,13 @@ const contentTypes = [
     title: "看看文章",
     description: "了解財務知識，找到解決方案",
     icon: BookOpen,
+    color: "bg-primary/10 text-primary",
+  },
+  {
+    href: externalLinks.callForArticles,
+    title: "投稿分享",
+    description: "分享你的經驗與觀點，讓更多家庭找到前進方向",
+    icon: PenLine,
     color: "bg-primary/10 text-primary",
   },
   {
