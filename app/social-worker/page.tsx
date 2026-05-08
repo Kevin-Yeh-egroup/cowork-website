@@ -4,15 +4,19 @@ import Link from "next/link"
 import { useState } from "react"
 import {
   ArrowRight,
+  Award,
   BookOpen,
   Calendar,
+  ChevronLeft,
+  ChevronRight,
   ClipboardList,
-  FileText,
   Gauge,
   LayoutDashboard,
+  Mic,
   NotebookPen,
   ReceiptText,
   Search,
+  ShieldCheck,
   ShieldAlert,
   Users,
   Wrench,
@@ -20,13 +24,21 @@ import {
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { externalLinks } from "@/lib/external-links"
 
 const resources = [
   {
-    href: "/events",
-    title: "社工培訓課程",
-    description: "學習如何協助個案處理財務問題",
-    icon: Calendar,
+    href: externalLinks.voiceToText,
+    title: "語音轉文字",
+    description: "將會談語音快速轉成文字紀錄",
+    icon: Mic,
+  },
+  {
+    href: externalLinks.financeScreening,
+    title: "財務風險快篩",
+    description: "協助社工快速掌握個案財務風險",
+    icon: ShieldCheck,
   },
   {
     href: "/toolbox",
@@ -41,10 +53,10 @@ const resources = [
     icon: BookOpen,
   },
   {
-    href: "/social-worker",
-    title: "個案管理系統",
-    description: "追蹤個案進度和服務紀錄",
-    icon: FileText,
+    href: "/events#social-worker",
+    title: "社工培訓課程",
+    description: "學習如何協助個案處理財務問題",
+    icon: Calendar,
   },
 ]
 
@@ -123,27 +135,164 @@ const caseActions = [
   },
 ]
 
+const caseOverviewTabs = ["個案總覽", "財務韌性", "詐騙防禦能力", "財務焦慮", "服務目標管理"]
+
+const serviceStatuses = ["需要追蹤", "穩定輔導", "初評中", "密集追蹤", "目標規劃"]
+
+const financeScreeningRecords = cases.reduce<Record<string, {
+  date: string
+  risk: string
+  score: number | null
+  summary: string
+}[]>>((records, caseItem) => {
+  records[caseItem.id] = [
+    {
+      date: caseItem.lastContact,
+      risk: caseItem.risk,
+      score: caseItem.risk === "待快篩" ? null : caseItem.risk === "低風險" ? 82 : caseItem.risk === "中風險" ? 64 : caseItem.risk === "中高風險" ? 48 : 32,
+      summary: caseItem.risk === "待快篩" ? "尚未完成財務風險快篩。" : `最近一次快篩結果為${caseItem.risk}，建議依風險項目安排追蹤。`,
+    },
+  ]
+
+  return records
+}, {})
+
+const caseMonthlyBadges = [
+  {
+    month: "三月",
+    title: "完成快篩",
+    description: "已完成本月財務風險快篩",
+    completed: true,
+    details: ["財務風險快篩：中高風險", "會談燈號：黃燈", "追蹤建議：已建立"],
+  },
+  {
+    month: "四月",
+    title: "穩定追蹤",
+    description: "完成 2 次以上服務紀錄",
+    completed: true,
+    details: ["會談紀錄：2 次", "服務目標：已更新", "追蹤燈號：綠燈"],
+  },
+  {
+    month: "五月",
+    title: "目標更新",
+    description: "更新本月服務目標與簡述",
+    completed: false,
+    details: ["會談紀錄：1 / 2 次", "快篩更新：待完成", "追蹤燈號：黃燈"],
+  },
+]
+
+type CaseRecord = {
+  status: string
+  note: string
+  history: {
+    date: string
+    type: string
+    title: string
+    status?: string
+    risk?: string
+    note: string
+  }[]
+}
+
+const initialCaseRecords = cases.reduce<Record<string, CaseRecord>>((records, caseItem) => {
+  const latestScreening = financeScreeningRecords[caseItem.id][0]
+
+  records[caseItem.id] = {
+    status: caseItem.status,
+    note: caseItem.note,
+    history: [
+      {
+        date: latestScreening.date,
+        type: "財務風險快篩",
+        title: "完成快篩紀錄",
+        risk: latestScreening.risk,
+        note: latestScreening.summary,
+      },
+      {
+        date: caseItem.lastContact,
+        type: "個案簡述",
+        title: "建立初始個案簡述",
+        status: caseItem.status,
+        note: caseItem.note,
+      },
+    ],
+  }
+
+  return records
+}, {})
+
 export default function SocialWorkerPage() {
   const [searchTerm, setSearchTerm] = useState("")
+  const [isToolsCollapsed, setIsToolsCollapsed] = useState(false)
+  const [caseRecords, setCaseRecords] = useState(initialCaseRecords)
+  const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null)
+  const [activeCaseBadge, setActiveCaseBadge] = useState<string | null>(null)
+  const [draftCaseRecord, setDraftCaseRecord] = useState({
+    status: "",
+    note: "",
+  })
   const normalizedSearchTerm = searchTerm.trim().toLowerCase()
   const filteredCases = cases.filter((caseItem) => {
+    const caseRecord = caseRecords[caseItem.id]
+    const latestScreening = financeScreeningRecords[caseItem.id][0]
     const searchableText = [
       caseItem.id,
       caseItem.name,
       caseItem.family,
-      caseItem.status,
-      caseItem.risk,
-      caseItem.note,
+      caseRecord.status,
+      latestScreening.risk,
+      caseRecord.note,
     ]
       .join(" ")
       .toLowerCase()
 
     return searchableText.includes(normalizedSearchTerm)
   })
+  const selectedCase = cases.find((caseItem) => caseItem.id === selectedCaseId) ?? null
+  const selectedCaseRecord = selectedCase ? caseRecords[selectedCase.id] : null
+  const selectedLatestScreening = selectedCase ? financeScreeningRecords[selectedCase.id][0] : null
+
+  const openCaseOverview = (caseItem: (typeof cases)[number]) => {
+    const caseRecord = caseRecords[caseItem.id]
+
+    setSelectedCaseId(caseItem.id)
+    setActiveCaseBadge(null)
+    setDraftCaseRecord({
+      status: caseRecord.status,
+      note: caseRecord.note,
+    })
+  }
+
+  const saveCaseRecord = () => {
+    if (!selectedCase) return
+
+    const savedAt = new Date().toLocaleDateString("zh-TW", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+
+    setCaseRecords((currentRecords) => ({
+      ...currentRecords,
+      [selectedCase.id]: {
+        ...draftCaseRecord,
+        history: [
+          {
+            date: savedAt,
+            type: "個案簡述",
+            title: "更新個案簡述與服務狀態",
+            status: draftCaseRecord.status,
+            note: draftCaseRecord.note,
+          },
+          ...currentRecords[selectedCase.id].history,
+        ],
+      },
+    }))
+  }
 
   return (
     <div className="min-h-screen px-4 py-12">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10">
           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <Users className="h-8 w-8 text-primary" />
@@ -154,20 +303,72 @@ export default function SocialWorkerPage() {
           </p>
         </div>
 
-        <div className="mb-10 bg-card border border-border rounded-xl p-6">
-          <h2 className="text-lg font-semibold text-foreground mb-3">社工工作提醒</h2>
-          <p className="text-muted-foreground mb-4">
-            若個案尚未使用系統，仍可先由社工建立會談紀錄與風險快篩，後續再邀請個案使用記帳或檢測工具補齊資料。
-          </p>
-          <Link
-            href="/toolbox/consultation"
-            className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
-          >
-            聯繫支援團隊 <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
+        <div className={`grid gap-6 lg:items-start ${isToolsCollapsed ? "lg:grid-cols-[88px_1fr]" : "lg:grid-cols-[320px_1fr]"}`}>
+          <aside className="rounded-xl border border-border bg-card p-4 lg:sticky lg:top-24">
+            <div className={`mb-3 flex items-center ${isToolsCollapsed ? "justify-center" : "justify-between gap-3"}`}>
+              {!isToolsCollapsed && <h2 className="text-lg font-semibold text-foreground">資源與工具</h2>}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => setIsToolsCollapsed(!isToolsCollapsed)}
+                aria-label={isToolsCollapsed ? "展開資源與工具" : "收合資源與工具"}
+              >
+                {isToolsCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+              </Button>
+            </div>
+            <nav className="flex flex-col gap-2">
+              {resources.map((resource) => {
+                const Icon = resource.icon
+                return (
+                  <Link
+                    key={resource.title}
+                    href={resource.href}
+                    title={isToolsCollapsed ? resource.title : undefined}
+                    className={`group flex rounded-lg p-3 transition-colors hover:bg-secondary focus:bg-secondary focus:outline-none ${
+                      isToolsCollapsed ? "justify-center" : "items-start gap-3"
+                    }`}
+                  >
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    {!isToolsCollapsed && (
+                      <>
+                        <span className="min-w-0 flex-1">
+                          <span className="block font-medium text-foreground">{resource.title}</span>
+                          <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">
+                            {resource.description}
+                          </span>
+                        </span>
+                        <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-primary transition-transform group-hover:translate-x-1" />
+                      </>
+                    )}
+                    {isToolsCollapsed && (
+                      <span className="sr-only">
+                        {resource.title}
+                      </span>
+                    )}
+                  </Link>
+                )
+              })}
+            </nav>
+          </aside>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+          <div className="min-w-0">
+            <div className="mb-10 bg-card border border-border rounded-xl p-6">
+              <h2 className="text-lg font-semibold text-foreground mb-3">社工工作提醒</h2>
+              <p className="text-muted-foreground mb-4">
+                若個案尚未使用系統，仍可先由社工建立會談紀錄與風險快篩，後續再邀請個案使用記帳或檢測工具補齊資料。
+              </p>
+              <Link
+                href="/toolbox/consultation"
+                className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
+              >
+                聯繫支援團隊 <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
           <div className="p-4 bg-card rounded-xl border border-border">
             <div className="flex items-center gap-3 mb-2">
               <ClipboardList className="h-5 w-5 text-primary" />
@@ -189,9 +390,176 @@ export default function SocialWorkerPage() {
             </div>
             <p className="text-3xl font-bold text-primary">4</p>
           </div>
-        </div>
+            </div>
 
-        <section className="mb-10">
+            {selectedCase && selectedCaseRecord && selectedLatestScreening ? (
+              <section className="overflow-hidden rounded-2xl border border-border bg-card">
+                <div className="flex flex-col gap-4 border-b border-border p-5 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="mb-3 px-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
+                      onClick={() => setSelectedCaseId(null)}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                      回到個案列表
+                    </Button>
+                    <p className="text-sm font-medium text-primary mb-1">個案總覽</p>
+                    <h2 className="text-xl font-semibold text-foreground">{selectedCase.name}</h2>
+                    <p className="text-sm text-muted-foreground">
+                      {selectedCase.id} · {selectedCase.family} · 最近聯繫 {selectedCase.lastContact}
+                    </p>
+                  </div>
+                  <div className="grid gap-3 md:min-w-[360px] md:grid-cols-[1fr_1.2fr]">
+                    <div className="rounded-2xl border border-border bg-secondary/40 p-4">
+                      <p className="text-sm text-muted-foreground mb-2">目前服務狀態</p>
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="font-semibold text-foreground">{selectedCaseRecord.status}</span>
+                        <span className="rounded-full bg-card px-3 py-1 text-xs text-foreground">{selectedLatestScreening.risk}</span>
+                      </div>
+                    </div>
+                    <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
+                      <div className="mb-3 flex items-center gap-2">
+                        <Award className="h-5 w-5 text-primary" />
+                        <p className="text-sm font-medium text-foreground">月度獎章</p>
+                      </div>
+                      <div className="flex gap-2">
+                        {caseMonthlyBadges.map((badge) => (
+                          <button
+                            key={badge.month}
+                            type="button"
+                            onClick={() => setActiveCaseBadge(activeCaseBadge === badge.month ? null : badge.month)}
+                            aria-expanded={activeCaseBadge === badge.month}
+                            className={`group relative flex h-10 w-10 items-center justify-center rounded-full border text-xs font-semibold transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+                              badge.completed ? "border-primary/30 bg-primary text-primary-foreground" : "border-border bg-card text-muted-foreground"
+                            }`}
+                          >
+                            {badge.month}
+                            <span className={`${activeCaseBadge === badge.month ? "block" : "hidden"} absolute right-0 top-full z-30 mt-2 w-64 rounded-xl border border-border bg-popover p-3 text-left text-popover-foreground shadow-lg group-hover:block group-focus-visible:block`}>
+                              <span className="mb-1 block text-sm font-semibold text-foreground">{badge.title}</span>
+                              <span className="mb-3 block text-xs font-normal leading-relaxed text-muted-foreground">{badge.description}</span>
+                              <span className="space-y-2">
+                                {badge.details.map((detail) => (
+                                  <span key={detail} className="block rounded-lg bg-secondary/60 px-3 py-2 text-xs font-normal text-foreground">
+                                    {detail}
+                                  </span>
+                                ))}
+                              </span>
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-6 overflow-x-auto border-b border-border px-5">
+                  {caseOverviewTabs.map((tab, index) => (
+                    <button
+                      key={tab}
+                      className={`shrink-0 border-b-2 py-4 text-sm font-medium ${
+                        index === 0 ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {tab}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="grid gap-4 p-5 xl:grid-cols-[0.9fr_1.3fr]">
+                  <div className="space-y-4">
+                    <div className="rounded-2xl border border-border p-5">
+                      <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                        <Gauge className="h-5 w-5" />
+                      </div>
+                      <p className="font-medium text-foreground mb-3">財務風險狀態</p>
+                      <p className="text-3xl font-bold text-foreground mb-2">{selectedLatestScreening.risk}</p>
+                      <p className="text-sm text-muted-foreground">
+                        依個案最近一次財務風險快篩紀錄更新，社工不可手動覆寫。
+                      </p>
+                      <div className="mt-4 rounded-xl bg-secondary/50 p-3 text-sm text-muted-foreground">
+                        <p className="font-medium text-foreground">最近快篩：{selectedLatestScreening.date}</p>
+                        <p>{selectedLatestScreening.score === null ? "尚無分數" : `快篩分數 ${selectedLatestScreening.score} 分`}</p>
+                      </div>
+                    </div>
+
+                    <div className="rounded-2xl bg-gradient-to-br from-primary to-accent p-5 text-primary-foreground">
+                      <span className="inline-flex rounded-full bg-background/20 px-3 py-1 text-xs font-medium mb-3">
+                        社工視角
+                      </span>
+                      <h3 className="text-lg font-semibold mb-2">個案服務摘要</h3>
+                      <p className="text-sm leading-relaxed text-primary-foreground/85">{selectedCaseRecord.note}</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <Card className="border-border">
+                      <CardContent className="p-5">
+                        <h3 className="text-lg font-semibold text-foreground mb-1">編輯個案簡述</h3>
+                        <p className="text-sm text-muted-foreground mb-5">社工可調整服務狀態與簡述；風險狀態會由財務風險快篩紀錄同步更新。</p>
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <label className="space-y-2">
+                            <span className="text-sm font-medium text-foreground">服務狀態</span>
+                            <select
+                              value={draftCaseRecord.status}
+                              onChange={(event) => setDraftCaseRecord({ ...draftCaseRecord, status: event.target.value })}
+                              className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                            >
+                              {serviceStatuses.map((status) => (
+                                <option key={status} value={status}>{status}</option>
+                              ))}
+                            </select>
+                          </label>
+                          <div className="space-y-2">
+                            <span className="text-sm font-medium text-foreground">風險狀態</span>
+                            <div className="flex h-10 items-center rounded-md border border-border bg-secondary/50 px-3 text-sm text-muted-foreground">
+                              {selectedLatestScreening.risk}，來自 {selectedLatestScreening.date} 快篩
+                            </div>
+                          </div>
+                        </div>
+                        <label className="mt-4 block space-y-2">
+                          <span className="text-sm font-medium text-foreground">個案簡述</span>
+                          <Textarea
+                            value={draftCaseRecord.note}
+                            onChange={(event) => setDraftCaseRecord({ ...draftCaseRecord, note: event.target.value })}
+                            className="min-h-32"
+                            placeholder="輸入本次服務觀察、財務壓力來源或後續追蹤重點"
+                          />
+                        </label>
+                        <div className="mt-5 flex justify-end">
+                          <Button type="button" onClick={saveCaseRecord}>
+                            儲存並留下紀錄
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-border">
+                      <CardContent className="p-5">
+                        <h3 className="text-lg font-semibold text-foreground mb-4">歷史紀錄</h3>
+                        <div className="space-y-3">
+                          {selectedCaseRecord.history.map((record, index) => (
+                            <div key={`${record.date}-${index}`} className="rounded-xl border border-border p-4">
+                              <div className="mb-2 flex flex-wrap items-center gap-2 text-sm">
+                                <span className="font-medium text-foreground">{record.date}</span>
+                                <span className="rounded-full bg-secondary px-2 py-1 text-xs text-secondary-foreground">{record.type}</span>
+                                {record.status && <span className="rounded-full bg-card px-2 py-1 text-xs text-foreground">{record.status}</span>}
+                                {record.risk && <span className="rounded-full bg-primary/10 px-2 py-1 text-xs text-primary">{record.risk}</span>}
+                              </div>
+                              <p className="mb-1 text-sm font-medium text-foreground">{record.title}</p>
+                              <p className="text-sm leading-relaxed text-muted-foreground">{record.note}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </section>
+            ) : (
+              <section>
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-4">
             <div>
               <h2 className="text-xl font-semibold text-foreground">個案列表</h2>
@@ -217,79 +585,68 @@ export default function SocialWorkerPage() {
               </Card>
             )}
 
-            {filteredCases.map((caseItem) => (
-              <Card key={caseItem.id} className="border-border">
-                <CardContent className="p-6">
-                  <div className="flex flex-col lg:flex-row gap-6">
-                    <div className="lg:w-72 shrink-0">
-                      <div className="flex items-start justify-between gap-3 mb-3">
-                        <div>
-                          <p className="text-xs text-muted-foreground mb-1">{caseItem.id}</p>
-                          <h3 className="text-lg font-semibold text-foreground">{caseItem.name}</h3>
-                        </div>
-                        <span className="rounded-full bg-secondary px-3 py-1 text-xs text-secondary-foreground">
-                          {caseItem.status}
-                        </span>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-2">{caseItem.family}</p>
-                      <p className="text-sm text-foreground mb-2">風險狀態：{caseItem.risk}</p>
-                      <p className="text-sm text-muted-foreground mb-3">最近聯繫：{caseItem.lastContact}</p>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{caseItem.note}</p>
-                    </div>
+            {filteredCases.map((caseItem) => {
+              const caseRecord = caseRecords[caseItem.id]
+              const latestScreening = financeScreeningRecords[caseItem.id][0]
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 flex-1">
-                      {caseActions.map((action) => {
-                        const Icon = action.icon
-                        return (
-                          <Button
-                            key={`${caseItem.id}-${action.label}`}
-                            variant="outline"
-                            className="h-auto min-w-0 items-start justify-start whitespace-normal p-4 text-left"
-                          >
-                            <span className={`mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${action.color}`}>
-                              <Icon className="h-5 w-5" />
-                            </span>
-                            <span className="min-w-0">
-                              <span className="block font-medium text-foreground">{action.label}</span>
-                              <span className="mt-1 block break-words text-xs text-muted-foreground font-normal leading-relaxed">
-                                {action.description}
-                              </span>
-                            </span>
-                          </Button>
-                        )
-                      })}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold text-foreground mb-4">資源與工具</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {resources.map((resource) => {
-              const Icon = resource.icon
               return (
-                <Link key={resource.title} href={resource.href} className="group">
-                  <Card className="h-full border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300">
-                    <CardContent className="p-5">
-                      <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                        <Icon className="h-5 w-5 text-primary" />
+                <Card key={caseItem.id} className="border-border">
+                  <CardContent className="p-6">
+                    <div className="flex flex-col xl:flex-row gap-6">
+                      <div className="xl:w-72 shrink-0">
+                        <div className="flex items-start justify-between gap-3 mb-3">
+                          <div>
+                            <p className="text-xs text-muted-foreground mb-1">{caseItem.id}</p>
+                            <h3 className="text-lg font-semibold text-foreground">{caseItem.name}</h3>
+                          </div>
+                          <span className="rounded-full bg-secondary px-3 py-1 text-xs text-secondary-foreground">
+                            {caseRecord.status}
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">{caseItem.family}</p>
+                        <p className="text-sm text-foreground mb-2">風險狀態：{latestScreening.risk}</p>
+                        <p className="text-sm text-muted-foreground mb-3">最近聯繫：{caseItem.lastContact}</p>
+                        <p className="text-sm text-muted-foreground leading-relaxed">{caseRecord.note}</p>
                       </div>
-                      <h3 className="font-semibold text-foreground mb-2">{resource.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-4">{resource.description}</p>
-                      <span className="text-sm text-primary font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-                        前往 <ArrowRight className="h-4 w-4" />
-                      </span>
-                    </CardContent>
-                  </Card>
-                </Link>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+                        {caseActions.map((action) => {
+                          const Icon = action.icon
+                          return (
+                            <Button
+                              key={`${caseItem.id}-${action.label}`}
+                              type="button"
+                              variant="outline"
+                              onClick={() => {
+                                if (action.label === "個案總覽") {
+                                  openCaseOverview(caseItem)
+                                }
+                              }}
+                              className="h-full min-h-28 min-w-0 items-start justify-start whitespace-normal p-4 text-left"
+                            >
+                              <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${action.color}`}>
+                                <Icon className="h-5 w-5" />
+                              </span>
+                              <span className="min-w-0">
+                                <span className="block font-medium text-foreground">{action.label}</span>
+                                <span className="mt-2 block break-words text-sm text-muted-foreground font-normal leading-relaxed">
+                                  {action.description}
+                                </span>
+                              </span>
+                            </Button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               )
             })}
           </div>
-        </section>
+            </section>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   )

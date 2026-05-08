@@ -7,6 +7,7 @@ import type { LucideIcon } from "lucide-react"
 import { Menu, ClipboardCheck, Wrench, BookOpen, Calendar, Users, User, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { externalLinks } from "@/lib/external-links"
 
 type NavItem = {
   href: string
@@ -29,7 +30,16 @@ const navItems: NavItem[] = [
       { href: "/fraud-defense", label: "詐騙防禦" },
     ],
   },
-  { href: "/toolbox", label: "財務工具", icon: Wrench },
+  {
+    href: "/toolbox",
+    label: "財務工具",
+    icon: Wrench,
+    children: [
+      { href: externalLinks.voiceToText, label: "語音轉文字" },
+      { href: externalLinks.financeScreening, label: "財務風險快篩" },
+      { href: "/toolbox", label: "盤點與計算" },
+    ],
+  },
   {
     href: "/content",
     label: "知識與內容",
