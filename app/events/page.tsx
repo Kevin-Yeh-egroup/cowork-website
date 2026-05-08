@@ -11,10 +11,55 @@ const tabs = [
   { id: "social-worker", label: "社工" },
 ]
 
+const audienceIds = ["public", "social-worker"] as const
+
+function isEventAudience(value: string): value is EventAudience {
+  return audienceIds.includes(value as EventAudience)
+}
+
+function getAudienceFromHash(): EventAudience | null {
+  const hashAudience = window.location.hash.replace("#", "")
+
+  if (isEventAudience(hashAudience)) {
+    return hashAudience
+  }
+
+  return null
+}
+
 export default function EventsPage() {
   const [activeTab, setActiveTab] = useState<EventAudience>("public")
   const [events, setEvents] = useState<ManagedEvent[]>([])
   const [registeredEvents, setRegisteredEvents] = useState<number[]>([])
+
+  useEffect(() => {
+    const syncTabFromHash = () => {
+      const hashAudience = getAudienceFromHash()
+
+      if (hashAudience) {
+        setActiveTab(hashAudience)
+      }
+    }
+
+    syncTabFromHash()
+    window.addEventListener("hashchange", syncTabFromHash)
+
+    return () => window.removeEventListener("hashchange", syncTabFromHash)
+  }, [])
+
+  useEffect(() => {
+    const syncTabFromNavigation = (event: Event) => {
+      const audience = (event as CustomEvent<EventAudience>).detail
+
+      if (isEventAudience(audience)) {
+        setActiveTab(audience)
+      }
+    }
+
+    window.addEventListener("events-audience-change", syncTabFromNavigation)
+
+    return () => window.removeEventListener("events-audience-change", syncTabFromNavigation)
+  }, [])
 
   useEffect(() => {
     setEvents(getStoredEvents())
@@ -24,6 +69,11 @@ export default function EventsPage() {
 
   const handleRegister = (eventId: number) => {
     setRegisteredEvents([...registeredEvents, eventId])
+  }
+
+  const handleTabChange = (audience: EventAudience) => {
+    setActiveTab(audience)
+    window.history.replaceState(null, "", `#${audience}`)
   }
 
   return (
@@ -38,7 +88,7 @@ export default function EventsPage() {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as EventAudience)}
+              onClick={() => handleTabChange(tab.id as EventAudience)}
               className={`px-6 py-2 rounded-full text-sm font-medium transition-colors ${
                 activeTab === tab.id
                   ? "bg-primary text-primary-foreground"
