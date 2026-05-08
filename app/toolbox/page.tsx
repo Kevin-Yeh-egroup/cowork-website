@@ -13,7 +13,7 @@ const accountingToolLink = (tool: string, accountingTab: number) =>
 
 const categories = [
   {
-    title: "收支與財務盤點",
+    title: "日常整理",
     tools: [
       {
         href: `${financialCalculatorBase}/basic-accounting`,
@@ -22,22 +22,10 @@ const categories = [
         icon: Calculator,
       },
       {
-        href: accountingToolLink("debt-assessment", 1),
-        title: "債務盤點表",
-        description: "整理債權人、金額與利率，協助建立還款計畫。",
-        icon: FileText,
-      },
-      {
         href: accountingToolLink("monthly-financial-report", 1),
         title: "財務月報表",
         description: "分析收支、資產負債與現金流，掌握整體財務狀況。",
         icon: Banknote,
-      },
-      {
-        href: externalLinks.financialPlanning,
-        title: "夢想達成財務規劃",
-        description: "透過互動式步驟整理目標、金額與行動計畫。",
-        icon: Target,
       },
       {
         href: accountingToolLink("financial-health-dashboard", 3),
@@ -48,8 +36,31 @@ const categories = [
     ],
   },
   {
-    title: "債務與貸款試算",
+    title: "目標規劃",
     tools: [
+      {
+        href: externalLinks.financialPlanning,
+        title: "夢想達成財務規劃",
+        description: "透過互動式步驟整理目標、金額與行動計畫。",
+        icon: Target,
+      },
+      {
+        href: "/toolbox/simulator",
+        title: "存錢試算小工具",
+        description: "輸入目標金額與每月可存金額，估算達成時間。",
+        icon: Calculator,
+      },
+    ],
+  },
+  {
+    title: "風險處理",
+    tools: [
+      {
+        href: debtToolLink("debt-warning-tool", 3),
+        title: "債務警示工具",
+        description: "檢測 DBR、月負債比與資產負債率，取得風險評估。",
+        icon: FileText,
+      },
       {
         href: debtToolLink("interest-calculator", 1),
         title: "債務利率試算",
@@ -57,62 +68,15 @@ const categories = [
         icon: Calculator,
       },
       {
-        href: debtToolLink("credit-card", 2),
-        title: "信用卡",
-        description: "分析信用卡債務、利息與最低還款額，降低卡債壓力。",
-        icon: Banknote,
-      },
-      {
-        href: debtToolLink("mortgage", 2),
-        title: "房貸",
-        description: "試算房貸月付金、利息總額與攤還表，規劃長期房貸。",
-        icon: Target,
-      },
-      {
-        href: debtToolLink("new-youth-loan", 2),
-        title: "新青安房貸",
-        description: "試算青年安心成家優惠貸款方案與長期付款規劃。",
-        icon: Target,
-      },
-      {
-        href: debtToolLink("loan-calculator", 2),
-        title: "信用貸款月還款",
-        description: "計算每月還款金額、寬限期與額外費用，掌握貸款成本。",
-        icon: Calculator,
-      },
-      {
-        href: debtToolLink("car-loan", 2),
-        title: "車貸",
-        description: "比較車貸利率與條件，找出符合預算的貸款方案。",
-        icon: Banknote,
-      },
-    ],
-  },
-  {
-    title: "借貸與風險管理",
-    tools: [
-      {
-        href: debtToolLink("aid-association", 2),
-        title: "標會",
-        description: "計算標會投資報酬與風險，了解不同制度下的收益情況。",
-        icon: MessageSquare,
-      },
-      {
-        href: debtToolLink("pawn-shop", 2),
-        title: "當鋪",
-        description: "試算質押借款的利息與費用，了解借款價值與成本。",
-        icon: Banknote,
-      },
-      {
-        href: debtToolLink("debt-warning-tool", 3),
-        title: "債務警示工具",
-        description: "檢測 DBR、月負債比與資產負債率，取得風險評估。",
+        href: accountingToolLink("debt-assessment", 1),
+        title: "債務盤點表",
+        description: "整理債權人、金額與利率，協助建立還款計畫。",
         icon: FileText,
       },
     ],
   },
   {
-    title: "權益與薪資試算",
+    title: "權益試算",
     tools: [
       {
         href: accountingToolLink("severance-calculator", 2),
@@ -131,6 +95,48 @@ const categories = [
         title: "特休假試算",
         description: "依勞基法第 38 條試算特休天數與不同給假方式。",
         icon: Target,
+      },
+      {
+        href: debtToolLink("credit-card", 2),
+        title: "信用卡",
+        description: "分析信用卡債務、利息與最低還款額，降低卡債壓力。",
+        icon: Banknote,
+      },
+      {
+        href: debtToolLink("loan-calculator", 2),
+        title: "信貸",
+        description: "計算每月還款金額、寬限期與額外費用，掌握貸款成本。",
+        icon: Calculator,
+      },
+      {
+        href: debtToolLink("mortgage", 2),
+        title: "房貸",
+        description: "試算房貸月付金、利息總額與攤還表，規劃長期房貸。",
+        icon: Target,
+      },
+      {
+        href: debtToolLink("new-youth-loan", 2),
+        title: "新青安",
+        description: "試算青年安心成家優惠貸款方案與長期付款規劃。",
+        icon: Target,
+      },
+      {
+        href: debtToolLink("car-loan", 2),
+        title: "車貸",
+        description: "比較車貸利率與條件，找出符合預算的貸款方案。",
+        icon: Banknote,
+      },
+      {
+        href: debtToolLink("aid-association", 2),
+        title: "標會",
+        description: "計算標會投資報酬與風險，了解不同制度下的收益情況。",
+        icon: MessageSquare,
+      },
+      {
+        href: debtToolLink("pawn-shop", 2),
+        title: "當鋪",
+        description: "試算質押借款的利息與費用，了解借款價值與成本。",
+        icon: Banknote,
       },
     ],
   },

@@ -35,9 +35,9 @@ const navItems: NavItem[] = [
     label: "財務工具",
     icon: Wrench,
     children: [
-      { href: externalLinks.voiceToText, label: "語音轉文字" },
-      { href: externalLinks.financeScreening, label: "財務風險快篩" },
-      { href: "/toolbox", label: "盤點與計算" },
+      { href: `${externalLinks.financialCalculator}/basic-accounting`, label: "財務生活記帳助理" },
+      { href: externalLinks.financialPlanning, label: "夢想達成財務規劃" },
+      { href: "/toolbox", label: "其他工具" },
     ],
   },
   {
@@ -110,7 +110,7 @@ export function Navigation() {
                 </Link>
 
                 {item.children && (
-                  <div className="pointer-events-none absolute left-1/2 top-full z-50 min-w-44 -translate-x-1/2 pt-2 opacity-0 translate-y-1 transition-all duration-150 group-hover:pointer-events-auto group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-y-0">
+                  <div className="pointer-events-none absolute left-1/2 top-full z-50 min-w-44 -translate-x-1/2 pt-2 opacity-0 translate-y-1 transition-all duration-150 group-hover:pointer-events-auto group-hover:opacity-100 group-hover:translate-y-0">
                     <div className="rounded-xl border border-border bg-card p-2 shadow-lg">
                       {item.children.map((child) => (
                         <Link
