@@ -32,7 +32,7 @@ const navItems: NavItem[] = [
   },
   {
     href: externalLinks.onlineConsultation,
-    label: "免費線上財務諮詢",
+    label: "免費諮詢",
     icon: HandCoins,
   },
   {
