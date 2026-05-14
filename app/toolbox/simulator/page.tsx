@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input"
 import { NextSteps } from "@/components/next-steps"
 import { IntroStep } from "@/components/intro-step"
 import { Calculator, ArrowRight } from "lucide-react"
+import { currentMemberId } from "@/lib/achievements-data"
+import { recordAchievementEvent } from "@/lib/achievements-service"
 
 type SimulatorType = "loan" | "savings" | null
 
@@ -26,6 +28,18 @@ export default function SimulatorPage() {
         : principal / months
       const total = monthly * months
       setResult({ monthly: Math.round(monthly), total: Math.round(total), interest: Math.round(total - principal) })
+      recordAchievementEvent({
+        userId: currentMemberId,
+        role: "member",
+        eventType: "tool_used",
+        module: "tool_library",
+        objectType: "tool",
+        objectId: "loan-simulator",
+        metadata: {
+          tool_code: "loan_simulator",
+          tool_category: "debt",
+        },
+      })
     }
   }
 
@@ -42,6 +56,18 @@ export default function SimulatorPage() {
       }
       
       setResult({ months, total: Math.round(accumulated) })
+      recordAchievementEvent({
+        userId: currentMemberId,
+        role: "member",
+        eventType: "tool_used",
+        module: "tool_library",
+        objectType: "tool",
+        objectId: "savings-simulator",
+        metadata: {
+          tool_code: "savings_simulator",
+          tool_category: "simulator",
+        },
+      })
     }
   }
 

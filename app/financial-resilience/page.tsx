@@ -1,6 +1,8 @@
 "use client"
 
 import { AssessmentFlow } from "@/components/assessment-flow"
+import { currentMemberId } from "@/lib/achievements-data"
+import { getAchievementState, recordAchievementEvent } from "@/lib/achievements-service"
 
 const questions = [
   {
@@ -91,6 +93,24 @@ export default function FinancialResiliencePage() {
       startLabel="開始檢視"
       questions={questions}
       getResult={getResult}
+      onComplete={({ score, result }) => {
+        const hasCompletedHealthCheck = getAchievementState(currentMemberId, "member").events.some(
+          (event) => event.eventType === "health_check_completed" || event.eventType === "health_recheck_completed",
+        )
+
+        recordAchievementEvent({
+          userId: currentMemberId,
+          role: "member",
+          eventType: hasCompletedHealthCheck ? "health_recheck_completed" : "health_check_completed",
+          module: "health_check",
+          objectType: "assessment",
+          objectId: "financial-resilience",
+          metadata: {
+            score,
+            risk_level: result.level,
+          },
+        })
+      }}
     />
   )
 }

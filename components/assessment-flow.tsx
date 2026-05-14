@@ -22,6 +22,10 @@ interface AssessmentFlowProps {
   startLabel?: string
   questions: Question[]
   getResult: (score: number) => { status: string; message: string; level: "good" | "medium" | "warning" }
+  onComplete?: (payload: {
+    score: number
+    result: { status: string; message: string; level: "good" | "medium" | "warning" }
+  }) => void
 }
 
 export function AssessmentFlow({
@@ -32,11 +36,13 @@ export function AssessmentFlow({
   startLabel = "開始檢測",
   questions,
   getResult,
+  onComplete,
 }: AssessmentFlowProps) {
   const [hasStarted, setHasStarted] = useState(false)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [isCompleted, setIsCompleted] = useState(false)
+  const [hasRecordedCompletion, setHasRecordedCompletion] = useState(false)
 
   const progress = ((currentQuestion + 1) / questions.length) * 100
   const currentQ = questions[currentQuestion]
@@ -49,6 +55,14 @@ export function AssessmentFlow({
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion((prev) => prev + 1)
     } else {
+      const score = calculateScore()
+      const result = getResult(score)
+
+      if (!hasRecordedCompletion) {
+        onComplete?.({ score, result })
+        setHasRecordedCompletion(true)
+      }
+
       setIsCompleted(true)
     }
   }

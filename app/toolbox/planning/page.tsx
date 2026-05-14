@@ -8,6 +8,8 @@ import { Progress } from "@/components/ui/progress"
 import { NextSteps } from "@/components/next-steps"
 import { IntroStep } from "@/components/intro-step"
 import { Target, CheckCircle, ArrowRight, ArrowLeft } from "lucide-react"
+import { currentMemberId } from "@/lib/achievements-data"
+import { recordAchievementEvent } from "@/lib/achievements-service"
 
 const goalTypes = [
   { id: "emergency", label: "緊急預備金", icon: "🛡️", suggested: "3-6個月支出" },
@@ -33,6 +35,18 @@ export default function PlanningPage() {
   }
 
   const handleComplete = () => {
+    recordAchievementEvent({
+      userId: currentMemberId,
+      role: "member",
+      eventType: "goal_created",
+      module: "goal_management",
+      objectType: "goal",
+      objectId: `${goal.type}-${Date.now()}`,
+      metadata: {
+        goal_type: goal.type,
+        target_amount: goal.targetAmount,
+      },
+    })
     setIsCompleted(true)
   }
 

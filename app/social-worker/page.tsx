@@ -1,12 +1,13 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   ArrowRight,
   Award,
   BookOpen,
   Calendar,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   ClipboardList,
@@ -21,10 +22,18 @@ import {
   Users,
   Wrench,
 } from "lucide-react"
+import { AchievementSummary } from "@/components/achievement-summary"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { currentSocialWorkerId, type AchievementEventType } from "@/lib/achievements-data"
+import {
+  getAchievementState,
+  recordAchievementEvent,
+  resetUserAchievementState,
+  type UserAchievementState,
+} from "@/lib/achievements-service"
 import { externalLinks } from "@/lib/external-links"
 
 const resources = [
@@ -157,30 +166,6 @@ const financeScreeningRecords = cases.reduce<Record<string, {
   return records
 }, {})
 
-const caseMonthlyBadges = [
-  {
-    month: "三月",
-    title: "完成快篩",
-    description: "已完成本月財務風險快篩",
-    completed: true,
-    details: ["財務風險快篩：中高風險", "會談燈號：黃燈", "追蹤建議：已建立"],
-  },
-  {
-    month: "四月",
-    title: "穩定追蹤",
-    description: "完成 2 次以上服務紀錄",
-    completed: true,
-    details: ["會談紀錄：2 次", "服務目標：已更新", "追蹤燈號：綠燈"],
-  },
-  {
-    month: "五月",
-    title: "目標更新",
-    description: "更新本月服務目標與簡述",
-    completed: false,
-    details: ["會談紀錄：1 / 2 次", "快篩更新：待完成", "追蹤燈號：黃燈"],
-  },
-]
-
 type CaseRecord = {
   status: string
   note: string
@@ -193,6 +178,44 @@ type CaseRecord = {
     note: string
   }[]
 }
+
+const socialWorkerAchievementActions: {
+  label: string
+  eventType: AchievementEventType
+  module: string
+  metadata?: Record<string, string | number | boolean>
+}[] = [
+  {
+    label: "登錄新個案",
+    eventType: "case_created",
+    module: "case_history",
+    metadata: { case_status: "初評中" },
+  },
+  {
+    label: "完成追蹤紀錄",
+    eventType: "case_followup_completed",
+    module: "case_history",
+    metadata: { followup_type: "monthly" },
+  },
+  {
+    label: "協助完成健檢",
+    eventType: "case_health_check_assisted",
+    module: "case_history",
+    metadata: { assisted_item: "health_check" },
+  },
+  {
+    label: "完成資源轉介",
+    eventType: "case_referral_completed",
+    module: "case_history",
+    metadata: { referral_type: "welfare_resource" },
+  },
+  {
+    label: "完成專業學習",
+    eventType: "social_worker_learning_completed",
+    module: "social_worker",
+    metadata: { topic: "financial_counseling" },
+  },
+]
 
 const initialCaseRecords = cases.reduce<Record<string, CaseRecord>>((records, caseItem) => {
   const latestScreening = financeScreeningRecords[caseItem.id][0]
@@ -226,7 +249,8 @@ export default function SocialWorkerPage() {
   const [isToolsCollapsed, setIsToolsCollapsed] = useState(false)
   const [caseRecords, setCaseRecords] = useState(initialCaseRecords)
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null)
-  const [activeCaseBadge, setActiveCaseBadge] = useState<string | null>(null)
+  const [achievementState, setAchievementState] = useState<UserAchievementState | null>(null)
+  const [isAchievementsExpanded, setIsAchievementsExpanded] = useState(false)
   const [draftCaseRecord, setDraftCaseRecord] = useState({
     status: "",
     note: "",
@@ -252,11 +276,14 @@ export default function SocialWorkerPage() {
   const selectedCaseRecord = selectedCase ? caseRecords[selectedCase.id] : null
   const selectedLatestScreening = selectedCase ? financeScreeningRecords[selectedCase.id][0] : null
 
+  useEffect(() => {
+    setAchievementState(getAchievementState(currentSocialWorkerId, "social_worker"))
+  }, [])
+
   const openCaseOverview = (caseItem: (typeof cases)[number]) => {
     const caseRecord = caseRecords[caseItem.id]
 
     setSelectedCaseId(caseItem.id)
-    setActiveCaseBadge(null)
     setDraftCaseRecord({
       status: caseRecord.status,
       note: caseRecord.note,
@@ -288,6 +315,39 @@ export default function SocialWorkerPage() {
         ],
       },
     }))
+    setAchievementState(
+      recordAchievementEvent({
+        userId: currentSocialWorkerId,
+        role: "social_worker",
+        eventType: "case_note_created",
+        module: "case_history",
+        objectType: "case_note",
+        objectId: `${selectedCase.id}-${Date.now()}`,
+        caseId: selectedCase.id,
+        metadata: {
+          note_type: "case_summary",
+          case_status: draftCaseRecord.status,
+        },
+      }),
+    )
+  }
+
+  const recordSocialWorkerEvent = (action: (typeof socialWorkerAchievementActions)[number]) => {
+    setAchievementState(
+      recordAchievementEvent({
+        userId: currentSocialWorkerId,
+        role: "social_worker",
+        eventType: action.eventType,
+        module: action.module,
+        metadata: action.metadata,
+        caseId: selectedCase?.id,
+      }),
+    )
+  }
+
+  const resetSocialWorkerAchievements = () => {
+    resetUserAchievementState(currentSocialWorkerId, "social_worker")
+    setAchievementState(getAchievementState(currentSocialWorkerId, "social_worker"))
   }
 
   return (
@@ -355,6 +415,75 @@ export default function SocialWorkerPage() {
           </aside>
 
           <div className="min-w-0">
+            {achievementState && (
+              <section className="mb-10 overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-accent/10">
+                <button
+                  type="button"
+                  className="flex w-full flex-col gap-4 p-5 text-left md:flex-row md:items-center md:justify-between"
+                  onClick={() => setIsAchievementsExpanded(!isAchievementsExpanded)}
+                  aria-expanded={isAchievementsExpanded}
+                >
+                  <span className="flex items-start gap-4">
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+                      <Award className="h-6 w-6" />
+                    </span>
+                    <span>
+                      <span className="text-sm font-medium text-primary">社工成就與獎章</span>
+                      <span className="mt-1 block text-xl font-semibold text-foreground">
+                        {achievementState.currentTitle?.name ?? "陪伴歷程起步中"}
+                      </span>
+                      <span className="mt-1 block text-sm leading-relaxed text-muted-foreground">
+                        已取得 {achievementState.earnedBadges.length} 枚獎章、完成{" "}
+                        {achievementState.missions.reduce((total, mission) => total + mission.completedSteps, 0)} 個任務項目。
+                      </span>
+                    </span>
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 text-sm font-medium text-foreground">
+                    {isAchievementsExpanded ? "收合成就" : "展開成就"}
+                    <ChevronDown className={`h-4 w-4 transition-transform ${isAchievementsExpanded ? "rotate-180" : ""}`} />
+                  </span>
+                </button>
+
+                {isAchievementsExpanded && (
+                  <div className="border-t border-primary/10 p-5">
+                    <AchievementSummary
+                      title="社工服務成就"
+                      description="集中查看社工稱號、服務獎章、追蹤任務與專業學習進度。"
+                      badges={achievementState.badges}
+                      missions={achievementState.missions}
+                      currentTitle={achievementState.currentTitle}
+                      nextTitle={achievementState.nextTitle}
+                      recentEventCount={achievementState.events.length}
+                      onReset={resetSocialWorkerAchievements}
+                    />
+                    <Card className="mt-4 border-border">
+                      <CardContent className="p-5">
+                        <div className="mb-4">
+                          <h2 className="text-lg font-semibold text-foreground">服務任務操作區</h2>
+                          <p className="text-sm text-muted-foreground">
+                            儲存個案簡述會自動記錄歷程事件，也可用下方操作補登本月服務任務。
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {socialWorkerAchievementActions.map((action) => (
+                            <Button
+                              key={action.label}
+                              type="button"
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => recordSocialWorkerEvent(action)}
+                            >
+                              {action.label}
+                            </Button>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+              </section>
+            )}
+
             <div className="mb-10 bg-card border border-border rounded-xl p-6">
               <h2 className="text-lg font-semibold text-foreground mb-3">社工工作提醒</h2>
               <p className="text-muted-foreground mb-4">
@@ -412,44 +541,12 @@ export default function SocialWorkerPage() {
                       {selectedCase.id} · {selectedCase.family} · 最近聯繫 {selectedCase.lastContact}
                     </p>
                   </div>
-                  <div className="grid gap-3 md:min-w-[360px] md:grid-cols-[1fr_1.2fr]">
+                  <div className="grid gap-3 md:min-w-[260px]">
                     <div className="rounded-2xl border border-border bg-secondary/40 p-4">
                       <p className="text-sm text-muted-foreground mb-2">目前服務狀態</p>
                       <div className="flex items-center justify-between gap-3">
                         <span className="font-semibold text-foreground">{selectedCaseRecord.status}</span>
                         <span className="rounded-full bg-card px-3 py-1 text-xs text-foreground">{selectedLatestScreening.risk}</span>
-                      </div>
-                    </div>
-                    <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
-                      <div className="mb-3 flex items-center gap-2">
-                        <Award className="h-5 w-5 text-primary" />
-                        <p className="text-sm font-medium text-foreground">月度獎章</p>
-                      </div>
-                      <div className="flex gap-2">
-                        {caseMonthlyBadges.map((badge) => (
-                          <button
-                            key={badge.month}
-                            type="button"
-                            onClick={() => setActiveCaseBadge(activeCaseBadge === badge.month ? null : badge.month)}
-                            aria-expanded={activeCaseBadge === badge.month}
-                            className={`group relative flex h-10 w-10 items-center justify-center rounded-full border text-xs font-semibold transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
-                              badge.completed ? "border-primary/30 bg-primary text-primary-foreground" : "border-border bg-card text-muted-foreground"
-                            }`}
-                          >
-                            {badge.month}
-                            <span className={`${activeCaseBadge === badge.month ? "block" : "hidden"} absolute right-0 top-full z-30 mt-2 w-64 rounded-xl border border-border bg-popover p-3 text-left text-popover-foreground shadow-lg group-hover:block group-focus-visible:block`}>
-                              <span className="mb-1 block text-sm font-semibold text-foreground">{badge.title}</span>
-                              <span className="mb-3 block text-xs font-normal leading-relaxed text-muted-foreground">{badge.description}</span>
-                              <span className="space-y-2">
-                                {badge.details.map((detail) => (
-                                  <span key={detail} className="block rounded-lg bg-secondary/60 px-3 py-2 text-xs font-normal text-foreground">
-                                    {detail}
-                                  </span>
-                                ))}
-                              </span>
-                            </span>
-                          </button>
-                        ))}
                       </div>
                     </div>
                   </div>

@@ -8,6 +8,8 @@ import { Progress } from "@/components/ui/progress"
 import { NextSteps } from "@/components/next-steps"
 import { IntroStep } from "@/components/intro-step"
 import { ArrowLeft, ArrowRight, Plus, Minus, CheckCircle, Calculator } from "lucide-react"
+import { currentMemberId } from "@/lib/achievements-data"
+import { recordAchievementEvent } from "@/lib/achievements-service"
 
 const categories = [
   { id: "food", label: "飲食", icon: "🍜" },
@@ -56,7 +58,21 @@ export default function AccountingPage() {
 
   const handleNoteSubmit = () => {
     if (currentEntry.type && currentEntry.amount) {
-      setEntries([...entries, currentEntry as Entry])
+      const completedEntry = currentEntry as Entry
+
+      setEntries([...entries, completedEntry])
+      recordAchievementEvent({
+        userId: currentMemberId,
+        role: "member",
+        eventType: "daily_accounting_completed",
+        module: "accounting",
+        objectType: "accounting_entry",
+        objectId: `${completedEntry.type}-${Date.now()}`,
+        metadata: {
+          entry_type: completedEntry.type,
+          category: completedEntry.category ?? "income",
+        },
+      })
       setIsCompleted(true)
     }
   }
