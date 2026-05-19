@@ -11,7 +11,7 @@ const actionLinks = [
   { href: externalLinks.financialResilience, label: "開始財務檢測" },
   { href: "/toolbox", label: "試試財務工具" },
   { href: "/content/articles", label: "看看文章" },
-  { href: "/toolbox/consultation", label: "想找人諮詢" },
+  { href: "/online-consultation", label: "想找人諮詢" },
 ]
 
 export function FloatingAskButton() {

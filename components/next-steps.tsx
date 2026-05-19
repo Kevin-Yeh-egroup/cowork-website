@@ -12,7 +12,7 @@ const steps = [
   { href: "/toolbox", label: "使用工具", icon: Wrench },
   { href: "/content/articles", label: "看看文章", icon: BookOpen },
   { href: externalLinks.askIvy, label: "問問AI", icon: MessageCircle },
-  { href: "/toolbox/consultation", label: "找人聊聊", icon: Users },
+  { href: "/online-consultation", label: "找人聊聊", icon: Users },
 ]
 
 export function NextSteps({ title = "下一步你可以這樣做：", showAll = true }: NextStepsProps) {

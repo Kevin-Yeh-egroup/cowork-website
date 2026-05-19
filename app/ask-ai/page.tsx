@@ -19,7 +19,7 @@ const actionButtons = [
   { href: "/assessment", label: "做檢測", icon: ClipboardCheck },
   { href: "/toolbox", label: "用工具", icon: Wrench },
   { href: "/content/articles", label: "看文章", icon: BookOpen },
-  { href: "/toolbox/consultation", label: "預約諮詢", icon: MessageSquare },
+  { href: "/online-consultation", label: "預約諮詢", icon: MessageSquare },
 ]
 
 interface Message {

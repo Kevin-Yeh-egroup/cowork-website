@@ -490,7 +490,7 @@ export default function SocialWorkerPage() {
                 若個案尚未使用系統，仍可先由社工建立會談紀錄與風險快篩，後續再邀請個案使用記帳或檢測工具補齊資料。
               </p>
               <Link
-                href="/toolbox/consultation"
+                href="/online-consultation/referral"
                 className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
               >
                 聯繫支援團隊 <ArrowRight className="h-4 w-4" />
