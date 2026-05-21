@@ -8,6 +8,7 @@ import { Menu, ClipboardCheck, Wrench, BookOpen, Calendar, Users, User, ChevronD
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { externalLinks } from "@/lib/external-links"
+import { getAuthHomePath, useDemoAuth, type DemoAuthState } from "@/lib/demo-auth"
 
 type NavItem = {
   href: string
@@ -19,7 +20,7 @@ type NavItem = {
   }[]
 }
 
-const navItems: NavItem[] = [
+const baseNavItems: NavItem[] = [
   {
     href: "/assessment",
     label: "開始檢測",
@@ -64,9 +65,23 @@ const navItems: NavItem[] = [
       { href: "/events#social-worker", label: "社工" },
     ],
   },
-  { href: "/social-worker", label: "社工專區", icon: Users },
-  { href: "/personal-center", label: "個人中心", icon: User },
 ]
+
+function getAuthNavItem(authState: DemoAuthState): NavItem {
+  if (!authState.isLoggedIn || !authState.role) {
+    return {
+      href: "/login",
+      label: authState.isLoggedIn ? "選擇角色" : "登入",
+      icon: User,
+    }
+  }
+
+  return {
+    href: getAuthHomePath(authState),
+    label: authState.role === "member" ? "個人中心" : "社工專區",
+    icon: authState.role === "member" ? User : Users,
+  }
+}
 
 function getEventAudience(href: string) {
   if (href === "/events#public") return "public"
@@ -77,6 +92,8 @@ function getEventAudience(href: string) {
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
+  const { authState, logout } = useDemoAuth()
+  const navItems = [...baseNavItems, getAuthNavItem(authState)]
 
   const syncEventAudience = (href: string) => {
     const audience = getEventAudience(href)
@@ -132,6 +149,17 @@ export function Navigation() {
                 )}
               </div>
             ))}
+            {authState.isLoggedIn && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={logout}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                登出
+              </Button>
+            )}
           </nav>
 
           {/* Mobile Menu */}
@@ -176,6 +204,19 @@ export function Navigation() {
                     </div>
                   )
                 })}
+                {authState.isLoggedIn && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="justify-start px-4 py-3 text-foreground"
+                    onClick={() => {
+                      logout()
+                      setIsOpen(false)
+                    }}
+                  >
+                    登出
+                  </Button>
+                )}
               </nav>
             </SheetContent>
           </Sheet>

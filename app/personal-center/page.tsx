@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import {
   ArrowRight,
   Bell,
@@ -26,6 +27,7 @@ import {
   resetUserAchievementState,
   type UserAchievementState,
 } from "@/lib/achievements-service"
+import { getRoleHomePath, useDemoAuth } from "@/lib/demo-auth"
 
 const emptyStateActions = [
   {
@@ -170,6 +172,8 @@ const seasonalTasks: {
 ]
 
 export default function PersonalCenterPage() {
+  const router = useRouter()
+  const { authState, isReady } = useDemoAuth()
   const [achievementState, setAchievementState] = useState<UserAchievementState | null>(null)
   const [isLearningExpanded, setIsLearningExpanded] = useState(false)
   const [budgetDraft, setBudgetDraft] = useState({
@@ -183,6 +187,19 @@ export default function PersonalCenterPage() {
   useEffect(() => {
     setAchievementState(getAchievementState(currentMemberId, "member"))
   }, [])
+
+  useEffect(() => {
+    if (!isReady) return
+
+    if (!authState.isLoggedIn || !authState.role) {
+      router.replace("/login")
+      return
+    }
+
+    if (authState.role !== "member") {
+      router.replace(getRoleHomePath(authState.role))
+    }
+  }, [authState, isReady, router])
 
   const resetMemberAchievements = () => {
     resetUserAchievementState(currentMemberId, "member")
@@ -286,6 +303,16 @@ export default function PersonalCenterPage() {
 
   const monthlyBalance =
     Number(budgetDraft.income || 0) - Number(budgetDraft.fixedExpense || 0) - Number(budgetDraft.flexibleExpense || 0)
+
+  if (!isReady || !authState.isLoggedIn || authState.role !== "member") {
+    return (
+      <div className="min-h-screen px-4 py-12">
+        <Card className="mx-auto max-w-xl border-border">
+          <CardContent className="p-6 text-center text-muted-foreground">正在確認登入狀態...</CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen px-4 py-12">

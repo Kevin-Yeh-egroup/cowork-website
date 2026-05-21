@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import {
   ArrowRight,
   Award,
@@ -34,6 +35,7 @@ import {
   resetUserAchievementState,
   type UserAchievementState,
 } from "@/lib/achievements-service"
+import { getRoleHomePath, useDemoAuth } from "@/lib/demo-auth"
 import { externalLinks } from "@/lib/external-links"
 
 const resources = [
@@ -245,6 +247,8 @@ const initialCaseRecords = cases.reduce<Record<string, CaseRecord>>((records, ca
 }, {})
 
 export default function SocialWorkerPage() {
+  const router = useRouter()
+  const { authState, isReady } = useDemoAuth()
   const [searchTerm, setSearchTerm] = useState("")
   const [isToolsCollapsed, setIsToolsCollapsed] = useState(false)
   const [caseRecords, setCaseRecords] = useState(initialCaseRecords)
@@ -279,6 +283,19 @@ export default function SocialWorkerPage() {
   useEffect(() => {
     setAchievementState(getAchievementState(currentSocialWorkerId, "social_worker"))
   }, [])
+
+  useEffect(() => {
+    if (!isReady) return
+
+    if (!authState.isLoggedIn || !authState.role) {
+      router.replace("/login")
+      return
+    }
+
+    if (authState.role !== "social_worker") {
+      router.replace(getRoleHomePath(authState.role))
+    }
+  }, [authState, isReady, router])
 
   const openCaseOverview = (caseItem: (typeof cases)[number]) => {
     const caseRecord = caseRecords[caseItem.id]
@@ -348,6 +365,16 @@ export default function SocialWorkerPage() {
   const resetSocialWorkerAchievements = () => {
     resetUserAchievementState(currentSocialWorkerId, "social_worker")
     setAchievementState(getAchievementState(currentSocialWorkerId, "social_worker"))
+  }
+
+  if (!isReady || !authState.isLoggedIn || authState.role !== "social_worker") {
+    return (
+      <div className="min-h-screen px-4 py-12">
+        <Card className="mx-auto max-w-xl border-border">
+          <CardContent className="p-6 text-center text-muted-foreground">正在確認登入狀態...</CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (

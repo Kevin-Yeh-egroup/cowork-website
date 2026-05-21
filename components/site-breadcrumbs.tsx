@@ -24,6 +24,7 @@ const labelMap: Record<string, string> = {
   "financial-resilience": "財務韌性檢測",
   "fraud-defense": "詐騙防禦檢測",
   impact: "成果與影響",
+  login: "登入",
   "personal-center": "個人中心",
   "social-worker": "社工專區",
   toolbox: "財務工具",
