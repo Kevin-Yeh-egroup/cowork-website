@@ -11,7 +11,7 @@ const heroCards = [
     description: "了解目前的收支與承受能力",
     cta: "開始看看",
     icon: Shield,
-    color: "bg-primary/10 text-primary",
+    color: "bg-[#fff0d6] text-[#d96b27]",
     highlight: false,
   },
   {
@@ -20,7 +20,7 @@ const heroCards = [
     description: "看看金錢壓力對生活的影響",
     cta: "先了解",
     icon: Heart,
-    color: "bg-accent/30 text-accent-foreground",
+    color: "bg-[#ffe4ef] text-[#c81f72]",
     highlight: false,
   },
   {
@@ -29,7 +29,7 @@ const heroCards = [
     description: "確認自己是否容易遇到金融風險",
     cta: "試試看",
     icon: TrendingUp,
-    color: "bg-secondary text-secondary-foreground",
+    color: "bg-[#f0e7ff] text-[#7b4bd8]",
     highlight: false,
   },
   {
@@ -38,7 +38,7 @@ const heroCards = [
     description: "遇到急難狀況時，協助整理需求並連結資源",
     cta: "前往申請",
     icon: Heart,
-    color: "bg-primary text-primary-foreground",
+    color: "bg-gradient-to-br from-[#ff78ad] to-[#e6005c] text-white shadow-lg shadow-[#e6005c]/20",
     highlight: true,
   },
 ]
@@ -93,14 +93,14 @@ export default function HomePage() {
               const Icon = card.icon
               return (
                 <Link key={card.href} href={card.href} className="group">
-                  <Card className={`h-full border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1 ${card.highlight ? "ring-2 ring-primary/20" : ""}`}>
+                  <Card className={`h-full border-border/70 bg-card/90 shadow-[0_18px_45px_oklch(0.78_0.08_42_/_0.12)] transition-all duration-300 hover:border-primary/40 hover:shadow-[0_22px_55px_oklch(0.74_0.12_34_/_0.2)] group-hover:-translate-y-1 ${card.highlight ? "ring-2 ring-accent/20" : ""}`}>
                     <CardContent className="p-6">
-                      <div className={`w-12 h-12 rounded-xl ${card.color} flex items-center justify-center mb-4`}>
+                      <div className={`w-12 h-12 rounded-2xl ${card.color} flex items-center justify-center mb-4`}>
                         <Icon className="h-6 w-6" />
                       </div>
                       <h3 className="font-semibold text-foreground mb-2">{card.title}</h3>
                       <p className="text-sm text-muted-foreground mb-4">{card.description}</p>
-                      <span className="text-sm text-primary font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                      <span className="text-sm text-accent font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
                         {card.cta} <ArrowRight className="h-4 w-4" />
                       </span>
                     </CardContent>
@@ -113,7 +113,7 @@ export default function HomePage() {
       </section>
 
       {/* Trust Section */}
-      <section className="px-4 py-12 bg-card">
+      <section className="px-4 py-12 bg-card/70">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-xl sm:text-2xl font-semibold text-foreground mb-2 text-balance">
@@ -124,10 +124,10 @@ export default function HomePage() {
             </p>
           </div>
 
-          <Card className="mb-4 border-primary/20 bg-primary/5">
+          <Card className="mb-4 border-primary/30 bg-gradient-to-br from-primary/15 via-card to-secondary/80 shadow-[0_18px_45px_oklch(0.78_0.08_42_/_0.14)]">
             <CardContent className="p-6">
               <div className="flex flex-col md:flex-row gap-5">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+                <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center shrink-0">
                   <Award className="h-7 w-7 text-primary" />
                 </div>
                 <div>
@@ -156,8 +156,8 @@ export default function HomePage() {
                 const Icon = item.icon
                 return (
                   <Card key={item.title} className="h-full overflow-hidden">
-                    <div className="h-32 bg-gradient-to-br from-primary/15 via-secondary to-accent/20 p-4">
-                      <div className="h-full rounded-xl border border-background/70 bg-background/80 p-3 shadow-sm">
+                    <div className="h-32 bg-gradient-to-br from-primary/30 via-secondary to-accent/20 p-4">
+                      <div className="h-full rounded-2xl border border-background/70 bg-background/85 p-3 shadow-sm">
                         <div className="flex items-center gap-2 mb-3">
                           <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                             <Icon className="h-4 w-4 text-primary" />

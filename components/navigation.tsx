@@ -104,7 +104,7 @@ export function Navigation() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-sm border-b border-border">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/70 bg-background/90 shadow-[0_10px_30px_oklch(0.8_0.08_40_/_0.12)] backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -125,7 +125,7 @@ export function Navigation() {
               <div key={item.href} className="relative group">
                 <Link
                   href={item.href}
-                  className="flex items-center gap-1 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
+                  className="flex items-center gap-1 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/80 rounded-full transition-colors"
                 >
                   {item.label}
                   {item.children && <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:rotate-180" />}
@@ -133,13 +133,13 @@ export function Navigation() {
 
                 {item.children && (
                   <div className="pointer-events-none absolute left-1/2 top-full z-50 min-w-44 -translate-x-1/2 pt-2 opacity-0 translate-y-1 transition-all duration-150 group-hover:pointer-events-auto group-hover:opacity-100 group-hover:translate-y-0">
-                    <div className="rounded-xl border border-border bg-card p-2 shadow-lg">
+                    <div className="rounded-2xl border border-border/70 bg-card/95 p-2 shadow-xl backdrop-blur-md">
                       {item.children.map((child) => (
                         <Link
                           key={child.href}
                           href={child.href}
                           onClick={() => syncEventAudience(child.href)}
-                          className="block rounded-lg px-3 py-2 text-sm text-foreground transition-colors hover:bg-secondary hover:text-foreground focus:bg-secondary focus:outline-none"
+                          className="block rounded-xl px-3 py-2 text-sm text-foreground transition-colors hover:bg-secondary/80 hover:text-foreground focus:bg-secondary focus:outline-none"
                         >
                           {child.label}
                         </Link>
