@@ -1,0 +1,768 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <title>好理家在首頁第一步討論</title>
+  <style>
+    :root {
+      --bg: #fffaf5;
+      --paper: #ffffff;
+      --ink: #1f2623;
+      --muted: #6a6f6a;
+      --line: #e6dccf;
+      --soft: #f7efe4;
+      --green: #237a68;
+      --green-soft: #e1f2ed;
+      --blue: #315f9f;
+      --blue-soft: #e6effa;
+      --plum: #8f4a6b;
+      --plum-soft: #f8e7ee;
+      --gold: #9d6b25;
+      --gold-soft: #fbecd0;
+      --radius: 8px;
+      --shadow: 0 18px 42px rgba(91, 69, 38, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.75;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(230, 220, 207, 0.9);
+      background: rgba(255, 250, 245, 0.94);
+      backdrop-filter: blur(14px);
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      width: min(1080px, calc(100% - 32px));
+      min-height: 58px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      min-width: 0;
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .brand span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+    }
+
+    .nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper);
+      padding: 8px 13px;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 8px 20px rgba(82, 61, 32, 0.06);
+    }
+
+    .page {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.16fr) minmax(300px, 0.84fr);
+      gap: 28px;
+      align-items: center;
+      min-height: calc(100svh - 58px);
+      padding: 48px 0 36px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      width: fit-content;
+      border: 1px solid rgba(35, 122, 104, 0.28);
+      border-radius: 999px;
+      background: var(--green-soft);
+      padding: 5px 12px;
+      color: #18594d;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin-bottom: 18px;
+      font-size: clamp(34px, 6vw, 68px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin-bottom: 12px;
+      font-size: clamp(25px, 4vw, 38px);
+      line-height: 1.22;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin-bottom: 8px;
+      font-size: 20px;
+      line-height: 1.35;
+    }
+
+    .lead {
+      max-width: 760px;
+      color: #4c514c;
+      font-size: clamp(18px, 2.5vw, 23px);
+      font-weight: 700;
+      line-height: 1.55;
+    }
+
+    .plain {
+      color: var(--muted);
+    }
+
+    .hero-note {
+      display: grid;
+      gap: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-note strong {
+      font-size: 18px;
+    }
+
+    .decision-box {
+      border: 1px solid rgba(35, 122, 104, 0.25);
+      border-radius: var(--radius);
+      background: var(--green-soft);
+      padding: 16px;
+    }
+
+    .decision-box p {
+      margin-bottom: 0;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.55;
+    }
+
+    .section {
+      padding: 48px 0;
+    }
+
+    .band {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: #fffdf8;
+    }
+
+    .band > .section-inner {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 48px 0;
+    }
+
+    .section-head {
+      display: grid;
+      gap: 6px;
+      max-width: 780px;
+      margin-bottom: 24px;
+    }
+
+    .context-list,
+    .simple-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .context-list li,
+    .simple-list li {
+      position: relative;
+      border-left: 4px solid var(--green);
+      background: rgba(255, 255, 255, 0.72);
+      padding: 12px 14px 12px 16px;
+    }
+
+    .context-list strong,
+    .simple-list strong {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      padding: 20px;
+      box-shadow: 0 10px 28px rgba(82, 61, 32, 0.06);
+    }
+
+    .panel.before {
+      border-top: 5px solid var(--gold);
+    }
+
+    .panel.after {
+      border-top: 5px solid var(--green);
+    }
+
+    .tag {
+      display: inline-flex;
+      width: fit-content;
+      margin-bottom: 12px;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .before .tag {
+      background: var(--gold-soft);
+      color: #6f4918;
+    }
+
+    .after .tag {
+      background: var(--green-soft);
+      color: #18594d;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 14px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      padding: 6px 11px;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .route-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .route {
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .route.people {
+      border: 1px solid rgba(49, 95, 159, 0.22);
+      background: var(--blue-soft);
+    }
+
+    .route.helper {
+      border: 1px solid rgba(143, 74, 107, 0.22);
+      background: var(--plum-soft);
+    }
+
+    .route small {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .route ul,
+    .panel ul,
+    .scope ul {
+      margin: 12px 0 0;
+      padding-left: 22px;
+    }
+
+    .questions {
+      display: grid;
+      gap: 14px;
+      counter-reset: question;
+    }
+
+    .question {
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      padding: 18px;
+    }
+
+    .question::before {
+      counter-increment: question;
+      content: counter(question);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .question p {
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    .scope {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .scope article {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      padding: 18px;
+    }
+
+    .scope article:nth-child(1) {
+      border-top: 5px solid var(--green);
+    }
+
+    .scope article:nth-child(2) {
+      border-top: 5px solid var(--blue);
+    }
+
+    .scope article:nth-child(3) {
+      border-top: 5px solid var(--plum);
+    }
+
+    .appendix-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(300px, 1.05fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      padding: 16px 18px;
+    }
+
+    details + details {
+      margin-top: 10px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    details p,
+    details ul {
+      color: var(--muted);
+    }
+
+    .image-frame {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: 0 10px 28px rgba(82, 61, 32, 0.06);
+    }
+
+    .image-frame img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      padding: 26px 0 34px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer-inner {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    @media (max-width: 900px) {
+      .hero,
+      .compare,
+      .route-grid,
+      .scope,
+      .appendix-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: 34px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .topbar-inner {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 10px 0;
+      }
+
+      .nav {
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      .question {
+        grid-template-columns: 34px minmax(0, 1fr);
+        padding: 16px;
+      }
+
+      .question::before {
+        width: 34px;
+        height: 34px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <strong>好理家在首頁第一步討論</strong>
+        <span>cowork-website 獨立討論頁，不放進主導覽</span>
+      </div>
+      <nav class="nav" aria-label="頁面導覽">
+        <a href="#decision">今天要確認</a>
+        <a href="#compare">前後差異</a>
+        <a href="#questions">討論問題</a>
+        <a href="#appendix">補充依據</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero" id="top">
+      <div>
+        <span class="eyebrow">這次先聚焦一件事</span>
+        <h1>首頁第一眼，要不要從「功能清單」改成「整理自己／協助個案」？</h1>
+        <p class="lead">
+          這份整理不是要推翻原本架構，而是想請夥伴一起確認：當好理家在同時服務社工、助人工作者，也開始協助一般民眾時，網站打開的第一步是否夠清楚。
+        </p>
+      </div>
+
+      <aside class="hero-note" aria-labelledby="decision-title">
+        <strong id="decision-title">今天想請大家回答</strong>
+        <div class="decision-box" id="decision">
+          <p>第一版首頁，是否先採用「整理自己的狀況」和「協助個案」兩條開始路線？</p>
+        </div>
+        <p class="plain">
+          如果方向同意，後面再細修文字、頁面順序、登入和資料保存方式。這次先不要一次討論到所有功能。
+        </p>
+      </aside>
+    </section>
+
+    <section class="section band" id="context">
+      <div class="section-inner">
+        <div class="section-head">
+          <span class="eyebrow">共同背景</span>
+          <h2>原本方向有基礎，現在要補上不同使用者的第一步。</h2>
+          <p class="plain">先把大家的討論站在同一個位置，避免一開始就變成技術或頁面細節。</p>
+        </div>
+        <ul class="context-list">
+          <li>
+            <strong>好理家在原本從社工與助人工作者服務開始。</strong>
+            這個根基要保留，不能因為新增一般民眾入口，就讓協助個案的工作變得難找。
+          </li>
+          <li>
+            <strong>2025 年 11 月後，也開始想協助一般民眾。</strong>
+            民眾可能是遇到債務、詐騙、帳單、家庭財務壓力才打開網站，不一定知道自己要用哪個功能。
+          </li>
+          <li>
+            <strong>所以首頁第一眼要同時照顧兩種情境。</strong>
+            一邊是「我想整理自己的狀況」，另一邊是「我正在協助一位個案或家庭」。
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="compare">
+      <div class="section-head">
+        <span class="eyebrow">前後差異</span>
+        <h2>不是減少服務，而是先讓人知道從哪裡開始。</h2>
+        <p class="plain">現在的內容都重要，但手機第一眼如果像服務總表，壓力中的使用者可能更難按下第一步。</p>
+      </div>
+
+      <div class="compare">
+        <article class="panel before">
+          <span class="tag">現在比較像</span>
+          <h3>把所有服務一起列出來</h3>
+          <div class="chips" aria-label="原本首頁可能出現的功能">
+            <span class="chip">開始檢測</span>
+            <span class="chip">免費諮詢</span>
+            <span class="chip">財務工具</span>
+            <span class="chip">知識內容</span>
+            <span class="chip">社工工具</span>
+            <span class="chip">活動課程</span>
+          </div>
+          <p class="plain">一般民眾會想：我現在到底該按哪一個？社工或助人工作者也可能會想：我要協助個案，入口在哪裡？</p>
+        </article>
+
+        <article class="panel after">
+          <span class="tag">建議第一版先試</span>
+          <h3>先問使用者現在要做什麼</h3>
+          <div class="chips" aria-label="建議首頁第一步">
+            <span class="chip">我想整理自己的狀況</span>
+            <span class="chip">我正在協助個案</span>
+          </div>
+          <p class="plain">服務仍然都在，只是先用更接近使用者心裡話的方式帶路，讓下一步比較直覺。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section band" id="routes">
+      <div class="section-inner">
+        <div class="section-head">
+          <span class="eyebrow">建議的兩條開始路線</span>
+          <h2>一般民眾先整理壓力，社工夥伴先接續個案。</h2>
+          <p class="plain">這樣可以兼顧台灣手機使用習慣、使用者的壓力狀態，以及助人工作者的現場需求。</p>
+        </div>
+
+        <div class="route-grid">
+          <article class="route people">
+            <small>一般民眾</small>
+            <h3>我想整理自己的狀況</h3>
+            <p>不需要一開始就輸入完整數字或個人資料，可以先用模糊描述開始。</p>
+            <ul>
+              <li>先說說我的狀況</li>
+              <li>做一個簡短檢測</li>
+              <li>找人一起整理</li>
+            </ul>
+          </article>
+
+          <article class="route helper">
+            <small>社工與助人工作者</small>
+            <h3>我正在協助個案或家庭</h3>
+            <p>不是只給工具清單，而是讓現場工作可以接續：整理、判斷、轉介、追蹤。</p>
+            <ul>
+              <li>會談後整理</li>
+              <li>風險快篩</li>
+              <li>轉介與追蹤</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="questions">
+      <div class="section-head">
+        <span class="eyebrow">請夥伴一起確認</span>
+        <h2>會議先回答這 3 個問題就好。</h2>
+        <p class="plain">先讓討論聚焦在首頁第一步，其他細節等方向確定後再展開。</p>
+      </div>
+
+      <div class="questions">
+        <article class="question">
+          <div>
+            <h3>首頁第一眼要不要先分成兩條開始路線？</h3>
+            <p>「我想整理自己的狀況」和「我正在協助個案或家庭」是否比直接列功能更直覺？</p>
+          </div>
+        </article>
+
+        <article class="question">
+          <div>
+            <h3>一般民眾入口，哪一句最沒有壓力？</h3>
+            <p>例如「先說說我的狀況」、「做簡短檢測」、「找人一起整理」，哪一個最適合放第一個？</p>
+          </div>
+        </article>
+
+        <article class="question">
+          <div>
+            <h3>社工與助人工作者入口，要先放工作步驟還是工具分類？</h3>
+            <p>例如「會談後整理、風險快篩、轉介追蹤」是否比工具名稱更貼近現場？</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section band" id="scope">
+      <div class="section-inner">
+        <div class="section-head">
+          <span class="eyebrow">第一版範圍</span>
+          <h2>先改小地方，把討論留在可以決定的範圍。</h2>
+          <p class="plain">這樣夥伴比較容易一起判斷，也比較不會把會議拉到過多細節。</p>
+        </div>
+
+        <div class="scope">
+          <article>
+            <h3>先確認</h3>
+            <ul>
+              <li>首頁第一眼是否採用兩條開始路線</li>
+              <li>一般民眾入口用哪一句話</li>
+              <li>社工與助人工作者入口放在哪裡</li>
+            </ul>
+          </article>
+
+          <article>
+            <h3>接著再試</h3>
+            <ul>
+              <li>手機上 10 秒內能不能找到下一步</li>
+              <li>民眾是否理解「先說說我的狀況」</li>
+              <li>社工夥伴是否找得到協助個案入口</li>
+            </ul>
+          </article>
+
+          <article>
+            <h3>這次先不展開</h3>
+            <ul>
+              <li>整站重做、視覺風格、配色和 Logo</li>
+              <li>後台、登入、資料保存的技術做法</li>
+              <li>廣告投放、成效追蹤、收費與人力配置</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="ai">
+      <div class="section-head">
+        <span class="eyebrow">問問 AI 的位置</span>
+        <h2>把它說成「先幫你整理」，不要讓人以為它會替你做決定。</h2>
+        <p class="plain">這裡只保留定位，不在這次會議展開所有規則。</p>
+      </div>
+      <ul class="simple-list">
+        <li>
+          <strong>一般民眾看到的是低壓開口。</strong>
+          可以先寫「最近錢有點喘」、「收到可疑投資訊息」、「想整理債務壓力」，不用一開始貼真名、帳號或完整地址。
+        </li>
+        <li>
+          <strong>社工夥伴看到的是協助整理。</strong>
+          可以把會談後的重點、風險提醒、下一步選項整理成方便討論的內容。
+        </li>
+        <li>
+          <strong>重大決策仍要回到真人或官方確認。</strong>
+          投資、借貸、法律、稅務、債務協商與危機狀況，不把 AI 當成專業諮詢替代。
+        </li>
+      </ul>
+    </section>
+
+    <section class="section band" id="appendix">
+      <div class="section-inner">
+        <div class="section-head">
+          <span class="eyebrow">補充依據</span>
+          <h2>原始架構圖先放在附錄，需要時再打開看。</h2>
+          <p class="plain">主頁先協助會議聚焦；文件細節保留在這裡，避免一開始資訊太多。</p>
+        </div>
+
+        <div class="appendix-grid">
+          <div>
+            <details open>
+              <summary>這份整理參考了什麼？</summary>
+              <p>參考夥伴提供的「1150609 好理家在平台架構.docx」、目前 cowork-website 的網站雛形，以及針對一般民眾、社工與助人工作者的使用情境討論。</p>
+            </details>
+            <details>
+              <summary>這頁放在哪裡？</summary>
+              <p>這頁目前放在 cowork-website 的獨立討論路徑，不放進主導覽，也不混入問問 AI、個人中心或社工服務頁。它是給夥伴討論用，不是正式上線頁。</p>
+            </details>
+            <details>
+              <summary>如果大家同意方向，下一步是什麼？</summary>
+              <p>先整理首頁第一眼的文字和排序，再做手機檢視，確認一般民眾與社工夥伴是否都能快速找到自己的下一步。</p>
+            </details>
+          </div>
+
+          <figure class="image-frame">
+            <img src="assets/architecture-image-contact-sheet.png" alt="夥伴提供的好理家在平台架構圖整理總覽">
+          </figure>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <p>版本：內部討論頁 v2。此頁目前只新增在 cowork-website 的獨立靜態討論路徑，尚未推送、部署或上傳到外部服務。</p>
+    </div>
+  </footer>
+</body>
+</html>
