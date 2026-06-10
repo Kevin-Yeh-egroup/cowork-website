@@ -104,7 +104,7 @@ export function Navigation() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/70 bg-background/90 shadow-[0_10px_30px_oklch(0.8_0.08_40_/_0.12)] backdrop-blur-md">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/70 bg-background/90 shadow-[0_10px_30px_oklch(0.62_0.05_180_/_0.12)] backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -164,8 +164,8 @@ export function Navigation() {
 
           {/* Mobile Menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild className="lg:hidden">
-              <Button variant="ghost" size="icon">
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="fixed right-4 top-3 z-[60] border border-border/70 bg-card/90 text-foreground shadow-sm lg:hidden">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">開啟選單</span>
               </Button>

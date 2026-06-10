@@ -1,45 +1,51 @@
 import Link from "next/link"
-import { ArrowRight, Award, ExternalLink, Shield, Heart, TrendingUp, Headphones, BookOpen, Newspaper } from "lucide-react"
+import { ArrowRight, Award, ExternalLink, Shield, Heart, Headphones, BookOpen, Newspaper, Wrench, Users } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
-import { assessmentLinks } from "@/lib/assessment-links"
 import { externalLinks } from "@/lib/external-links"
 
-const heroCards = [
+const audienceRoutes = [
   {
-    href: assessmentLinks.financialResilience,
-    title: "看看我的財務狀態",
-    description: "了解目前的收支與承受能力",
-    cta: "開始看看",
+    href: "/assessment",
+    title: "我想整理自己的狀況",
+    description: "不知道從檢測、諮詢還是工具開始也沒關係，先用最接近生活的方式整理。",
+    cta: "從自己的狀況開始",
+    icon: Heart,
+    color: "bg-primary/10 text-primary",
+  },
+  {
+    href: "/social-worker",
+    title: "我正在協助個案或家庭",
+    description: "保留給社工與助人工作者的工作入口，接續整理、判斷、轉介與追蹤。",
+    cta: "前往助人工作入口",
+    icon: Users,
+    color: "bg-accent/10 text-accent",
+  },
+]
+
+const serviceLinks = [
+  {
+    href: "/assessment",
+    label: "先看看目前狀況",
+    helper: "檢測",
     icon: Shield,
-    color: "bg-[#fff0d6] text-[#d96b27]",
-    highlight: false,
   },
   {
-    href: assessmentLinks.financialAnxiety,
-    title: "我最近有點焦慮",
-    description: "看看金錢壓力對生活的影響",
-    cta: "先了解",
-    icon: Heart,
-    color: "bg-[#ffe4ef] text-[#c81f72]",
-    highlight: false,
+    href: externalLinks.onlineConsultation,
+    label: "找人一起整理",
+    helper: "諮詢",
+    icon: Headphones,
   },
   {
-    href: assessmentLinks.fraudDefense,
-    title: "檢查詐騙風險",
-    description: "確認自己是否容易遇到金融風險",
-    cta: "試試看",
-    icon: TrendingUp,
-    color: "bg-[#f0e7ff] text-[#7b4bd8]",
-    highlight: false,
+    href: "/toolbox",
+    label: "整理收支、債務與規劃",
+    helper: "工具",
+    icon: Wrench,
   },
   {
-    href: externalLinks.emergencySupport,
-    title: "急難救助專區",
-    description: "遇到急難狀況時，協助整理需求並連結資源",
-    cta: "前往申請",
-    icon: Heart,
-    color: "bg-gradient-to-br from-[#ff78ad] to-[#e6005c] text-white shadow-lg shadow-[#e6005c]/20",
-    highlight: true,
+    href: "/content",
+    label: "先了解相關知識",
+    helper: "內容",
+    icon: BookOpen,
   },
 ]
 
@@ -80,27 +86,27 @@ export default function HomePage() {
       <section className="px-4 py-12 sm:py-20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4 text-balance">
-              你現在想處理哪一件事？
+            <h1 className="mx-auto max-w-[19rem] text-2xl sm:max-w-none sm:text-3xl lg:text-4xl font-bold leading-tight text-foreground mb-4 text-balance">
+              你現在比較接近哪一種狀況？
             </h1>
-            <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto text-balance">
-              不用懂理財，先從最接近你的狀況開始
+            <p className="text-base sm:text-lg text-muted-foreground max-w-[21rem] sm:max-w-xl mx-auto text-balance">
+              檢測、諮詢、工具、內容和社工服務都在這裡；先選最接近現在的下一步。
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {heroCards.map((card) => {
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {audienceRoutes.map((card) => {
               const Icon = card.icon
               return (
                 <Link key={card.href} href={card.href} className="group">
-                  <Card className={`h-full border-border/70 bg-card/90 shadow-[0_18px_45px_oklch(0.78_0.08_42_/_0.12)] transition-all duration-300 hover:border-primary/40 hover:shadow-[0_22px_55px_oklch(0.74_0.12_34_/_0.2)] group-hover:-translate-y-1 ${card.highlight ? "ring-2 ring-accent/20" : ""}`}>
-                    <CardContent className="p-6">
-                      <div className={`w-12 h-12 rounded-2xl ${card.color} flex items-center justify-center mb-4`}>
+                  <Card className="h-full border-border/80 bg-card/95 shadow-[0_16px_40px_oklch(0.62_0.05_180_/_0.12)] transition-all duration-300 hover:border-primary/45 hover:shadow-[0_22px_55px_oklch(0.56_0.08_180_/_0.18)] group-hover:-translate-y-1">
+                    <CardContent className="p-6 sm:p-7">
+                      <div className={`w-12 h-12 rounded-xl ${card.color} flex items-center justify-center mb-4`}>
                         <Icon className="h-6 w-6" />
                       </div>
-                      <h3 className="font-semibold text-foreground mb-2">{card.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-4">{card.description}</p>
-                      <span className="text-sm text-accent font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                      <h3 className="text-lg font-semibold text-foreground mb-2">{card.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-5 leading-relaxed">{card.description}</p>
+                      <span className="text-sm text-primary font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
                         {card.cta} <ArrowRight className="h-4 w-4" />
                       </span>
                     </CardContent>
@@ -108,6 +114,47 @@ export default function HomePage() {
                 </Link>
               )
             })}
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {serviceLinks.map((item) => {
+              const Icon = item.icon
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="group rounded-2xl border border-border/80 bg-card/75 p-4 shadow-sm transition-all hover:border-primary/35 hover:bg-card"
+                >
+                  <div className="mb-3 flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <span className="text-xs font-medium text-muted-foreground">{item.helper}</span>
+                  </div>
+                  <p className="font-medium text-foreground">{item.label}</p>
+                </Link>
+              )
+            })}
+          </div>
+
+          <div className="mt-5 rounded-2xl border border-destructive/20 bg-card/80 p-4 shadow-sm">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-destructive/10">
+                  <Heart className="h-5 w-5 text-destructive" />
+                </div>
+                <div>
+                  <p className="font-medium text-foreground">已經遇到急難狀況？</p>
+                  <p className="text-sm text-muted-foreground">先到急難救助專區整理需求並連結資源。</p>
+                </div>
+              </div>
+              <Link
+                href={externalLinks.emergencySupport}
+                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+              >
+                前往急難救助 <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -124,10 +171,10 @@ export default function HomePage() {
             </p>
           </div>
 
-          <Card className="mb-4 border-primary/30 bg-gradient-to-br from-primary/15 via-card to-secondary/80 shadow-[0_18px_45px_oklch(0.78_0.08_42_/_0.14)]">
+          <Card className="mb-4 border-primary/25 bg-gradient-to-br from-primary/10 via-card to-secondary/70 shadow-[0_18px_45px_oklch(0.62_0.05_180_/_0.14)]">
             <CardContent className="p-6">
               <div className="flex flex-col md:flex-row gap-5">
-                <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center shrink-0">
+                <div className="w-14 h-14 rounded-xl bg-primary/12 flex items-center justify-center shrink-0">
                   <Award className="h-7 w-7 text-primary" />
                 </div>
                 <div>
@@ -156,10 +203,10 @@ export default function HomePage() {
                 const Icon = item.icon
                 return (
                   <Card key={item.title} className="h-full overflow-hidden">
-                    <div className="h-32 bg-gradient-to-br from-primary/30 via-secondary to-accent/20 p-4">
-                      <div className="h-full rounded-2xl border border-background/70 bg-background/85 p-3 shadow-sm">
+                    <div className="h-32 bg-gradient-to-br from-primary/18 via-secondary/80 to-accent/12 p-4">
+                      <div className="h-full rounded-xl border border-background/70 bg-background/90 p-3 shadow-sm">
                         <div className="flex items-center gap-2 mb-3">
-                          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-lg bg-primary/12 flex items-center justify-center">
                             <Icon className="h-4 w-4 text-primary" />
                           </div>
                           <p className="text-xs font-medium text-muted-foreground">{item.previewTitle}</p>
