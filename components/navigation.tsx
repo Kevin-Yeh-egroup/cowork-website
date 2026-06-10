@@ -165,7 +165,7 @@ export function Navigation() {
           {/* Mobile Menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="mobile-menu-button">
+              <Button variant="ghost" size="icon" className="mobile-menu-button lg:!hidden">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">開啟選單</span>
               </Button>
