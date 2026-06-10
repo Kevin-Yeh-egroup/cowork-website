@@ -384,9 +384,9 @@ export default function SocialWorkerPage() {
           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <Users className="h-8 w-8 text-primary" />
           </div>
-          <h1 className="text-3xl font-bold text-foreground mb-3">社工專區</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-3">社工工作台</h1>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            為社工夥伴準備的資源和工具，幫助你更有效地協助個案
+            先看今日個案與追蹤重點，再進入會談、快篩、轉介與資源工具。
           </p>
         </div>
 
@@ -442,8 +442,45 @@ export default function SocialWorkerPage() {
           </aside>
 
           <div className="min-w-0">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+              <div className="p-4 bg-card rounded-xl border border-border">
+                <div className="flex items-center gap-3 mb-2">
+                  <ClipboardList className="h-5 w-5 text-primary" />
+                  <p className="font-medium text-foreground">個案數</p>
+                </div>
+                <p className="text-3xl font-bold text-primary">{cases.length}</p>
+              </div>
+              <div className="p-4 bg-card rounded-xl border border-border">
+                <div className="flex items-center gap-3 mb-2">
+                  <Gauge className="h-5 w-5 text-primary" />
+                  <p className="font-medium text-foreground">需優先追蹤</p>
+                </div>
+                <p className="text-3xl font-bold text-primary">2</p>
+              </div>
+              <div className="p-4 bg-card rounded-xl border border-border">
+                <div className="flex items-center gap-3 mb-2">
+                  <Calendar className="h-5 w-5 text-primary" />
+                  <p className="font-medium text-foreground">本週會談</p>
+                </div>
+                <p className="text-3xl font-bold text-primary">4</p>
+              </div>
+            </div>
+
+            <div className="mb-6 bg-card border border-border rounded-xl p-5">
+              <h2 className="text-lg font-semibold text-foreground mb-2">社工工作提醒</h2>
+              <p className="text-sm leading-relaxed text-muted-foreground mb-4">
+                若個案尚未使用系統，仍可先由社工建立會談紀錄與風險快篩，後續再邀請個案使用記帳或檢測工具補齊資料。
+              </p>
+              <Link
+                href="/online-consultation/referral"
+                className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
+              >
+                聯繫支援團隊 <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
             {achievementState && (
-              <section className="mb-10 overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-accent/10">
+              <section className="mb-6 overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-accent/10">
                 <button
                   type="button"
                   className="flex w-full flex-col gap-4 p-5 text-left md:flex-row md:items-center md:justify-between"
@@ -510,43 +547,6 @@ export default function SocialWorkerPage() {
                 )}
               </section>
             )}
-
-            <div className="mb-10 bg-card border border-border rounded-xl p-6">
-              <h2 className="text-lg font-semibold text-foreground mb-3">社工工作提醒</h2>
-              <p className="text-muted-foreground mb-4">
-                若個案尚未使用系統，仍可先由社工建立會談紀錄與風險快篩，後續再邀請個案使用記帳或檢測工具補齊資料。
-              </p>
-              <Link
-                href="/online-consultation/referral"
-                className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
-              >
-                聯繫支援團隊 <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-          <div className="p-4 bg-card rounded-xl border border-border">
-            <div className="flex items-center gap-3 mb-2">
-              <ClipboardList className="h-5 w-5 text-primary" />
-              <p className="font-medium text-foreground">個案數</p>
-            </div>
-            <p className="text-3xl font-bold text-primary">{cases.length}</p>
-          </div>
-          <div className="p-4 bg-card rounded-xl border border-border">
-            <div className="flex items-center gap-3 mb-2">
-              <Gauge className="h-5 w-5 text-primary" />
-              <p className="font-medium text-foreground">需優先追蹤</p>
-            </div>
-            <p className="text-3xl font-bold text-primary">2</p>
-          </div>
-          <div className="p-4 bg-card rounded-xl border border-border">
-            <div className="flex items-center gap-3 mb-2">
-              <Calendar className="h-5 w-5 text-primary" />
-              <p className="font-medium text-foreground">本週會談</p>
-            </div>
-            <p className="text-3xl font-bold text-primary">4</p>
-          </div>
-            </div>
 
             {selectedCase && selectedCaseRecord && selectedLatestScreening ? (
               <section className="overflow-hidden rounded-2xl border border-border bg-card">
@@ -741,11 +741,7 @@ export default function SocialWorkerPage() {
                               key={`${caseItem.id}-${action.label}`}
                               type="button"
                               variant="outline"
-                              onClick={() => {
-                                if (action.label === "個案總覽") {
-                                  openCaseOverview(caseItem)
-                                }
-                              }}
+                              onClick={() => openCaseOverview(caseItem)}
                               className="h-full min-h-28 min-w-0 items-start justify-start whitespace-normal p-4 text-left"
                             >
                               <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${action.color}`}>

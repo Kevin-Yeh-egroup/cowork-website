@@ -13,6 +13,7 @@ import {
 
 const labelMap: Record<string, string> = {
   "ask-ai": "問問 AI",
+  scenarios: "情境專區",
   assessment: "開始檢測",
   content: "知識與內容",
   articles: "文章",

@@ -4,7 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { useState } from "react"
 import type { LucideIcon } from "lucide-react"
-import { Menu, ClipboardCheck, Wrench, BookOpen, Calendar, Users, User, ChevronDown, HandCoins } from "lucide-react"
+import { Menu, Route, ClipboardCheck, Wrench, BookOpen, Calendar, Users, User, ChevronDown, HandCoins } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { externalLinks } from "@/lib/external-links"
@@ -21,6 +21,18 @@ type NavItem = {
 }
 
 const baseNavItems: NavItem[] = [
+  {
+    href: "/scenarios",
+    label: "情境專區",
+    icon: Route,
+    children: [
+      { href: "/scenarios#debt", label: "帳單與債務壓力" },
+      { href: "/scenarios#fraud", label: "詐騙與金融風險" },
+      { href: "/scenarios#care", label: "生病、照顧與醫療支出" },
+      { href: "/scenarios#income", label: "工作、收入與退休準備" },
+      { href: "/scenarios#family", label: "家庭與生活變故" },
+    ],
+  },
   {
     href: "/assessment",
     label: "開始檢測",
@@ -71,7 +83,7 @@ function getAuthNavItem(authState: DemoAuthState): NavItem {
   if (!authState.isLoggedIn || !authState.role) {
     return {
       href: "/login",
-      label: authState.isLoggedIn ? "選擇角色" : "登入",
+      label: authState.isLoggedIn ? "選擇角色" : "登入／專區入口",
       icon: User,
     }
   }
