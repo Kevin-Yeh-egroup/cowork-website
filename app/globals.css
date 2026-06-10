@@ -126,4 +126,23 @@
       linear-gradient(90deg, oklch(0.95 0.03 96 / 0.45), transparent 48%);
     background-attachment: fixed;
   }
+
+  .mobile-menu-button {
+    position: fixed;
+    top: 0.75rem;
+    right: 1rem;
+    z-index: 60;
+    display: inline-flex;
+    border: 1px solid var(--border);
+    background: color-mix(in oklch, var(--card) 92%, transparent);
+    color: var(--foreground);
+    box-shadow: 0 8px 20px oklch(0.62 0.05 180 / 0.12);
+    backdrop-filter: blur(10px);
+  }
+
+  @media (min-width: 64rem) {
+    .mobile-menu-button {
+      display: none;
+    }
+  }
 }
