@@ -26,10 +26,6 @@ const baseNavItems: NavItem[] = [
     href: "/",
     label: "首頁",
     icon: Home,
-    children: [
-      { href: "/#trust", label: "信任與成果" },
-      { href: "/ask-ai", label: "問問 AI" },
-    ],
   },
   {
     href: "/assessment",
@@ -83,7 +79,7 @@ const baseNavItems: NavItem[] = [
   },
   {
     href: "/social-worker-tools",
-    label: "社工工具",
+    label: "工作支持",
     icon: Users,
     children: [
       { href: "/social-worker-tools#transcript", label: "會談整理與逐字稿" },
@@ -114,7 +110,7 @@ function getAuthNavItem(authState: DemoAuthState): NavItem {
 
   return {
     href: getAuthHomePath(authState),
-    label: authState.role === "member" ? "個人中心" : "社工工作台",
+    label: authState.role === "member" ? "我的財務與生活" : "社工工作台",
     icon: authState.role === "member" ? User : Users,
   }
 }

@@ -9,14 +9,12 @@ import {
   Mic,
   NotebookTabs,
   ShieldCheck,
-  Wrench,
 } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
 import { externalLinks } from "@/lib/external-links"
 
 export const metadata: Metadata = {
-  title: "社工工具 - 好理家在",
-  description: "提供社工與助人工作者使用的會談整理、財務風險快篩、議題處理、知識庫與專業工作支持入口。",
+  title: "工作支持 - 好理家在",
+  description: "提供社工與助人工作者使用的會談整理、家庭財務風險整理、議題處理工具、知識庫與專業工作支持入口。",
 }
 
 type ToolGroup = {
@@ -27,7 +25,8 @@ type ToolGroup = {
   items: {
     title: string
     description: string
-    href: string
+    href?: string
+    steps?: string[]
   }[]
 }
 
@@ -55,13 +54,36 @@ const toolGroups: ToolGroup[] = [
   {
     id: "issue-tools",
     title: "議題處理工具",
-    description: "依常見議題快速找到可用工具與下一步。",
-    icon: Wrench,
+    description: "參考正式站社工工作台的情境懶人包，用常見議題先帶社工進入評估流程。",
+    icon: FileText,
     items: [
-      { title: "債務", description: "進入債務盤點與壓力排序工具。", href: "/toolbox/debt" },
-      { title: "詐騙", description: "進入詐騙防禦檢測與風險提醒。", href: "/fraud-defense" },
-      { title: "急難", description: "連到急難救助專區。", href: externalLinks.emergencySupport },
-      { title: "財務焦慮", description: "進入財務焦慮檢測。", href: "/financial-anxiety" },
+      {
+        title: "債務處理",
+        description: "債務不再是燙手山芋",
+        steps: [
+          "上傳逐字稿與文件：訪談紀錄、個案資料或掃描文件",
+          "進行財務健檢：債務盤點、財務月報與財務風險快篩",
+          "接續知識庫、債務試算工具或線上諮詢",
+        ],
+      },
+      {
+        title: "詐騙預防",
+        description: "遇到詐騙即時止損",
+        steps: [
+          "整理可疑訊息、匯款紀錄、對方帳號與往來管道",
+          "辨識是否有保證獲利、代操、OTP、帳密或轉帳壓力",
+          "協助連到 165、銀行或官方窗口查證與停損",
+        ],
+      },
+      {
+        title: "財務盤點",
+        description: "快速掌握財務全貌",
+        steps: [
+          "整理收入、支出、債務、急迫需求與可動用資源",
+          "建立月報或收支輪廓，看見目前壓力來源",
+          "判斷風險等級，再接財務風險快篩或後續支持",
+        ],
+      },
     ],
   },
   {
@@ -102,21 +124,21 @@ export default function SocialWorkerToolsPage() {
     <div className="min-h-screen px-4 py-10 sm:py-14">
       <div className="mx-auto max-w-6xl">
         <section className="mb-8">
-          <p className="mb-3 text-sm font-medium text-primary">社工工具</p>
+          <p className="mb-3 text-sm font-medium text-primary">工作支持</p>
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_0.8fr] lg:items-end">
             <div>
               <h1 className="text-3xl font-bold leading-tight text-foreground sm:text-4xl">
-                社工與助人工作者的工具入口
+                社工與助人工作者的工作支持入口
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-                依照平台架構，社工現場工作會用到的工具集中在這裡；登入後的社工工作台則負責呈現最近工作、個案歷程與最近使用工具。
+                依照平台架構，社工現場會快速用到的支持資源集中在這裡；登入後的社工工作台則負責呈現最近工作、個案歷程與使用紀錄。
               </p>
             </div>
             <div className="rounded-2xl border border-border/80 bg-card/80 p-4 shadow-sm">
               <FileText className="mb-3 h-6 w-6 text-primary" />
-              <p className="font-medium text-foreground">目前是工具入口骨架</p>
+              <p className="font-medium text-foreground">議題處理工具參考情境懶人包</p>
               <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                已先依 Word 架構建立分類；尚未有正式文案或未接工具的項目，先以測試入口保留位置。
+                名稱保留為議題處理工具；內容先用債務、詐騙、財務盤點三個情境，呈現社工可以怎麼開始評估。
               </p>
             </div>
           </div>
@@ -143,19 +165,44 @@ export default function SocialWorkerToolsPage() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {group.items.map((item) => (
-                    <Link
-                      key={item.title}
-                      href={item.href}
-                      className="group rounded-2xl border border-border/70 bg-background/75 p-4 transition-all hover:border-primary/35 hover:bg-background"
-                    >
-                      <p className="font-semibold text-foreground">{item.title}</p>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
-                      <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary transition-all group-hover:gap-2">
-                        前往 <ArrowRight className="h-4 w-4" />
-                      </span>
-                    </Link>
-                  ))}
+                  {group.items.map((item) =>
+                    item.href ? (
+                      <Link
+                        key={item.title}
+                        href={item.href}
+                        className="group rounded-2xl border border-border/70 bg-background/75 p-4 transition-all hover:border-primary/35 hover:bg-background"
+                      >
+                        <p className="font-semibold text-foreground">{item.title}</p>
+                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+                        <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary transition-all group-hover:gap-2">
+                          前往 <ArrowRight className="h-4 w-4" />
+                        </span>
+                      </Link>
+                    ) : (
+                      <div
+                        key={item.title}
+                        className="rounded-2xl border border-border/70 bg-background/75 p-4"
+                      >
+                        <p className="font-semibold text-foreground">{item.title}</p>
+                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+                        {item.steps && (
+                          <ol className="mt-3 space-y-2 text-sm leading-relaxed text-foreground">
+                            {item.steps.map((step, index) => (
+                              <li key={step} className="flex gap-2">
+                                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                                  {index + 1}
+                                </span>
+                                <span>{step}</span>
+                              </li>
+                            ))}
+                          </ol>
+                        )}
+                        <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                          可作為會談前快速入口，後續再接快篩、知識庫、轉介或正式諮詢。
+                        </p>
+                      </div>
+                    ),
+                  )}
                 </div>
               </section>
             )
@@ -165,4 +212,3 @@ export default function SocialWorkerToolsPage() {
     </div>
   )
 }
-

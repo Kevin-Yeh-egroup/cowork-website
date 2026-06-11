@@ -53,38 +53,32 @@ const profileStats = [
 const memberMenuItems = [
   {
     href: "#member-overview",
-    title: "總覽",
-    description: "分數與近期狀態",
+    title: "看看自己的狀況",
+    description: "韌性、焦慮與詐騙防禦",
     icon: User,
   },
   {
-    href: "#member-growth",
-    title: "財務成長",
-    description: "獎章與任務進度",
-    icon: ClipboardCheck,
-  },
-  {
-    href: "#member-tasks",
-    title: "本月任務",
-    description: "檢測、閱讀與試算",
-    icon: Calendar,
-  },
-  {
     href: "#member-accounting",
-    title: "記帳助理",
-    description: "整理收支變化",
+    title: "開始整理生活與財務",
+    description: "記帳、規劃、試算與盤點",
     icon: Calculator,
   },
   {
+    href: "#member-growth",
+    title: "我的變化與累積",
+    description: "檢測、記帳與使用歷程",
+    icon: ClipboardCheck,
+  },
+  {
     href: "#member-articles",
-    title: "訂閱文章",
-    description: "查看關注主題",
+    title: "知識與陪伴",
+    description: "文章、Podcast 與專欄",
     icon: BookOpen,
   },
   {
     href: "#member-shortcuts",
-    title: "我的入口",
-    description: "檢測、工具與內容",
+    title: "下一步建議",
+    description: "工具、內容、諮詢與問問 AI",
     icon: Wrench,
   },
 ]
@@ -132,7 +126,7 @@ const sections = [
     icon: Wrench,
   },
   {
-    title: "我的訂閱文章",
+    title: "知識與陪伴",
     href: "/content/articles",
     icon: BookOpen,
   },
@@ -357,8 +351,8 @@ export default function PersonalCenterPage() {
         <section className="mb-10 rounded-3xl border border-border bg-gradient-to-br from-primary/10 via-card to-accent/20 p-6 sm:p-8">
           <div className="grid gap-6 lg:grid-cols-[1fr_280px] lg:items-start">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">個人中心</h1>
-              <p className="text-muted-foreground mb-6">集中管理你的財務旅程、更新進度與重要提醒。</p>
+              <h1 className="text-3xl font-bold text-foreground mb-2">我的財務與生活</h1>
+              <p className="text-muted-foreground mb-6">集中看自己的狀況、整理生活財務，並累積檢測、工具與內容紀錄。</p>
               <div className="rounded-2xl bg-card/90 border border-border p-6">
                 <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
                   <div>
@@ -412,8 +406,8 @@ export default function PersonalCenterPage() {
         <section className="grid gap-5 lg:grid-cols-[260px_1fr] lg:items-start">
           <aside className="rounded-2xl border border-border bg-card p-4 lg:sticky lg:top-24">
             <div className="mb-4">
-              <p className="text-sm font-medium text-primary">個人功能</p>
-              <h2 className="mt-1 text-lg font-semibold text-foreground">我的工作區</h2>
+              <p className="text-sm font-medium text-primary">一般會員</p>
+              <h2 className="mt-1 text-lg font-semibold text-foreground">我的財務與生活</h2>
             </div>
             <nav className="space-y-1">
               {memberMenuItems.map((item) => {

@@ -12,18 +12,21 @@ const roleOptions: {
   role: DemoUserRole
   title: string
   description: string
+  ctaLabel: string
   icon: LucideIcon
 }[] = [
   {
     role: "member",
-    title: "一般民眾",
-    description: "管理自己的檢測紀錄、財務工具使用進度與學習任務。",
+    title: "整理自己的生活與財務",
+    description: "查看自己的狀況，接續檢測、記帳、規劃、文章收藏與下一步建議。",
+    ctaLabel: "進入我的財務與生活",
     icon: User,
   },
   {
     role: "social_worker",
-    title: "社工與助人工作者",
-    description: "進入社工工作台，查看最近工作、個案歷程追蹤與現場工具。",
+    title: "協助個案與家庭工作",
+    description: "進入社工工作台，接續最近逐字稿、快篩、議題處理工具與轉介追蹤。",
+    ctaLabel: "進入社工工作台",
     icon: Users,
   },
 ]
@@ -93,8 +96,8 @@ export default function LoginPage() {
         {isReady && shouldShowRoleSelection && (
           <div>
             <div className="mb-5 text-center">
-              <h2 className="mb-2 text-2xl font-semibold text-foreground">選擇你的角色</h2>
-              <p className="text-muted-foreground">第一次登入需要選擇身份，之後會記住並直接進入對應入口。</p>
+              <h2 className="mb-2 text-2xl font-semibold text-foreground">選擇這次要使用的模式</h2>
+              <p className="text-muted-foreground">登入後先分成兩條路：整理自己的生活與財務，或協助個案與家庭工作。</p>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               {roleOptions.map((option) => {
@@ -113,7 +116,7 @@ export default function LoginPage() {
                     <h3 className="mb-2 text-xl font-semibold text-foreground">{option.title}</h3>
                     <p className="mb-5 text-muted-foreground">{option.description}</p>
                     <span className="inline-flex items-center gap-1 text-sm font-medium text-primary transition-all group-hover:gap-2">
-                      進入{option.role === "member" ? "個人中心" : "社工工作台"}
+                      {option.ctaLabel}
                       <ArrowRight className="h-4 w-4" />
                     </span>
                   </button>

@@ -54,7 +54,7 @@ const resources = [
   {
     href: "/social-worker-tools#issue-tools",
     title: "議題處理工具",
-    description: "債務、詐騙、急難與財務焦慮工具",
+    description: "債務處理、詐騙預防與財務盤點的情境流程",
     icon: Wrench,
   },
   {
@@ -77,7 +77,7 @@ const socialWorkerWorkspaceSections = [
     description: "回到最近處理的紀錄與工具。",
     href: "/social-worker-tools",
     icon: NotebookPen,
-    items: ["最近逐字稿", "最近快篩", "最近議題工具", "最近轉介"],
+    items: ["最近逐字稿", "最近快篩", "最近議題處理工具", "最近轉介"],
   },
   {
     title: "個案歷程追蹤",
@@ -88,10 +88,10 @@ const socialWorkerWorkspaceSections = [
   },
   {
     title: "最近使用工具",
-    description: "快速回到社工現場最常用工具。",
+    description: "快速回到社工現場最常用的支持資源。",
     href: "/social-worker-tools",
     icon: Wrench,
-    items: ["語音轉文字", "財務風險快篩", "議題工具", "專業工作支持"],
+    items: ["語音轉文字", "財務風險快篩", "議題處理工具", "專業工作支持"],
   },
   {
     title: "前往我的財務與生活",
@@ -454,7 +454,7 @@ export default function SocialWorkerPage() {
         <div className={`grid gap-6 lg:items-start ${isToolsCollapsed ? "lg:grid-cols-[88px_1fr]" : "lg:grid-cols-[320px_1fr]"}`}>
           <aside className="rounded-xl border border-border bg-card p-4 lg:sticky lg:top-24">
             <div className={`mb-3 flex items-center ${isToolsCollapsed ? "justify-center" : "justify-between gap-3"}`}>
-              {!isToolsCollapsed && <h2 className="text-lg font-semibold text-foreground">資源與工具</h2>}
+              {!isToolsCollapsed && <h2 className="text-lg font-semibold text-foreground">資源與工作支持</h2>}
               <Button
                 type="button"
                 variant="ghost"
