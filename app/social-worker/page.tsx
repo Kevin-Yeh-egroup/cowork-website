@@ -13,11 +13,9 @@ import {
   ClipboardList,
   Gauge,
   LayoutDashboard,
-  Mic,
   NotebookPen,
   ReceiptText,
   Search,
-  ShieldCheck,
   ShieldAlert,
   Users,
   Wrench,
@@ -37,61 +35,38 @@ import {
 import { getRoleHomePath, useDemoAuth } from "@/lib/demo-auth"
 import { externalLinks } from "@/lib/external-links"
 
-const resources = [
-  {
-    href: "/social-worker-tools#transcript",
-    title: "會談整理與逐字稿",
-    description: "語音轉文字、AI 摘要與摘要模板",
-    icon: Mic,
-  },
-  {
-    href: externalLinks.financeScreening,
-    title: "財務風險快篩",
-    description: "協助社工快速掌握個案財務風險",
-    icon: ShieldCheck,
-  },
-  {
-    href: "/social-worker-tools#issue-tools",
-    title: "議題工具",
-    description: "債務、詐騙、急難與財務焦慮的評估步驟",
-    icon: Wrench,
-  },
-  {
-    href: "/social-worker-tools#support",
-    title: "專業工作支持",
-    description: "課程、轉介與工作支持資源",
-    icon: Calendar,
-  },
-]
-
-const socialWorkerWorkspaceSections = [
+const socialWorkerSidebarSections = [
   {
     title: "最近工作",
-    description: "回到最近處理的紀錄與工具。",
     href: "/social-worker-tools",
     icon: NotebookPen,
-    items: ["最近逐字稿", "最近快篩", "最近議題工具", "最近轉介"],
+    items: [
+      { title: "最近逐字稿", href: "/social-worker-tools#transcript" },
+      { title: "最近快篩", href: externalLinks.financeScreening },
+      { title: "最近議題工具", href: "/social-worker-tools#issue-tools" },
+      { title: "最近轉介", href: "/online-consultation/referral" },
+    ],
   },
   {
     title: "個案歷程追蹤",
-    description: "接續查看服務狀態、風險與追蹤紀錄。",
     href: "#case-list",
     icon: LayoutDashboard,
-    items: ["服務狀態", "快篩紀錄", "會談摘要", "追蹤提醒"],
   },
   {
-    title: "社工工作台",
-    description: "快速回到社工現場最常用的支持資源。",
+    title: "最近使用工具",
     href: "/social-worker-tools",
     icon: Wrench,
-    items: ["語音轉文字", "財務風險快篩", "議題工具", "專業工作支持"],
+    items: [
+      { title: "語音轉文字", href: "/social-worker-tools#transcript" },
+      { title: "財務風險快篩", href: externalLinks.financeScreening },
+      { title: "議題工具", href: "/social-worker-tools#issue-tools" },
+      { title: "專業工作支持", href: "/social-worker-tools#support" },
+    ],
   },
   {
     title: "前往我的財務與生活",
-    description: "社工自己也可以回到一般使用者工具整理生活與財務。",
     href: "/assessment",
     icon: ReceiptText,
-    items: ["看看自己的狀況", "開始整理生活與財務", "使用記帳與規劃工具"],
   },
 ]
 
@@ -410,39 +385,9 @@ export default function SocialWorkerPage() {
           </div>
           <h1 className="text-3xl font-bold text-foreground mb-3">社工工作台</h1>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            依登入後使用模式分流，協助個案與家庭工作時，先看最近工作、個案歷程追蹤與社工工作台項目。
+            協助個案與家庭工作時，從左側功能選單接續最近工作、個案歷程與常用工具。
           </p>
         </div>
-
-        <section className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {socialWorkerWorkspaceSections.map((section) => {
-            const Icon = section.icon
-
-            return (
-              <Link
-                key={section.title}
-                href={section.href}
-                className="group rounded-2xl border border-border bg-card p-4 shadow-sm transition-all hover:border-primary/35 hover:bg-card/95"
-              >
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <Icon className="h-5 w-5" />
-                </div>
-                <h2 className="text-lg font-semibold text-foreground">{section.title}</h2>
-                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{section.description}</p>
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {section.items.map((item) => (
-                    <span
-                      key={item}
-                      className="rounded-full bg-secondary/80 px-2.5 py-1 text-xs font-medium text-secondary-foreground"
-                    >
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </Link>
-            )
-          })}
-        </section>
 
         <div className={`grid gap-6 lg:items-start ${isToolsCollapsed ? "lg:grid-cols-[88px_1fr]" : "lg:grid-cols-[320px_1fr]"}`}>
           <aside className="rounded-xl border border-border bg-card p-4 lg:sticky lg:top-24">
@@ -458,40 +403,53 @@ export default function SocialWorkerPage() {
                 {isToolsCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
               </Button>
             </div>
-            <nav className="flex flex-col gap-2">
-              {resources.map((resource) => {
-                const Icon = resource.icon
-                return (
-                  <Link
-                    key={resource.title}
-                    href={resource.href}
-                    title={isToolsCollapsed ? resource.title : undefined}
-                    className={`group flex rounded-lg p-3 transition-colors hover:bg-secondary focus:bg-secondary focus:outline-none ${
-                      isToolsCollapsed ? "justify-center" : "items-start gap-3"
-                    }`}
-                  >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                    {!isToolsCollapsed && (
-                      <>
-                        <span className="min-w-0 flex-1">
-                          <span className="block font-medium text-foreground">{resource.title}</span>
-                          <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">
-                            {resource.description}
+            <nav aria-label="社工工作台導覽">
+              {isToolsCollapsed ? (
+                <div className="flex flex-col gap-2">
+                  {socialWorkerSidebarSections.map((section) => {
+                    const Icon = section.icon
+                    return (
+                      <Link
+                        key={section.title}
+                        href={section.href}
+                        title={section.title}
+                        className="flex justify-center rounded-lg p-3 text-primary transition-colors hover:bg-secondary focus:bg-secondary focus:outline-none"
+                      >
+                        <Icon className="h-5 w-5" />
+                        <span className="sr-only">{section.title}</span>
+                      </Link>
+                    )
+                  })}
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  {socialWorkerSidebarSections.map((section) => {
+                    const Icon = section.icon
+                    const description = section.items?.map((item) => item.title).join("、")
+                      ?? (section.title === "個案歷程追蹤"
+                        ? "服務狀態、風險與追蹤紀錄"
+                        : "一般使用者工具與財務整理")
+
+                    return (
+                      <Link
+                        key={section.title}
+                        href={section.href}
+                        className="flex items-start gap-3 rounded-xl px-3 py-3 text-left transition-colors hover:bg-secondary/70 focus:bg-secondary/70 focus:outline-none"
+                      >
+                        <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                          <Icon className="h-4 w-4" />
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block text-sm font-semibold text-foreground">{section.title}</span>
+                          <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
+                            {description}
                           </span>
                         </span>
-                        <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-primary transition-transform group-hover:translate-x-1" />
-                      </>
-                    )}
-                    {isToolsCollapsed && (
-                      <span className="sr-only">
-                        {resource.title}
-                      </span>
-                    )}
-                  </Link>
-                )
-              })}
+                      </Link>
+                    )
+                  })}
+                </div>
+              )}
             </nav>
           </aside>
 

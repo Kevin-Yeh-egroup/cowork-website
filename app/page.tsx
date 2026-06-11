@@ -120,7 +120,7 @@ export default function HomePage() {
               已經有超過 101,000 人開始整理自己的財務
             </h2>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-6">
-              目前已有 101,121 位不重複訪客造訪好理家在，透過檢測、工具與內容開始整理自己的財務狀態。
+              目前已有 101,144 位不重複訪客造訪好理家在，透過檢測、工具與內容開始整理自己的財務狀態。
             </p>
           </div>
 
