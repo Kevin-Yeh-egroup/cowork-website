@@ -54,34 +54,43 @@ const toolGroups: ToolGroup[] = [
   {
     id: "issue-tools",
     title: "議題處理工具",
-    description: "參考正式站社工工作台的情境懶人包，用常見議題先帶社工進入評估流程。",
+    description: "依照平台架構保留為評估步驟整理，協助社工先判斷議題、問對問題，再決定下一步。",
     icon: FileText,
     items: [
       {
-        title: "債務處理",
-        description: "債務不再是燙手山芋",
+        title: "債務",
+        description: "先釐清債務型態、催收狀態與可協商空間。",
         steps: [
-          "上傳逐字稿與文件：訪談紀錄、個案資料或掃描文件",
-          "進行財務健檢：債務盤點、財務月報與財務風險快篩",
-          "接續知識庫、債務試算工具或線上諮詢",
+          "分清卡債、信貸、房貸、車貸或民間借貸",
+          "確認是否已有催收、法務通知或強制執行",
+          "整理每月可負擔金額與可談分期項目",
         ],
       },
       {
-        title: "詐騙預防",
-        description: "遇到詐騙即時止損",
+        title: "詐騙",
+        description: "先保全資訊、確認紅旗，再安排官方查證。",
         steps: [
-          "整理可疑訊息、匯款紀錄、對方帳號與往來管道",
-          "辨識是否有保證獲利、代操、OTP、帳密或轉帳壓力",
+          "提醒不要再匯款、不要提供 OTP 或帳密",
+          "記下對方名稱、管道、金額與已提供資料",
           "協助連到 165、銀行或官方窗口查證與停損",
         ],
       },
       {
-        title: "財務盤點",
-        description: "快速掌握財務全貌",
+        title: "急難",
+        description: "先判斷生活安全、急迫支出與可連結資源。",
         steps: [
-          "整理收入、支出、債務、急迫需求與可動用資源",
-          "建立月報或收支輪廓，看見目前壓力來源",
-          "判斷風險等級，再接財務風險快篩或後續支持",
+          "確認今天到一週內是否有食物、住宿、醫療或照顧危機",
+          "分出立即要處理與可排程處理的支出",
+          "整理可申請補助、轉介與諮詢支持",
+        ],
+      },
+      {
+        title: "財務焦慮",
+        description: "先承接壓力，再把模糊擔心拆成可整理事項。",
+        steps: [
+          "讓個案先描述最擔心的畫面，不急著要完整數字",
+          "把壓力分成收入、債務、照顧、家庭溝通或詐騙疑慮",
+          "選一件最急的事，安排下一次可完成的小步驟",
         ],
       },
     ],
@@ -136,9 +145,9 @@ export default function SocialWorkerToolsPage() {
             </div>
             <div className="rounded-2xl border border-border/80 bg-card/80 p-4 shadow-sm">
               <FileText className="mb-3 h-6 w-6 text-primary" />
-              <p className="font-medium text-foreground">議題處理工具參考情境懶人包</p>
+              <p className="font-medium text-foreground">議題處理工具回到評估步驟</p>
               <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                名稱保留為議題處理工具；內容先用債務、詐騙、財務盤點三個情境，呈現社工可以怎麼開始評估。
+                這裡先教社工怎麼問、怎麼判斷與怎麼分流，不放工具連結或文章入口。
               </p>
             </div>
           </div>
@@ -198,7 +207,7 @@ export default function SocialWorkerToolsPage() {
                           </ol>
                         )}
                         <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-                          可作為會談前快速入口，後續再接快篩、知識庫、轉介或正式諮詢。
+                          可作為會談前快速提醒，後續正式文案可再補案例或下載版。
                         </p>
                       </div>
                     ),

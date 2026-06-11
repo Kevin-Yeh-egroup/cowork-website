@@ -25,7 +25,7 @@ const roleOptions: {
   {
     role: "social_worker",
     title: "協助個案與家庭工作",
-    description: "進入社工工作台，接續最近逐字稿、快篩、議題處理工具與轉介追蹤。",
+    description: "進入社工工作台，接續最近逐字稿、快篩、議題工具與轉介追蹤。",
     ctaLabel: "進入社工工作台",
     icon: Users,
   },
