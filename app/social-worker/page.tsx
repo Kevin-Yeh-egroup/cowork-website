@@ -80,7 +80,7 @@ const socialWorkerWorkspaceSections = [
     items: ["服務狀態", "快篩紀錄", "會談摘要", "追蹤提醒"],
   },
   {
-    title: "最近使用工具",
+    title: "社工工作台",
     description: "快速回到社工現場最常用的支持資源。",
     href: "/social-worker-tools",
     icon: Wrench,
@@ -410,7 +410,7 @@ export default function SocialWorkerPage() {
           </div>
           <h1 className="text-3xl font-bold text-foreground mb-3">社工工作台</h1>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            依登入後使用模式分流，協助個案與家庭工作時，先看最近工作、個案歷程追蹤與最近使用工具。
+            依登入後使用模式分流，協助個案與家庭工作時，先看最近工作、個案歷程追蹤與社工工作台項目。
           </p>
         </div>
 
@@ -447,7 +447,7 @@ export default function SocialWorkerPage() {
         <div className={`grid gap-6 lg:items-start ${isToolsCollapsed ? "lg:grid-cols-[88px_1fr]" : "lg:grid-cols-[320px_1fr]"}`}>
           <aside className="rounded-xl border border-border bg-card p-4 lg:sticky lg:top-24">
             <div className={`mb-3 flex items-center ${isToolsCollapsed ? "justify-center" : "justify-between gap-3"}`}>
-              {!isToolsCollapsed && <h2 className="text-lg font-semibold text-foreground">最近使用工具</h2>}
+              {!isToolsCollapsed && <h2 className="text-lg font-semibold text-foreground">社工工作台</h2>}
               <Button
                 type="button"
                 variant="ghost"
