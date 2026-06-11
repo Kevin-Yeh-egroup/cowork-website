@@ -22,8 +22,8 @@ const roleOptions: {
   },
   {
     role: "social_worker",
-    title: "社工",
-    description: "進入個案管理、財務風險快篩、服務紀錄與社工學習資源。",
+    title: "社工與助人工作者",
+    description: "進入社工工作台，查看最近工作、個案歷程追蹤與現場工具。",
     icon: Users,
   },
 ]
@@ -113,7 +113,7 @@ export default function LoginPage() {
                     <h3 className="mb-2 text-xl font-semibold text-foreground">{option.title}</h3>
                     <p className="mb-5 text-muted-foreground">{option.description}</p>
                     <span className="inline-flex items-center gap-1 text-sm font-medium text-primary transition-all group-hover:gap-2">
-                      進入{option.title === "一般民眾" ? "個人中心" : "社工專區"}
+                      進入{option.role === "member" ? "個人中心" : "社工工作台"}
                       <ArrowRight className="h-4 w-4" />
                     </span>
                   </button>

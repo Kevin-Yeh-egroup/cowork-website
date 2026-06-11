@@ -4,11 +4,12 @@ import Link from "next/link"
 import Image from "next/image"
 import { useState } from "react"
 import type { LucideIcon } from "lucide-react"
-import { Menu, Route, ClipboardCheck, Wrench, BookOpen, Calendar, Users, User, ChevronDown, HandCoins } from "lucide-react"
+import { Menu, Home, Route, ClipboardCheck, Wrench, BookOpen, Calendar, Users, User, ChevronDown, HandCoins } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { externalLinks } from "@/lib/external-links"
 import { getAuthHomePath, useDemoAuth, type DemoAuthState } from "@/lib/demo-auth"
+import { scenarioCategories } from "@/lib/scenarios-data"
 
 type NavItem = {
   href: string
@@ -22,15 +23,12 @@ type NavItem = {
 
 const baseNavItems: NavItem[] = [
   {
-    href: "/scenarios",
-    label: "情境專區",
-    icon: Route,
+    href: "/",
+    label: "首頁",
+    icon: Home,
     children: [
-      { href: "/scenarios#debt", label: "帳單與債務壓力" },
-      { href: "/scenarios#fraud", label: "詐騙與金融風險" },
-      { href: "/scenarios#care", label: "生病、照顧與醫療支出" },
-      { href: "/scenarios#income", label: "工作、收入與退休準備" },
-      { href: "/scenarios#family", label: "家庭與生活變故" },
+      { href: "/#trust", label: "信任與成果" },
+      { href: "/ask-ai", label: "問問 AI" },
     ],
   },
   {
@@ -47,16 +45,30 @@ const baseNavItems: NavItem[] = [
     href: externalLinks.onlineConsultation,
     label: "免費諮詢",
     icon: HandCoins,
+    children: [
+      { href: "/online-consultation/apply", label: "個人申請諮詢" },
+      { href: "/online-consultation/referral", label: "社工協助個案轉介" },
+    ],
   },
   {
     href: "/toolbox",
     label: "財務工具",
     icon: Wrench,
     children: [
-      { href: `${externalLinks.financialCalculator}/basic-accounting`, label: "財務生活記帳助理" },
-      { href: externalLinks.financialPlanning, label: "夢想達成財務規劃" },
-      { href: "/toolbox", label: "其他工具" },
+      { href: "/toolbox/accounting", label: "財務生活記帳助理" },
+      { href: "/toolbox/planning", label: "財務規劃" },
+      { href: "/toolbox/simulator", label: "財務試算" },
+      { href: "/toolbox/debt", label: "債務盤點" },
     ],
+  },
+  {
+    href: "/scenarios",
+    label: "情境專區",
+    icon: Route,
+    children: scenarioCategories.map((category) => ({
+      href: `/scenarios#${category.anchor}`,
+      label: category.title,
+    })),
   },
   {
     href: "/content",
@@ -65,7 +77,19 @@ const baseNavItems: NavItem[] = [
     children: [
       { href: "/content/articles", label: "看看文章" },
       { href: "/content/podcast", label: "聽聽 Podcast" },
-      { href: "/content/column", label: "專欄（多多益善）" },
+      { href: "/content/column", label: "多多益善專欄" },
+      { href: externalLinks.callForArticles, label: "投稿分享" },
+    ],
+  },
+  {
+    href: "/social-worker-tools",
+    label: "社工工具",
+    icon: Users,
+    children: [
+      { href: "/social-worker-tools#transcript", label: "會談整理與逐字稿" },
+      { href: "/social-worker-tools#risk", label: "家庭財務風險整理" },
+      { href: "/social-worker-tools#issue-tools", label: "議題處理工具" },
+      { href: "/social-worker-tools#knowledge", label: "社工知識庫" },
     ],
   },
   {
@@ -74,7 +98,7 @@ const baseNavItems: NavItem[] = [
     icon: Calendar,
     children: [
       { href: "/events#public", label: "一般民眾" },
-      { href: "/events#social-worker", label: "社工" },
+      { href: "/events#social-worker", label: "社工與助人工作者" },
     ],
   },
 ]
@@ -83,14 +107,14 @@ function getAuthNavItem(authState: DemoAuthState): NavItem {
   if (!authState.isLoggedIn || !authState.role) {
     return {
       href: "/login",
-      label: authState.isLoggedIn ? "選擇角色" : "登入／專區入口",
+      label: authState.isLoggedIn ? "選擇角色" : "登入",
       icon: User,
     }
   }
 
   return {
     href: getAuthHomePath(authState),
-    label: authState.role === "member" ? "個人中心" : "社工專區",
+    label: authState.role === "member" ? "個人中心" : "社工工作台",
     icon: authState.role === "member" ? User : Users,
   }
 }
@@ -116,7 +140,7 @@ export function Navigation() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/70 bg-background/90 shadow-[0_10px_30px_oklch(0.62_0.05_180_/_0.12)] backdrop-blur-md">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/70 bg-background/90 shadow-[0_10px_30px_oklch(0.8_0.08_40_/_0.12)] backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -132,12 +156,12 @@ export function Navigation() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden xl:flex items-center gap-1">
             {navItems.map((item) => (
               <div key={item.href} className="relative group">
                 <Link
                   href={item.href}
-                  className="flex items-center gap-1 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/80 rounded-full transition-colors"
+                  className="flex items-center gap-1 px-2.5 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-secondary/80 rounded-full transition-colors"
                 >
                   {item.label}
                   {item.children && <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:rotate-180" />}
@@ -177,7 +201,7 @@ export function Navigation() {
           {/* Mobile Menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="mobile-menu-button lg:!hidden">
+              <Button variant="ghost" size="icon" className="mobile-menu-button xl:!hidden">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">開啟選單</span>
               </Button>

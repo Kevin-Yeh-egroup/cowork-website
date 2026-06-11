@@ -40,9 +40,9 @@ import { externalLinks } from "@/lib/external-links"
 
 const resources = [
   {
-    href: externalLinks.voiceToText,
-    title: "語音轉文字",
-    description: "將會談語音快速轉成文字紀錄",
+    href: "/social-worker-tools#transcript",
+    title: "會談整理與逐字稿",
+    description: "語音轉文字、AI 摘要與摘要模板",
     icon: Mic,
   },
   {
@@ -52,15 +52,15 @@ const resources = [
     icon: ShieldCheck,
   },
   {
-    href: "/toolbox",
-    title: "財務評估工具",
-    description: "使用各項工具協助個案評估財務狀況",
+    href: "/social-worker-tools#issue-tools",
+    title: "議題處理工具",
+    description: "債務、詐騙、急難與財務焦慮工具",
     icon: Wrench,
   },
   {
-    href: "/content/articles",
-    title: "教育資源",
-    description: "適合分享給個案的文章和教材",
+    href: "/social-worker-tools#knowledge",
+    title: "社工知識庫",
+    description: "文章、專欄與 Podcast 內容",
     icon: BookOpen,
   },
   {
@@ -68,6 +68,37 @@ const resources = [
     title: "社工培訓課程",
     description: "學習如何協助個案處理財務問題",
     icon: Calendar,
+  },
+]
+
+const socialWorkerWorkspaceSections = [
+  {
+    title: "最近工作",
+    description: "回到最近處理的紀錄與工具。",
+    href: "/social-worker-tools",
+    icon: NotebookPen,
+    items: ["最近逐字稿", "最近快篩", "最近議題工具", "最近轉介"],
+  },
+  {
+    title: "個案歷程追蹤",
+    description: "接續查看服務狀態、風險與追蹤紀錄。",
+    href: "#case-list",
+    icon: LayoutDashboard,
+    items: ["服務狀態", "快篩紀錄", "會談摘要", "追蹤提醒"],
+  },
+  {
+    title: "最近使用工具",
+    description: "快速回到社工現場最常用工具。",
+    href: "/social-worker-tools",
+    icon: Wrench,
+    items: ["語音轉文字", "財務風險快篩", "議題工具", "專業工作支持"],
+  },
+  {
+    title: "前往我的財務與生活",
+    description: "社工自己也可以回到一般使用者工具整理生活與財務。",
+    href: "/assessment",
+    icon: ReceiptText,
+    items: ["看看自己的狀況", "開始整理生活與財務", "使用記帳與規劃工具"],
   },
 ]
 
@@ -390,6 +421,36 @@ export default function SocialWorkerPage() {
           </p>
         </div>
 
+        <section className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {socialWorkerWorkspaceSections.map((section) => {
+            const Icon = section.icon
+
+            return (
+              <Link
+                key={section.title}
+                href={section.href}
+                className="group rounded-2xl border border-border bg-card p-4 shadow-sm transition-all hover:border-primary/35 hover:bg-card/95"
+              >
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <h2 className="text-lg font-semibold text-foreground">{section.title}</h2>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{section.description}</p>
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {section.items.map((item) => (
+                    <span
+                      key={item}
+                      className="rounded-full bg-secondary/80 px-2.5 py-1 text-xs font-medium text-secondary-foreground"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </Link>
+            )
+          })}
+        </section>
+
         <div className={`grid gap-6 lg:items-start ${isToolsCollapsed ? "lg:grid-cols-[88px_1fr]" : "lg:grid-cols-[320px_1fr]"}`}>
           <aside className="rounded-xl border border-border bg-card p-4 lg:sticky lg:top-24">
             <div className={`mb-3 flex items-center ${isToolsCollapsed ? "justify-center" : "justify-between gap-3"}`}>
@@ -549,7 +610,7 @@ export default function SocialWorkerPage() {
             )}
 
             {selectedCase && selectedCaseRecord && selectedLatestScreening ? (
-              <section className="overflow-hidden rounded-2xl border border-border bg-card">
+              <section id="case-list" className="overflow-hidden rounded-2xl border border-border bg-card">
                 <div className="flex flex-col gap-4 border-b border-border p-5 md:flex-row md:items-center md:justify-between">
                   <div>
                     <Button
@@ -683,7 +744,7 @@ export default function SocialWorkerPage() {
                 </div>
               </section>
             ) : (
-              <section>
+              <section id="case-list">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-4">
             <div>
               <h2 className="text-xl font-semibold text-foreground">個案列表</h2>
