@@ -50,7 +50,44 @@ const profileStats = [
   { label: "最後更新", value: "2026/04/15", tone: "text-foreground" },
 ]
 
-const overviewTabs = ["總覽", "財務韌性", "詐騙防禦能力", "財務焦慮", "夢想達成財務管理"]
+const memberMenuItems = [
+  {
+    href: "#member-overview",
+    title: "總覽",
+    description: "分數與近期狀態",
+    icon: User,
+  },
+  {
+    href: "#member-growth",
+    title: "財務成長",
+    description: "獎章與任務進度",
+    icon: ClipboardCheck,
+  },
+  {
+    href: "#member-tasks",
+    title: "本月任務",
+    description: "檢測、閱讀與試算",
+    icon: Calendar,
+  },
+  {
+    href: "#member-accounting",
+    title: "記帳助理",
+    description: "整理收支變化",
+    icon: Calculator,
+  },
+  {
+    href: "#member-articles",
+    title: "訂閱文章",
+    description: "查看關注主題",
+    icon: BookOpen,
+  },
+  {
+    href: "#member-shortcuts",
+    title: "我的入口",
+    description: "檢測、工具與內容",
+    icon: Wrench,
+  },
+]
 
 const financeHighlights = [
   {
@@ -372,22 +409,37 @@ export default function PersonalCenterPage() {
           </div>
         </section>
 
-        <section className="overflow-hidden rounded-2xl border border-border bg-card">
-          <div className="flex gap-6 overflow-x-auto border-b border-border px-5">
-            {overviewTabs.map((tab, index) => (
-              <button
-                key={tab}
-                className={`shrink-0 border-b-2 py-4 text-sm font-medium ${
-                  index === 0 ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
+        <section className="grid gap-5 lg:grid-cols-[260px_1fr] lg:items-start">
+          <aside className="rounded-2xl border border-border bg-card p-4 lg:sticky lg:top-24">
+            <div className="mb-4">
+              <p className="text-sm font-medium text-primary">個人功能</p>
+              <h2 className="mt-1 text-lg font-semibold text-foreground">我的工作區</h2>
+            </div>
+            <nav className="space-y-1">
+              {memberMenuItems.map((item) => {
+                const Icon = item.icon
 
-          <div className="space-y-5 p-5 sm:p-6">
-            <div className="grid gap-4 md:grid-cols-3">
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-start gap-3 rounded-xl px-3 py-3 text-left transition-colors hover:bg-secondary/70"
+                  >
+                    <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <span>
+                      <span className="block text-sm font-semibold text-foreground">{item.title}</span>
+                      <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">{item.description}</span>
+                    </span>
+                  </Link>
+                )
+              })}
+            </nav>
+          </aside>
+
+          <div className="space-y-5 rounded-2xl border border-border bg-card p-5 sm:p-6">
+            <div id="member-overview" className="scroll-mt-24 grid gap-4 md:grid-cols-3">
               {financeHighlights.map((item) => {
                 const Icon = item.icon
                 return (
@@ -406,7 +458,7 @@ export default function PersonalCenterPage() {
             </div>
 
             {achievementState && (
-              <div className="space-y-4">
+              <div id="member-growth" className="scroll-mt-24 space-y-4">
                 <AchievementSummary
                   title="我的財務成長"
                   description="用事件紀錄追蹤獎章、任務與下一步財務行動。"
@@ -417,7 +469,7 @@ export default function PersonalCenterPage() {
                   recentEventCount={achievementState.events.length}
                   onReset={resetMemberAchievements}
                 />
-                <Card className="border-border">
+                <Card id="member-tasks" className="scroll-mt-24 border-border">
                   <CardContent className="p-5">
                     <div className="mb-4">
                       <h2 className="text-lg font-semibold text-foreground">本月任務操作區</h2>
@@ -559,7 +611,7 @@ export default function PersonalCenterPage() {
               </div>
             )}
 
-            <Link href="/toolbox/accounting" className="group block rounded-2xl bg-gradient-to-br from-primary to-accent p-6 text-primary-foreground shadow-sm">
+            <Link id="member-accounting" href="/toolbox/accounting" className="group block scroll-mt-24 rounded-2xl bg-gradient-to-br from-primary to-accent p-6 text-primary-foreground shadow-sm">
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <span className="inline-flex rounded-full bg-background/20 px-3 py-1 text-xs font-medium mb-3">全新上線</span>
@@ -572,7 +624,7 @@ export default function PersonalCenterPage() {
               </div>
             </Link>
 
-            <Card className="border-border">
+            <Card id="member-articles" className="scroll-mt-24 border-border">
               <CardContent className="p-5">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
                   <div>
@@ -597,7 +649,7 @@ export default function PersonalCenterPage() {
               </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div id="member-shortcuts" className="scroll-mt-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {sections.map((section) => {
               const Icon = section.icon
               return (
