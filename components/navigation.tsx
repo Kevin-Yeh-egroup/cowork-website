@@ -78,15 +78,9 @@ const baseNavItems: NavItem[] = [
     ],
   },
   {
-    href: "/social-worker-tools",
-    label: "工作支持",
+    href: "/social-worker",
+    label: "社工工作站",
     icon: Users,
-    children: [
-      { href: "/social-worker-tools#transcript", label: "會談整理與逐字稿" },
-      { href: "/social-worker-tools#risk", label: "家庭財務風險整理" },
-      { href: "/social-worker-tools#issue-tools", label: "議題處理工具" },
-      { href: "/social-worker-tools#knowledge", label: "社工知識庫" },
-    ],
   },
   {
     href: "/events",
@@ -125,7 +119,10 @@ function getEventAudience(href: string) {
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const { authState, logout } = useDemoAuth()
-  const navItems = [...baseNavItems, getAuthNavItem(authState)]
+  const navItems =
+    authState.isLoggedIn && authState.role === "social_worker"
+      ? baseNavItems
+      : [...baseNavItems, getAuthNavItem(authState)]
 
   const syncEventAudience = (href: string) => {
     const audience = getEventAudience(href)

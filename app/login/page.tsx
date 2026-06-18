@@ -31,6 +31,23 @@ const roleOptions: {
   },
 ]
 
+function getRequestedLoginTarget() {
+  if (typeof window === "undefined") return null
+
+  const searchParams = new URLSearchParams(window.location.search)
+  const requestedRole = searchParams.get("role")
+  const next = searchParams.get("next")
+
+  if (requestedRole !== "member" && requestedRole !== "social_worker") return null
+
+  const role: DemoUserRole = requestedRole
+
+  return {
+    role,
+    nextPath: next && next.startsWith("/") && !next.startsWith("//") ? next : getRoleHomePath(role),
+  }
+}
+
 export default function LoginPage() {
   const router = useRouter()
   const { authState, isReady, login, chooseRole } = useDemoAuth()
@@ -43,6 +60,14 @@ export default function LoginPage() {
   }, [authState, isReady, router])
 
   const startLogin = () => {
+    const requestedTarget = getRequestedLoginTarget()
+
+    if (requestedTarget) {
+      chooseRole(requestedTarget.role)
+      router.push(requestedTarget.nextPath)
+      return
+    }
+
     login()
     setHasStartedLogin(true)
   }

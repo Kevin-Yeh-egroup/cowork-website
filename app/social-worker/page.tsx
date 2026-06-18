@@ -70,6 +70,35 @@ const socialWorkerSidebarSections = [
   },
 ]
 
+const socialWorkerLoginHref = "/login?role=social_worker&next=/social-worker"
+
+const publicSocialWorkerServices = [
+  {
+    title: "會談整理與逐字稿",
+    description: "把會談錄音、訪談重點或逐字稿先整理成可回顧的工作草稿，減少重複抄寫與漏記。",
+    icon: NotebookPen,
+    color: "bg-primary/10 text-primary",
+  },
+  {
+    title: "家庭財務風險整理",
+    description: "協助快速看見家庭目前的財務壓力、債務、詐騙疑慮與急迫需求，方便安排下一步。",
+    icon: ShieldAlert,
+    color: "bg-destructive/10 text-destructive",
+  },
+  {
+    title: "議題處理工具",
+    description: "依常見議題提供評估步驟與整理方向，協助社工把複雜問題拆成可討論的工作順序。",
+    icon: Wrench,
+    color: "bg-accent/30 text-accent-foreground",
+  },
+  {
+    title: "社工知識庫",
+    description: "集中查找家庭財務、債務壓力、詐騙風險與服務陪伴相關內容，作為會談前後的參考。",
+    icon: ClipboardList,
+    color: "bg-secondary text-secondary-foreground",
+  },
+]
+
 const cases = [
   {
     id: "C-001",
@@ -286,8 +315,12 @@ export default function SocialWorkerPage() {
   useEffect(() => {
     if (!isReady) return
 
-    if (!authState.isLoggedIn || !authState.role) {
-      router.replace("/login")
+    if (!authState.isLoggedIn) {
+      return
+    }
+
+    if (!authState.role) {
+      router.replace(socialWorkerLoginHref)
       return
     }
 
@@ -366,11 +399,81 @@ export default function SocialWorkerPage() {
     setAchievementState(getAchievementState(currentSocialWorkerId, "social_worker"))
   }
 
-  if (!isReady || !authState.isLoggedIn || authState.role !== "social_worker") {
+  if (!isReady) {
     return (
       <div className="min-h-screen px-4 py-12">
         <Card className="mx-auto max-w-xl border-border">
           <CardContent className="p-6 text-center text-muted-foreground">正在確認登入狀態...</CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  if (!authState.isLoggedIn) {
+    return (
+      <div className="min-h-screen px-4 py-12">
+        <div className="mx-auto max-w-6xl">
+          <section className="mb-8 grid gap-6 rounded-3xl border border-border bg-gradient-to-br from-primary/10 via-card to-accent/15 p-6 shadow-[0_18px_45px_oklch(0.78_0.08_42_/_0.12)] lg:grid-cols-[1fr_320px] lg:items-center lg:p-8">
+            <div>
+              <p className="mb-3 text-sm font-medium text-primary">社工工作站</p>
+              <h1 className="text-3xl font-bold leading-tight text-foreground sm:text-4xl">
+                登入後，把個案財務議題整理成可以接續工作的紀錄
+              </h1>
+              <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
+                這裡是給社工與助人工作者使用的工作入口。登入後可以使用會談整理、家庭財務風險整理、議題處理工具與社工知識庫，並回到社工工作台接續個案歷程。
+              </p>
+            </div>
+            <Card className="border-primary/25 bg-card/90">
+              <CardContent className="p-5">
+                <h2 className="mb-2 text-lg font-semibold text-foreground">登入後可使用</h2>
+                <p className="mb-5 text-sm leading-relaxed text-muted-foreground">
+                  點選任一功能會先進入登入流程；登入完成後會帶到社工工作台。
+                </p>
+                <Button asChild className="w-full">
+                  <Link href={socialWorkerLoginHref}>
+                    登入進入社工工作台
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </section>
+
+          <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {publicSocialWorkerServices.map((service) => {
+              const Icon = service.icon
+
+              return (
+                <Card key={service.title} className="border-border bg-card/90">
+                  <CardContent className="flex h-full flex-col p-6">
+                    <div className={`mb-5 flex h-12 w-12 items-center justify-center rounded-xl ${service.color}`}>
+                      <Icon className="h-6 w-6" />
+                    </div>
+                    <h2 className="mb-2 text-xl font-semibold text-foreground">{service.title}</h2>
+                    <p className="mb-6 flex-1 text-sm leading-relaxed text-muted-foreground">
+                      {service.description}
+                    </p>
+                    <Button asChild variant="outline" className="w-full justify-between">
+                      <Link href={socialWorkerLoginHref}>
+                        登入後使用
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </section>
+        </div>
+      </div>
+    )
+  }
+
+  if (authState.role !== "social_worker") {
+    return (
+      <div className="min-h-screen px-4 py-12">
+        <Card className="mx-auto max-w-xl border-border">
+          <CardContent className="p-6 text-center text-muted-foreground">正在前往你的工作區...</CardContent>
         </Card>
       </div>
     )

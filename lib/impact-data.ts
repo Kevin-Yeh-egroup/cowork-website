@@ -1,17 +1,17 @@
 export const audienceStats = [
-  { label: "會員註冊總數", value: "5,110" },
-  { label: "社工註冊人數", value: "2,982" },
-  { label: "一般民眾註冊人數", value: "2,128" },
+  { label: "會員註冊總數", value: "5,308" },
+  { label: "社工註冊人數", value: "3,097" },
+  { label: "一般民眾註冊人數", value: "2,211" },
 ]
 
 export const serviceStats = [
-  { label: "社工輔導受益人數", value: "17,940", note: "人次、去重複" },
-  { label: "一般大眾觸及", value: "99,989", note: "非註冊人數" },
+  { label: "社工輔導受益人數", value: "18,774", note: "人次、去重複" },
+  { label: "一般大眾觸及", value: "103,041", note: "非註冊人數" },
 ]
 
 export const websiteStats = [
-  { label: "唯一訪客數", value: "101,144" },
-  { label: "網站瀏覽人次", value: "458,001" },
+  { label: "唯一訪客數", value: "104,216" },
+  { label: "網站瀏覽人次", value: "474,507" },
 ]
 
 export const engagementRanking = [
