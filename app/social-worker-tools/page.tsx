@@ -10,15 +10,6 @@ import {
   NotebookTabs,
   ShieldCheck,
 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 import { externalLinks } from "@/lib/external-links"
 
 export const metadata: Metadata = {
@@ -36,13 +27,6 @@ type ToolGroup = {
     description: string
     href?: string
     steps?: string[]
-    summary?: {
-      eyebrow: string
-      title: string
-      description: string
-      points: string[]
-      note: string
-    }
   }[]
 }
 
@@ -65,22 +49,6 @@ const toolGroups: ToolGroup[] = [
     icon: ShieldCheck,
     items: [
       { title: "財務風險快篩", description: "協助初步判斷個案財務壓力與風險。", href: externalLinks.financeScreening },
-      {
-        title: "工作與生活安排摘要",
-        description: "整理「理財，是為了理出你要的未來」的重點，作為家庭財務討論素材。",
-        summary: {
-          eyebrow: "週三碎碎念",
-          title: "理財，是為了理出你要的未來",
-          description:
-            "這篇內容提醒我們，理財不是只把帳算清楚，而是透過財務整理，看見現在的生活、工作選擇與自己想要的未來是否一致。",
-          points: [
-            "每天忙著工作時，容易很少停下來確認現在的生活是不是自己想要的樣子。",
-            "有些工作雖然帶來較高收入，也可能壓縮休息、陪伴與生活空間。",
-            "當個案開始思考想過什麼樣的生活，就能重新理解什麼才是適合自己的工作選擇。",
-          ],
-          note: "可用於家庭財務風險整理的開場，引導個案先談生活期待，再回到收入、支出與工作安排。",
-        },
-      },
     ],
   },
   {
@@ -226,34 +194,6 @@ export default function SocialWorkerToolsPage() {
                       >
                         <p className="font-semibold text-foreground">{item.title}</p>
                         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
-                        {item.summary && (
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button type="button" size="sm" className="mt-3">
-                                <BookOpen className="h-4 w-4" />
-                                查看摘要
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-2xl">
-                              <DialogHeader>
-                                <DialogDescription>{item.summary.eyebrow}</DialogDescription>
-                                <DialogTitle className="text-2xl leading-snug">{item.summary.title}</DialogTitle>
-                              </DialogHeader>
-                              <div className="space-y-4 text-sm leading-relaxed text-muted-foreground">
-                                <p>{item.summary.description}</p>
-                                <ul className="space-y-2">
-                                  {item.summary.points.map((point) => (
-                                    <li key={point} className="flex gap-2">
-                                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                                      <span>{point}</span>
-                                    </li>
-                                  ))}
-                                </ul>
-                                <p className="rounded-lg bg-secondary/70 p-3 text-foreground">{item.summary.note}</p>
-                              </div>
-                            </DialogContent>
-                          </Dialog>
-                        )}
                         {item.steps && (
                           <ol className="mt-3 space-y-2 text-sm leading-relaxed text-foreground">
                             {item.steps.map((step, index) => (
