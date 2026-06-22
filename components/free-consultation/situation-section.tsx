@@ -29,16 +29,16 @@ const situations = [
 
 export function SituationSection() {
   return (
-    <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8">
+    <section className="px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
       <div className="mx-auto max-w-4xl">
-        <h2 className="text-2xl sm:text-3xl font-semibold text-foreground text-center mb-10 text-balance">
+        <h2 className="mb-5 text-center text-2xl font-semibold text-foreground text-balance sm:text-3xl">
           你現在是不是也有這些狀況？
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
           {situations.map((situation, index) => (
             <Card key={index} className="border-none shadow-sm bg-card hover:shadow-md transition-shadow">
-              <CardContent className="p-5">
-                <p className="text-foreground leading-relaxed">
+              <CardContent className="p-3.5">
+                <p className="text-sm leading-snug text-foreground sm:text-base">
                   {situation.line1}
                   {situation.line2 && (
                     <>
@@ -51,7 +51,7 @@ export function SituationSection() {
             </Card>
           ))}
         </div>
-        <p className="mt-8 text-center text-muted-foreground">
+        <p className="mt-4 text-center text-sm text-muted-foreground">
           只要其中一項讓你有感，都可以先來聊聊。
         </p>
       </div>

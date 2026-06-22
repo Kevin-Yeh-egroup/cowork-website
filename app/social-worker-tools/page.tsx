@@ -130,23 +130,23 @@ const toolGroups: ToolGroup[] = [
 
 export default function SocialWorkerToolsPage() {
   return (
-    <div className="min-h-screen px-4 py-10 sm:py-14">
+    <div className="min-h-screen px-4 py-8 sm:py-10">
       <div className="mx-auto max-w-6xl">
-        <section className="mb-8">
+        <section className="mb-6">
           <p className="mb-3 text-sm font-medium text-primary">工作支持</p>
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_0.8fr] lg:items-end">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_0.8fr] lg:items-end">
             <div>
               <h1 className="text-3xl font-bold leading-tight text-foreground sm:text-4xl">
                 社工與助人工作者的工作支持入口
               </h1>
-              <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+              <p className="mt-3 max-w-2xl text-sm leading-snug text-muted-foreground sm:text-base">
                 依照平台架構，社工現場會快速用到的支持資源集中在這裡；登入後的社工工作台則負責呈現最近工作、個案歷程與使用紀錄。
               </p>
             </div>
-            <div className="rounded-2xl border border-border/80 bg-card/80 p-4 shadow-sm">
+            <div className="rounded-2xl border border-border/80 bg-card/80 p-3.5 shadow-sm">
               <FileText className="mb-3 h-6 w-6 text-primary" />
               <p className="font-medium text-foreground">議題處理工具回到評估步驟</p>
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-1 text-sm leading-snug text-muted-foreground">
                 這裡先教社工怎麼問、怎麼判斷與怎麼分流，不放工具連結或文章入口。
               </p>
             </div>
@@ -161,15 +161,15 @@ export default function SocialWorkerToolsPage() {
               <section
                 key={group.id}
                 id={group.id}
-                className="scroll-mt-24 rounded-3xl border border-border/80 bg-card/75 p-5 shadow-sm sm:p-6"
+                className="scroll-mt-24 rounded-3xl border border-border/80 bg-card/75 p-4 shadow-sm sm:p-5"
               >
-                <div className="mb-5 flex items-start gap-3">
+                <div className="mb-4 flex items-start gap-3">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                     <Icon className="h-6 w-6" />
                   </div>
                   <div>
                     <h2 className="text-2xl font-semibold text-foreground">{group.title}</h2>
-                    <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">{group.description}</p>
+                    <p className="mt-1.5 max-w-2xl text-sm leading-snug text-muted-foreground">{group.description}</p>
                   </div>
                 </div>
 
@@ -179,10 +179,10 @@ export default function SocialWorkerToolsPage() {
                       <Link
                         key={item.title}
                         href={item.href}
-                        className="group rounded-2xl border border-border/70 bg-background/75 p-4 transition-all hover:border-primary/35 hover:bg-background"
+                        className="group rounded-2xl border border-border/70 bg-background/75 p-3.5 transition-all hover:border-primary/35 hover:bg-background"
                       >
                         <p className="font-semibold text-foreground">{item.title}</p>
-                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+                        <p className="mt-1.5 text-sm leading-snug text-muted-foreground">{item.description}</p>
                         <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary transition-all group-hover:gap-2">
                           前往 <ArrowRight className="h-4 w-4" />
                         </span>
@@ -190,12 +190,12 @@ export default function SocialWorkerToolsPage() {
                     ) : (
                       <div
                         key={item.title}
-                        className="rounded-2xl border border-border/70 bg-background/75 p-4"
+                        className="rounded-2xl border border-border/70 bg-background/75 p-3.5"
                       >
                         <p className="font-semibold text-foreground">{item.title}</p>
-                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+                        <p className="mt-1.5 text-sm leading-snug text-muted-foreground">{item.description}</p>
                         {item.steps && (
-                          <ol className="mt-3 space-y-2 text-sm leading-relaxed text-foreground">
+                          <ol className="mt-3 space-y-1.5 text-sm leading-snug text-foreground">
                             {item.steps.map((step, index) => (
                               <li key={step} className="flex gap-2">
                                 <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
@@ -206,7 +206,7 @@ export default function SocialWorkerToolsPage() {
                             ))}
                           </ol>
                         )}
-                        <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                        <p className="mt-3 text-xs leading-snug text-muted-foreground">
                           可作為會談前快速提醒，後續正式文案可再補案例或下載版。
                         </p>
                       </div>

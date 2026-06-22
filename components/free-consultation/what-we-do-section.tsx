@@ -17,21 +17,21 @@ const services = [
 
 export function WhatWeDoSection() {
   return (
-    <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-secondary/50">
+    <section className="bg-secondary/50 px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
       <div className="mx-auto max-w-4xl">
-        <h2 className="text-2xl sm:text-3xl font-semibold text-foreground text-center mb-10 text-balance">
+        <h2 className="mb-5 text-center text-2xl font-semibold text-foreground text-balance sm:text-3xl">
           我們怎麼陪你整理？
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {services.map((service, index) => (
             <Card key={index} className="border border-border bg-card shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg font-medium text-foreground">
+              <CardHeader className="px-4 pb-1.5 pt-4">
+                <CardTitle className="text-base font-medium text-foreground">
                   {service.title}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="pt-0">
-                <p className="text-muted-foreground leading-relaxed">
+              <CardContent className="px-4 pb-4 pt-0">
+                <p className="text-sm leading-snug text-muted-foreground">
                   {service.description}
                 </p>
               </CardContent>

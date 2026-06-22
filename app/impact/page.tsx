@@ -40,10 +40,10 @@ const mediaFeatures = [
 
 export default function ImpactPage() {
   return (
-    <div className="min-h-screen px-4 py-12">
+    <div className="min-h-screen px-4 py-10">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-4 text-balance">
             我們的成果與影響
           </h1>
@@ -53,7 +53,7 @@ export default function ImpactPage() {
         </div>
 
         {/* Stats */}
-        <section className="mb-12">
+        <section className="mb-8">
           <div className="flex items-center gap-2 mb-4">
             <Users className="h-5 w-5 text-primary" />
             <h2 className="text-lg font-semibold text-foreground">受眾與註冊結構</h2>
@@ -61,7 +61,7 @@ export default function ImpactPage() {
           <div className="grid sm:grid-cols-3 gap-4">
             {audienceStats.map((stat) => (
               <Card key={stat.label}>
-                <CardContent className="p-6">
+                <CardContent className="p-5">
                   <p className="text-sm text-muted-foreground mb-2">{stat.label}</p>
                   <p className="text-3xl font-bold text-primary">{stat.value}</p>
                 </CardContent>
@@ -70,7 +70,7 @@ export default function ImpactPage() {
           </div>
         </section>
 
-        <section className="mb-12">
+        <section className="mb-8">
           <div className="flex items-center gap-2 mb-4">
             <Heart className="h-5 w-5 text-primary" />
             <h2 className="text-lg font-semibold text-foreground">服務觸及與網站觸及</h2>
@@ -78,7 +78,7 @@ export default function ImpactPage() {
           <div className="grid sm:grid-cols-2 gap-4">
             {[...serviceStats, ...websiteStats].map((stat) => (
               <Card key={stat.label}>
-                <CardContent className="p-6">
+                <CardContent className="p-5">
                   <p className="text-sm text-muted-foreground mb-2">{stat.label}</p>
                   <p className="text-3xl font-bold text-primary">{stat.value}</p>
                   {"note" in stat && stat.note && <p className="text-xs text-muted-foreground mt-2">{stat.note}</p>}
@@ -88,7 +88,7 @@ export default function ImpactPage() {
           </div>
         </section>
 
-        <section className="mb-12">
+        <section className="mb-8">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="h-5 w-5 text-primary" />
             <h2 className="text-lg font-semibold text-foreground">互動來源完整排行</h2>
@@ -114,12 +114,12 @@ export default function ImpactPage() {
         </section>
 
         {/* Partnerships */}
-        <section className="mb-12">
+        <section className="mb-8">
           <h2 className="text-lg font-semibold text-foreground mb-4">合作夥伴</h2>
           <div className="grid gap-4">
             {partnerships.map((partner) => (
               <Card key={partner.title}>
-                <CardContent className="p-6">
+                <CardContent className="p-5">
                   <h3 className="font-medium text-foreground mb-1">{partner.title}</h3>
                   <p className="text-sm text-muted-foreground">{partner.description}</p>
                 </CardContent>
@@ -129,14 +129,14 @@ export default function ImpactPage() {
         </section>
 
         {/* Media */}
-        <section className="mb-12">
+        <section className="mb-8">
           <h2 className="text-lg font-semibold text-foreground mb-4">媒體報導</h2>
           <div className="grid sm:grid-cols-3 gap-4">
             {mediaFeatures.map((media) => {
               const Icon = media.icon
               return (
                 <Card key={media.title}>
-                  <CardContent className="p-6">
+                  <CardContent className="p-5">
                     <Icon className="h-6 w-6 text-primary mb-3" />
                     <h3 className="font-medium text-foreground mb-1">{media.title}</h3>
                     <p className="text-sm text-muted-foreground">{media.subtitle}</p>
@@ -149,7 +149,7 @@ export default function ImpactPage() {
 
         {/* CTA */}
         <Card className="bg-primary/5 border-primary/20">
-          <CardContent className="p-8 text-center">
+          <CardContent className="p-6 text-center">
             <h3 className="text-lg font-semibold text-foreground mb-2">想成為改變的一份子？</h3>
             <p className="text-muted-foreground mb-6">無論你是個人、社工或機構，都歡迎一起加入</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">

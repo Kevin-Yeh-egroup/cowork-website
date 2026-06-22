@@ -4,12 +4,13 @@ import Link from "next/link"
 import Image from "next/image"
 import { useState } from "react"
 import type { LucideIcon } from "lucide-react"
-import { Menu, Home, Route, ClipboardCheck, Wrench, BookOpen, Calendar, Users, User, ChevronDown, HandCoins } from "lucide-react"
+import { Menu, Route, ClipboardCheck, Wrench, BookOpen, Calendar, Users, User, ChevronDown, HandCoins } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { externalLinks } from "@/lib/external-links"
 import { getAuthHomePath, useDemoAuth, type DemoAuthState } from "@/lib/demo-auth"
 import { scenarioCategories } from "@/lib/scenarios-data"
+import { serviceAudiences } from "@/lib/life-stages-data"
 
 type NavItem = {
   href: string
@@ -22,11 +23,6 @@ type NavItem = {
 }
 
 const baseNavItems: NavItem[] = [
-  {
-    href: "/",
-    label: "首頁",
-    icon: Home,
-  },
   {
     href: "/assessment",
     label: "開始檢測",
@@ -51,19 +47,29 @@ const baseNavItems: NavItem[] = [
     label: "財務工具",
     icon: Wrench,
     children: [
-      { href: "/toolbox/accounting", label: "財務生活記帳助理" },
-      { href: "/toolbox/planning", label: "財務規劃" },
-      { href: "/toolbox/simulator", label: "財務試算" },
-      { href: "/toolbox/debt", label: "債務盤點" },
+      { href: "/toolbox/accounting", label: "記帳助理" },
+      { href: "/toolbox/planning", label: "目標規劃" },
+      { href: "/toolbox#risk-handling", label: "風險處理" },
+      { href: "/toolbox#debt-calculation", label: "債務計算" },
+      { href: "/toolbox#rights-calculation", label: "權益試算" },
     ],
   },
   {
-    href: "/scenarios",
-    label: "情境專區",
+    href: "/life-topics",
+    label: "生活課題",
     icon: Route,
     children: scenarioCategories.map((category) => ({
-      href: `/scenarios#${category.anchor}`,
+      href: `/life-topics#${category.anchor}`,
       label: category.title,
+    })),
+  },
+  {
+    href: "/life-stages",
+    label: "服務對象",
+    icon: Users,
+    children: serviceAudiences.map((stage) => ({
+      href: `/life-stages/${stage.slug}`,
+      label: stage.audience,
     })),
   },
   {
@@ -78,11 +84,6 @@ const baseNavItems: NavItem[] = [
     ],
   },
   {
-    href: "/social-worker",
-    label: "社工工作站",
-    icon: Users,
-  },
-  {
     href: "/events",
     label: "活動與課程",
     icon: Calendar,
@@ -90,6 +91,11 @@ const baseNavItems: NavItem[] = [
       { href: "/events#public", label: "一般民眾" },
       { href: "/events#social-worker", label: "社工與助人工作者" },
     ],
+  },
+  {
+    href: "/social-worker",
+    label: "助人工作者",
+    icon: Users,
   },
 ]
 
@@ -134,7 +140,7 @@ export function Navigation() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/70 bg-background/90 shadow-[0_10px_30px_oklch(0.8_0.08_40_/_0.12)] backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[92rem] px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
@@ -149,12 +155,12 @@ export function Navigation() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden xl:flex items-center gap-1">
+          <nav className="hidden xl:flex items-center gap-0.5">
             {navItems.map((item) => (
               <div key={item.href} className="relative group">
                 <Link
                   href={item.href}
-                  className="flex items-center gap-1 px-2.5 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-secondary/80 rounded-full transition-colors"
+                  className="flex items-center gap-1 px-2 py-2 text-base text-muted-foreground hover:text-foreground hover:bg-secondary/80 rounded-full transition-colors"
                 >
                   {item.label}
                   {item.children && <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:rotate-180" />}
@@ -200,6 +206,8 @@ export function Navigation() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-72">
+              <SheetTitle className="sr-only">主選單</SheetTitle>
+              <SheetDescription className="sr-only">網站主要導覽連結</SheetDescription>
               <nav className="flex flex-col gap-2 mt-8">
                 {navItems.map((item) => {
                   const Icon = item.icon

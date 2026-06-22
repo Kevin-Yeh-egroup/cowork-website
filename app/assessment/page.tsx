@@ -32,9 +32,9 @@ const assessments = [
 
 export default function AssessmentPage() {
   return (
-    <div className="min-h-screen px-4 py-12">
+    <div className="min-h-screen px-4 py-10">
       <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-10">
+        <div className="text-center mb-7">
           <h1 className="text-3xl font-bold text-foreground mb-3">開始檢測</h1>
           <p className="text-muted-foreground text-lg">選擇適合你的檢測，了解自己的財務狀況</p>
         </div>
@@ -45,9 +45,9 @@ export default function AssessmentPage() {
             return (
               <Link key={assessment.href} href={assessment.href} className="block group">
                 <Card className="border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300">
-                  <CardContent className="p-6 flex items-center gap-5">
-                    <div className={`w-14 h-14 rounded-xl ${assessment.color} flex items-center justify-center shrink-0`}>
-                      <Icon className="h-7 w-7" />
+                  <CardContent className="flex items-center gap-4 p-5">
+                    <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${assessment.color}`}>
+                      <Icon className="h-6 w-6" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-lg text-foreground mb-1">{assessment.title}</h3>

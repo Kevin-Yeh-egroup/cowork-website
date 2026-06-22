@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { ArrowRight, Award, ExternalLink, Shield, Heart, TrendingUp, Headphones, BookOpen, Newspaper } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
+import { HomeSituationIllustration } from "@/components/context-illustration"
 import { assessmentLinks } from "@/lib/assessment-links"
 import { externalLinks } from "@/lib/external-links"
 
@@ -77,15 +78,20 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="px-4 py-12 sm:py-20">
+      <section className="relative overflow-hidden px-4 py-10 sm:py-12">
+        <div className="absolute inset-x-0 top-0 h-80 bg-secondary/35" aria-hidden="true" />
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4 text-balance">
-              你現在想處理哪一件事？
-            </h1>
-            <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto text-balance">
-              不用懂理財，先從最接近你的狀況開始
-            </p>
+          <div className="relative mb-6 grid overflow-hidden rounded-lg border border-border/70 bg-card/90 px-5 py-8 sm:px-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,0.8fr)] lg:items-center lg:gap-8 lg:px-10">
+            <div className="max-w-xl">
+              <p className="mb-3 text-sm font-medium text-primary">好理家在</p>
+              <h1 className="text-2xl font-bold text-foreground text-balance sm:text-3xl lg:text-4xl">
+                先把生活裡的財務壓力，整理成可以開始的下一步
+              </h1>
+              <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
+                不必一次把所有問題想清楚。從現在最接近你的生活狀況開始，慢慢看見能先處理的順序。
+              </p>
+            </div>
+            <HomeSituationIllustration className="mt-6 h-72 sm:h-80 lg:mt-0 lg:h-72" />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -94,7 +100,7 @@ export default function HomePage() {
               return (
                 <Link key={card.href} href={card.href} className="group">
                   <Card className={`h-full border-border/70 bg-card/90 shadow-[0_18px_45px_oklch(0.78_0.08_42_/_0.12)] transition-all duration-300 hover:border-primary/40 hover:shadow-[0_22px_55px_oklch(0.74_0.12_34_/_0.2)] group-hover:-translate-y-1 ${card.highlight ? "ring-2 ring-accent/20" : ""}`}>
-                    <CardContent className="p-6">
+                    <CardContent className="p-5">
                       <div className={`w-12 h-12 rounded-2xl ${card.color} flex items-center justify-center mb-4`}>
                         <Icon className="h-6 w-6" />
                       </div>
@@ -113,9 +119,9 @@ export default function HomePage() {
       </section>
 
       {/* Trust Section */}
-      <section id="trust" className="px-4 py-12 bg-card/70">
+      <section id="trust" className="px-4 py-10 bg-card/70">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <h2 className="text-xl sm:text-2xl font-semibold text-foreground mb-2 text-balance">
               已經有超過 104,000 人開始整理自己的財務
             </h2>
@@ -125,7 +131,7 @@ export default function HomePage() {
           </div>
 
           <Card className="mb-4 border-primary/30 bg-gradient-to-br from-primary/15 via-card to-secondary/80 shadow-[0_18px_45px_oklch(0.78_0.08_42_/_0.14)]">
-            <CardContent className="p-6">
+            <CardContent className="p-5">
               <div className="flex flex-col md:flex-row gap-5">
                 <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center shrink-0">
                   <Award className="h-7 w-7 text-primary" />
@@ -167,7 +173,7 @@ export default function HomePage() {
                         <p className="text-sm font-semibold text-foreground line-clamp-2">{item.previewText}</p>
                       </div>
                     </div>
-                    <CardContent className="p-6">
+                    <CardContent className="p-5">
                       <h3 className="font-semibold text-foreground mb-2">{item.title}</h3>
                       <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{item.description}</p>
                       <Link

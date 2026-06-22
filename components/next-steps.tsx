@@ -19,8 +19,8 @@ export function NextSteps({ title = "下一步你可以這樣做：", showAll = 
   const displaySteps = showAll ? steps : steps.slice(0, 2)
   
   return (
-    <div className="bg-card rounded-2xl p-6 border border-border">
-      <p className="text-lg font-medium text-foreground mb-4">{title}</p>
+    <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
+      <p className="mb-3 text-base font-medium text-foreground sm:text-lg">{title}</p>
       <div className="flex flex-wrap gap-3">
         {displaySteps.map((step) => {
           const Icon = step.icon

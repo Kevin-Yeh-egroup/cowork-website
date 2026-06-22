@@ -36,10 +36,10 @@ export default function MediaReportsPage() {
   )
 
   return (
-    <div className="min-h-screen px-4 py-12">
+    <div className="min-h-screen px-4 py-10">
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 mb-4">
+        <div className="text-center mb-7">
+          <div className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10">
             <Newspaper className="h-6 w-6 text-primary" />
           </div>
           <h1 className="text-3xl font-bold text-foreground mb-3">媒體報導</h1>
@@ -47,8 +47,8 @@ export default function MediaReportsPage() {
         </div>
 
         <Card className="border-primary/10 bg-card/80">
-          <CardContent className="p-5 sm:p-6">
-            <div className="flex flex-wrap gap-2 mb-8">
+          <CardContent className="p-4 sm:p-5">
+            <div className="mb-5 flex flex-wrap gap-2">
               {sourceFilters.map((filter) => (
                 <button
                   key={filter.label}
@@ -77,19 +77,19 @@ export default function MediaReportsPage() {
                 : `顯示 ${selectedSource} ${filteredReports.length} 篇媒體報導`}
             </p>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {filteredReports.map((report, index) => {
                 const colorClass = colorClasses[index % colorClasses.length]
                 return (
                   <Link key={`${report.title}-${index}`} href={report.href} className="group block">
                     <Card className={`border-l-4 transition-all hover:shadow-md ${colorClass}`}>
-                      <CardContent className="p-4 sm:p-5">
-                        <div className="flex items-center gap-4">
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
                           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-background/80 text-sm font-semibold">
                             {index + 1}
                           </div>
                           <div className="min-w-0 flex-1">
-                            <h2 className="font-semibold text-foreground leading-relaxed group-hover:text-primary">
+                            <h2 className="font-semibold leading-snug text-foreground group-hover:text-primary">
                               {report.title}
                             </h2>
                             <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">

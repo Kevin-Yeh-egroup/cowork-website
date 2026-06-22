@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { Calculator, FileText, Target, Banknote, MessageSquare, ArrowRight } from "lucide-react"
+import { ArrowRight, Banknote, Calculator, FileText, MessageSquare, Target } from "lucide-react"
+
 import { Card, CardContent } from "@/components/ui/card"
 import { externalLinks } from "@/lib/external-links"
 
@@ -13,46 +14,49 @@ const accountingToolLink = (tool: string, accountingTab: number) =>
 
 const categories = [
   {
-    title: "日常整理",
+    id: "accounting-assistant",
+    title: "記帳助理",
     tools: [
       {
         href: `${financialCalculatorBase}/basic-accounting`,
-        title: "財務生活記帳助理",
-        description: "智慧分類、月度分析、視覺化圖表，協助整理日常收支。",
+        title: "記帳助理",
+        description: "輸入日常收支、分類與備註，逐步整理每月金流與生活支出。",
         icon: Calculator,
       },
       {
         href: accountingToolLink("monthly-financial-report", 1),
         title: "財務月報表",
-        description: "分析收支、資產負債與現金流，掌握整體財務狀況。",
+        description: "彙整收入、支出與結餘，快速看懂每月財務狀況。",
         icon: Banknote,
       },
       {
         href: accountingToolLink("financial-health-dashboard", 3),
-        title: "財務健康與安全儀表板",
-        description: "評估收支平衡、資產負債、緊急預備金與保障指標。",
+        title: "財務健康儀表板",
+        description: "檢視收入、支出、負債與資產，掌握整體財務健康。",
         icon: Target,
       },
     ],
   },
   {
+    id: "goal-planning",
     title: "目標規劃",
     tools: [
       {
         href: externalLinks.financialPlanning,
-        title: "夢想達成財務規劃",
-        description: "透過互動式步驟整理目標、金額與行動計畫。",
+        title: "生活目標財務規劃",
+        description: "依照人生目標整理金額、時間與行動計畫。",
         icon: Target,
       },
       {
         href: "/toolbox/simulator",
-        title: "存錢試算小工具",
+        title: "儲蓄目標試算",
         description: "輸入目標金額與每月可存金額，估算達成時間。",
         icon: Calculator,
       },
     ],
   },
   {
+    id: "risk-handling",
     title: "風險處理",
     tools: [
       {
@@ -64,38 +68,21 @@ const categories = [
       {
         href: debtToolLink("interest-calculator", 1),
         title: "債務利率試算",
-        description: "整合還款方式、寬限期與法定利率檢測，掌握借貸成本。",
+        description: "輸入本金、利率與期數，初步估算利息與還款壓力。",
         icon: Calculator,
       },
       {
         href: accountingToolLink("debt-assessment", 1),
         title: "債務盤點表",
-        description: "整理債權人、金額與利率，協助建立還款計畫。",
+        description: "整理債務項目、金額與還款狀態，先看清楚整體壓力。",
         icon: FileText,
       },
     ],
   },
   {
-    title: "權益試算",
+    id: "debt-calculation",
+    title: "債務試算",
     tools: [
-      {
-        href: accountingToolLink("severance-calculator", 2),
-        title: "資遣費試算",
-        description: "依勞基法與勞退條例試算資遣費，支援多種年資情境。",
-        icon: FileText,
-      },
-      {
-        href: accountingToolLink("overtime-calculator", 2),
-        title: "加班費試算",
-        description: "依勞基法試算平日、休息日與休假日出勤費用。",
-        icon: Calculator,
-      },
-      {
-        href: accountingToolLink("annual-leave-calculator", 2),
-        title: "特休假試算",
-        description: "依勞基法第 38 條試算特休天數與不同給假方式。",
-        icon: Target,
-      },
       {
         href: debtToolLink("credit-card", 2),
         title: "信用卡",
@@ -105,7 +92,7 @@ const categories = [
       {
         href: debtToolLink("loan-calculator", 2),
         title: "信貸",
-        description: "計算每月還款金額、寬限期與額外費用，掌握貸款成本。",
+        description: "試算信貸月付金、利息與還款期數，評估每月負擔。",
         icon: Calculator,
       },
       {
@@ -117,7 +104,7 @@ const categories = [
       {
         href: debtToolLink("new-youth-loan", 2),
         title: "新青安",
-        description: "試算青年安心成家優惠貸款方案與長期付款規劃。",
+        description: "試算新青安貸款利率、補貼與月付金，掌握購屋壓力。",
         icon: Target,
       },
       {
@@ -135,8 +122,32 @@ const categories = [
       {
         href: debtToolLink("pawn-shop", 2),
         title: "當鋪",
-        description: "試算質押借款的利息與費用，了解借款價值與成本。",
+        description: "試算當鋪借款利息與還款成本，避免高成本借貸風險。",
         icon: Banknote,
+      },
+    ],
+  },
+  {
+    id: "rights-calculation",
+    title: "權益試算",
+    tools: [
+      {
+        href: accountingToolLink("severance-calculator", 2),
+        title: "資遣費試算",
+        description: "依勞基法與勞退條例試算資遣費，支援多種年資情境。",
+        icon: FileText,
+      },
+      {
+        href: accountingToolLink("overtime-calculator", 2),
+        title: "加班費試算",
+        description: "依勞基法試算平日、休息日與國定假日加班費。",
+        icon: Calculator,
+      },
+      {
+        href: accountingToolLink("annual-leave-calculator", 2),
+        title: "特休假試算",
+        description: "依勞基法第 38 條試算特休天數與不同給假方式。",
+        icon: Target,
       },
     ],
   },
@@ -144,30 +155,33 @@ const categories = [
 
 export default function ToolboxPage() {
   return (
-    <div className="min-h-screen px-4 py-12">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-foreground mb-3">財務工具</h1>
-          <p className="text-muted-foreground text-lg">選擇適合你的工具，一步步改善財務狀況</p>
+    <div className="min-h-screen px-4 py-10">
+      <div className="mx-auto max-w-4xl">
+        <div className="mb-7 text-center">
+          <h1 className="mb-3 text-3xl font-bold text-foreground">財務工具</h1>
+          <p className="text-lg text-muted-foreground">
+            如果你想先自己整理，可以從記帳、規劃、風險與試算工具開始。
+          </p>
         </div>
 
-        <div className="space-y-10">
+        <div className="space-y-7">
           {categories.map((category) => (
-            <div key={category.title}>
-              <h2 className="text-lg font-semibold text-foreground mb-4 px-1">{category.title}</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <section key={category.id} id={category.id} className="scroll-mt-24">
+              <h2 className="mb-4 px-1 text-lg font-semibold text-foreground">{category.title}</h2>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {category.tools.map((tool) => {
                   const Icon = tool.icon
+
                   return (
                     <Link key={tool.href} href={tool.href} className="group">
-                      <Card className="h-full border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300">
-                        <CardContent className="p-6">
-                          <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                      <Card className="h-full border-border transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
+                        <CardContent className="p-5">
+                          <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
                             <Icon className="h-6 w-6 text-primary" />
                           </div>
-                          <h3 className="font-semibold text-foreground mb-2">{tool.title}</h3>
-                          <p className="text-sm text-muted-foreground mb-4">{tool.description}</p>
-                          <span className="text-sm text-primary font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                          <h3 className="mb-2 font-semibold text-foreground">{tool.title}</h3>
+                          <p className="mb-3 text-sm leading-snug text-muted-foreground">{tool.description}</p>
+                          <span className="flex items-center gap-1 text-sm font-medium text-primary transition-all group-hover:gap-2">
                             開始使用 <ArrowRight className="h-4 w-4" />
                           </span>
                         </CardContent>
@@ -176,7 +190,7 @@ export default function ToolboxPage() {
                   )
                 })}
               </div>
-            </div>
+            </section>
           ))}
         </div>
       </div>

@@ -23,9 +23,9 @@ const steps = [
 
 export function ProcessSection() {
   return (
-    <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8">
+    <section className="px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
       <div className="mx-auto max-w-4xl">
-        <h2 className="text-2xl sm:text-3xl font-semibold text-foreground text-center mb-12 text-balance">
+        <h2 className="mb-6 text-center text-2xl font-semibold text-foreground text-balance sm:text-3xl">
           諮詢流程
         </h2>
         <div className="hidden md:grid md:grid-cols-4 gap-4">
@@ -34,13 +34,13 @@ export function ProcessSection() {
               {index < steps.length - 1 && (
                 <div className="absolute top-5 left-1/2 w-full h-0.5 bg-border" />
               )}
-              <div className="relative z-10 flex-shrink-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center mb-4">
+              <div className="relative z-10 mb-3 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary">
                 <span className="text-sm font-medium text-primary-foreground">
                   {step.number}
                 </span>
               </div>
-              <h3 className="font-medium text-foreground mb-2">{step.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <h3 className="mb-1 font-medium text-foreground">{step.title}</h3>
+              <p className="text-sm leading-snug text-muted-foreground">
                 {step.description}
               </p>
             </div>
@@ -49,7 +49,7 @@ export function ProcessSection() {
 
         <div className="md:hidden space-y-0">
           {steps.map((step, index) => (
-            <div key={index} className="relative flex gap-4 pb-8 last:pb-0">
+            <div key={index} className="relative flex gap-4 pb-6 last:pb-0">
               {index < steps.length - 1 && (
                 <div className="absolute left-[19px] top-10 w-0.5 h-[calc(100%-24px)] bg-border" />
               )}
@@ -60,7 +60,7 @@ export function ProcessSection() {
               </div>
               <div className="pt-1.5">
                 <h3 className="font-medium text-foreground mb-1">{step.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm leading-snug text-muted-foreground">
                   {step.description}
                 </p>
               </div>
