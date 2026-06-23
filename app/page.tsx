@@ -149,7 +149,7 @@ export default function HomePage() {
             </CardContent>
           </Card>
 
-          <div>
+          <div id="about" className="scroll-mt-24">
             <h2 className="text-xl sm:text-2xl font-semibold text-foreground mb-4 text-center">關於我們</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {aboutLinks.map((item) => {

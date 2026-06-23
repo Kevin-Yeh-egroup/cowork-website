@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { Bot, MessageCircleQuestion, Send, X } from "lucide-react"
+import { Bot, CircleHelp, Send, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { externalLinks } from "@/lib/external-links"
@@ -15,7 +15,6 @@ const actionLinks = [
 ]
 
 export function FloatingAskButton() {
-  const [isOpen, setIsOpen] = useState(false)
   const [input, setInput] = useState("")
   const [hasResponse, setHasResponse] = useState(false)
 
@@ -24,9 +23,11 @@ export function FloatingAskButton() {
     setHasResponse(true)
   }
 
-  if (isOpen) {
-    return (
-      <div className="fixed bottom-6 right-6 z-50 w-[calc(100vw-2rem)] max-w-sm rounded-2xl border border-border bg-card shadow-2xl">
+  return (
+    <div className="fixed bottom-24 right-5 z-50 sm:right-6">
+      <input id="floating-ask-toggle" type="checkbox" className="peer sr-only" />
+
+      <div className="pointer-events-none invisible absolute bottom-16 right-0 w-[calc(100vw-2rem)] max-w-sm translate-y-2 rounded-2xl border border-border bg-card opacity-0 shadow-2xl transition-all peer-checked:pointer-events-auto peer-checked:visible peer-checked:translate-y-0 peer-checked:opacity-100">
         <div className="flex items-center justify-between border-b border-border p-4">
           <div className="flex items-center gap-2">
             <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
@@ -37,10 +38,16 @@ export function FloatingAskButton() {
               <p className="text-xs text-muted-foreground">先整理你的狀況，再推薦下一步</p>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
+          <label
+            htmlFor="floating-ask-toggle"
+            className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            role="button"
+            aria-label="關閉問問 AI"
+            title="關閉問問 AI"
+          >
             <X className="h-4 w-4" />
             <span className="sr-only">關閉問問 AI</span>
-          </Button>
+          </label>
         </div>
 
         <div className="space-y-3 p-4">
@@ -96,18 +103,16 @@ export function FloatingAskButton() {
           </Button>
         </div>
       </div>
-    )
-  }
 
-  return (
-    <button
-      type="button"
-      onClick={() => setIsOpen(true)}
-      className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-primary text-primary-foreground px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 group"
-    >
-      <MessageCircleQuestion className="h-5 w-5" />
-      <span className="hidden sm:inline text-sm font-medium">不確定從哪開始？先問看看</span>
-      <span className="sm:hidden text-sm font-medium">問問看</span>
-    </button>
+      <label
+        htmlFor="floating-ask-toggle"
+        className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-all hover:scale-105 hover:shadow-xl"
+        role="button"
+        aria-label="不確定從哪開始？先問看看"
+        title="不確定從哪開始？先問看看"
+      >
+        <CircleHelp className="h-6 w-6" />
+      </label>
+    </div>
   )
 }

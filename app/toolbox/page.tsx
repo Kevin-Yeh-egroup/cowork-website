@@ -15,7 +15,7 @@ const accountingToolLink = (tool: string, accountingTab: number) =>
 const categories = [
   {
     id: "accounting-assistant",
-    title: "記帳助理",
+    title: "日常整理",
     tools: [
       {
         href: `${financialCalculatorBase}/basic-accounting`,

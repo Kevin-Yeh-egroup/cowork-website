@@ -5,6 +5,7 @@ import './globals.css'
 import { Navigation } from '@/components/navigation'
 import { FloatingAskButton } from '@/components/floating-ask-button'
 import { SiteBreadcrumbs } from '@/components/site-breadcrumbs'
+import { SiteFooter } from '@/components/site-footer'
 
 const notoSansTC = Noto_Sans_TC({ 
   subsets: ["latin"],
@@ -54,6 +55,7 @@ export default function RootLayout({
           <SiteBreadcrumbs />
           {children}
         </main>
+        <SiteFooter />
         <FloatingAskButton />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
