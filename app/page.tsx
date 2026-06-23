@@ -46,12 +46,10 @@ const heroCards = [
 
 const aboutLinks = [
   {
-    title: "新聞報導",
+    title: "媒體報導",
     description: "查看好理家在獲得各界媒體關注與肯定的完整列表。",
     href: externalLinks.mediaReports,
     cta: "查看報導",
-    previewTitle: "媒體報導",
-    previewText: "42 篇媒體收錄",
     icon: Newspaper,
   },
   {
@@ -59,8 +57,6 @@ const aboutLinks = [
     description: "商業周刊專訪財務社工如何陪伴家庭脫困。",
     href: externalLinks.businessWeeklyInterview,
     cta: "閱讀採訪",
-    previewTitle: "商業周刊",
-    previewText: "讓金錢不再是陷阱的人",
     icon: BookOpen,
   },
   {
@@ -68,8 +64,6 @@ const aboutLinks = [
     description: "透過訪談了解好理家在推動財務健康的理念。",
     href: externalLinks.taipeiRadioInterview,
     cta: "觀看訪問",
-    previewTitle: "YouTube Live",
-    previewText: "台北之音訪問",
     icon: Headphones,
   },
 ]
@@ -161,19 +155,11 @@ export default function HomePage() {
               {aboutLinks.map((item) => {
                 const Icon = item.icon
                 return (
-                  <Card key={item.title} className="h-full overflow-hidden">
-                    <div className="h-32 bg-gradient-to-br from-primary/30 via-secondary to-accent/20 p-4">
-                      <div className="h-full rounded-2xl border border-background/70 bg-background/85 p-3 shadow-sm">
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                            <Icon className="h-4 w-4 text-primary" />
-                          </div>
-                          <p className="text-xs font-medium text-muted-foreground">{item.previewTitle}</p>
-                        </div>
-                        <p className="text-sm font-semibold text-foreground line-clamp-2">{item.previewText}</p>
-                      </div>
-                    </div>
+                  <Card key={item.title} className="h-full border-border/70 bg-card/90">
                     <CardContent className="p-5">
+                      <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                        <Icon className="h-5 w-5 text-primary" />
+                      </div>
                       <h3 className="font-semibold text-foreground mb-2">{item.title}</h3>
                       <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{item.description}</p>
                       <Link

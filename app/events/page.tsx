@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { Calendar, MapPin, Users, ArrowRight, Clock } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { eventAudienceLabels, getStoredEvents, type EventAudience, type ManagedEvent } from "@/lib/events-data"
+import { defaultEvents, eventAudienceLabels, getStoredEvents, type EventAudience, type ManagedEvent } from "@/lib/events-data"
 
 const tabs = [
   { id: "public", label: "一般民眾" },
@@ -65,7 +65,9 @@ export default function EventsPage() {
     setEvents(getStoredEvents())
   }, [])
 
-  const currentEvents = events.filter((event) => event.audience === activeTab && event.visible)
+  const visibleStoredEvents = events.filter((event) => event.audience === activeTab && event.visible)
+  const defaultVisibleEvents = defaultEvents.filter((event) => event.audience === activeTab && event.visible)
+  const currentEvents = visibleStoredEvents.length > 0 ? visibleStoredEvents : defaultVisibleEvents
 
   const handleRegister = (eventId: number) => {
     setRegisteredEvents([...registeredEvents, eventId])
@@ -77,14 +79,14 @@ export default function EventsPage() {
   }
 
   return (
-    <div className="min-h-screen px-4 py-10">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-7">
+    <div className="min-h-screen px-4 py-12">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-3">活動與課程</h1>
           <p className="text-muted-foreground text-lg">參加活動，學習更多財務知識</p>
         </div>
 
-        <div className="mb-5 flex justify-center gap-2">
+        <div className="flex justify-center gap-2 mb-8">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -103,7 +105,7 @@ export default function EventsPage() {
         <div className="space-y-4">
           {currentEvents.length === 0 && (
             <Card>
-              <CardContent className="p-5 text-center text-muted-foreground">
+              <CardContent className="p-8 text-center text-muted-foreground">
                 目前沒有顯示中的{eventAudienceLabels[activeTab]}活動。
               </CardContent>
             </Card>
@@ -114,14 +116,12 @@ export default function EventsPage() {
             
             return (
               <Card key={event.id} className="border-border hover:shadow-lg transition-all duration-300">
-                <CardContent className="flex min-h-24 items-center gap-4 p-5">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                    <Calendar className="h-6 w-6" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                      <h3 className="mb-1 font-semibold text-lg text-foreground">{event.title}</h3>
-                      <p className="sr-only">{event.description}</p>
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                <CardContent className="p-6">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+                    <div className="flex-1">
+                      <h3 className="mb-2 text-lg font-semibold text-foreground">{event.title}</h3>
+                      <p className="mb-4 text-muted-foreground">{event.description}</p>
+                      <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <Calendar className="h-4 w-4" /> {event.date}
                         </span>
@@ -135,17 +135,18 @@ export default function EventsPage() {
                           <Users className="h-4 w-4" /> 名額 {event.spots} 人
                         </span>
                       </div>
-                  </div>
-                  <div className="shrink-0">
+                    </div>
+                    <div className="shrink-0">
                       {isRegistered ? (
-                        <Button disabled variant="secondary" size="sm">
+                        <Button disabled variant="secondary">
                           已報名
                         </Button>
                       ) : (
-                        <Button size="sm" onClick={() => handleRegister(event.id)}>
+                        <Button onClick={() => handleRegister(event.id)}>
                           我要報名 <ArrowRight className="h-4 w-4 ml-2" />
                         </Button>
                       )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>

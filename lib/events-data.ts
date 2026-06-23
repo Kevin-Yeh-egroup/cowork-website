@@ -88,7 +88,9 @@ export function getStoredEvents() {
   }
 
   try {
-    return JSON.parse(stored) as ManagedEvent[]
+    const parsedEvents = JSON.parse(stored) as ManagedEvent[]
+
+    return Array.isArray(parsedEvents) && parsedEvents.length > 0 ? parsedEvents : defaultEvents
   } catch {
     return defaultEvents
   }
