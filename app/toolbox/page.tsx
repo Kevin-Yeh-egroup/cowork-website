@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRight, Banknote, Calculator, FileText, MessageSquare, Target } from "lucide-react"
+import { Banknote, Calculator, FileText, MessageSquare, Target } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { externalLinks } from "@/lib/external-links"
@@ -84,16 +84,22 @@ const categories = [
     title: "債務試算",
     tools: [
       {
-        href: debtToolLink("credit-card", 2),
+        href: "/toolbox/credit-card",
         title: "信用卡",
         description: "分析信用卡債務、利息與最低還款額，降低卡債壓力。",
         icon: Banknote,
       },
       {
-        href: debtToolLink("loan-calculator", 2),
+        href: "/toolbox/personal-loan",
         title: "信貸",
         description: "試算信貸月付金、利息與還款期數，評估每月負擔。",
         icon: Calculator,
+      },
+      {
+        href: "/toolbox/car-loan",
+        title: "車貸",
+        description: "比較車貸利率與條件，找出符合預算的貸款方案。",
+        icon: Banknote,
       },
       {
         href: debtToolLink("mortgage", 2),
@@ -106,12 +112,6 @@ const categories = [
         title: "新青安",
         description: "試算新青安貸款利率、補貼與月付金，掌握購屋壓力。",
         icon: Target,
-      },
-      {
-        href: debtToolLink("car-loan", 2),
-        title: "車貸",
-        description: "比較車貸利率與條件，找出符合預算的貸款方案。",
-        icon: Banknote,
       },
       {
         href: debtToolLink("aid-association", 2),
@@ -167,23 +167,22 @@ export default function ToolboxPage() {
         <div className="space-y-7">
           {categories.map((category) => (
             <section key={category.id} id={category.id} className="scroll-mt-24">
-              <h2 className="mb-4 px-1 text-lg font-semibold text-foreground">{category.title}</h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <h2 className="mb-3 px-1 text-lg font-semibold text-foreground">{category.title}</h2>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {category.tools.map((tool) => {
                   const Icon = tool.icon
 
                   return (
                     <Link key={tool.href} href={tool.href} className="group">
-                      <Card className="h-full border-border transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
-                        <CardContent className="p-5">
-                          <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
-                            <Icon className="h-6 w-6 text-primary" />
+                      <Card className="h-full border-border transition-all duration-200 hover:border-primary/35 hover:bg-primary/5">
+                        <CardContent className="flex gap-3 p-4">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                            <Icon className="h-5 w-5 text-primary" />
                           </div>
-                          <h3 className="mb-2 font-semibold text-foreground">{tool.title}</h3>
-                          <p className="mb-3 text-sm leading-snug text-muted-foreground">{tool.description}</p>
-                          <span className="flex items-center gap-1 text-sm font-medium text-primary transition-all group-hover:gap-2">
-                            開始使用 <ArrowRight className="h-4 w-4" />
-                          </span>
+                          <div className="min-w-0">
+                            <h3 className="mb-1 font-semibold leading-5 text-foreground">{tool.title}</h3>
+                            <p className="line-clamp-2 text-sm leading-5 text-muted-foreground">{tool.description}</p>
+                          </div>
                         </CardContent>
                       </Card>
                     </Link>
