@@ -37,10 +37,6 @@ const baseNavItems: NavItem[] = [
     href: externalLinks.onlineConsultation,
     label: "免費諮詢",
     icon: HandCoins,
-    children: [
-      { href: "/online-consultation/apply", label: "個人申請諮詢" },
-      { href: "/online-consultation/referral", label: "社工協助個案轉介" },
-    ],
   },
   {
     href: "/toolbox",

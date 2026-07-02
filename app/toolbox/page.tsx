@@ -18,7 +18,7 @@ const categories = [
     title: "日常整理",
     tools: [
       {
-        href: `${financialCalculatorBase}/basic-accounting`,
+        href: "/toolbox/accounting",
         title: "記帳助理",
         description: "輸入日常收支、分類與備註，逐步整理每月金流與生活支出。",
         icon: Calculator,

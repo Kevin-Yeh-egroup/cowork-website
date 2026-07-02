@@ -44,7 +44,7 @@ const socialWorkerSidebarSections = [
       { title: "最近逐字稿", href: "/social-worker-tools#transcript" },
       { title: "最近快篩", href: externalLinks.financeScreening },
       { title: "最近議題工具", href: "/social-worker-tools#issue-tools" },
-      { title: "最近轉介", href: "/online-consultation/referral" },
+      { title: "個案轉介申請", href: "/online-consultation/referral" },
     ],
   },
   {
@@ -582,16 +582,19 @@ export default function SocialWorkerPage() {
             </div>
 
             <div className="mb-6 bg-card border border-border rounded-xl p-5">
-              <h2 className="text-lg font-semibold text-foreground mb-2">社工工作提醒</h2>
-              <p className="text-sm leading-relaxed text-muted-foreground mb-4">
-                若個案尚未使用系統，仍可先由社工建立會談紀錄與風險快篩，後續再邀請個案使用記帳或檢測工具補齊資料。
-              </p>
-              <Link
-                href="/online-consultation/referral"
-                className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
-              >
-                聯繫支援團隊 <ArrowRight className="h-4 w-4" />
-              </Link>
+              <div className="grid gap-4 md:grid-cols-[1fr_220px] md:items-center">
+                <div>
+                  <h2 className="text-lg font-semibold text-foreground mb-2">社工工作提醒</h2>
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    若個案尚未使用系統，仍可先由社工建立會談紀錄與風險快篩；需要好理家在協助時，再由這裡送出個案轉介申請。
+                  </p>
+                </div>
+                <Button asChild>
+                  <Link href="/online-consultation/referral">
+                    個案轉介申請 <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
             </div>
 
             {achievementState && (

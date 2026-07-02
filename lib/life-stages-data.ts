@@ -47,7 +47,7 @@ export const lifeStages: LifeStage[] = [
       { title: "退休準備", href: "/life-topics/work-income/retirement-prep" },
     ],
     offerings: ["財務健康檢測", "財務工具", "免費諮詢", "社工合作服務"],
-    partners: ["勞動部", "勞保局", "台灣就業通", "合作單位"],
+    partners: ["法律諮詢服務", "勞動權益諮詢", "就業與職涯支持", "財務與債務協談"],
     actions: ["個案轉介", "財務講座", "培力課程", "專案合作"],
   },
   {

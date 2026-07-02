@@ -172,6 +172,13 @@ function getOfferingLinks(offerings: string[]) {
   return links.some((link) => link.title === activitiesLink.title) ? links : [...links, activitiesLink]
 }
 
+const partnerDescriptions: Record<string, string> = {
+  法律諮詢服務: "可串接合作單位的法律諮詢頁面，協助處理薪資、契約、資遣或勞資爭議。",
+  勞動權益諮詢: "可放入勞動權益相關服務，讓使用者知道可以先問誰、準備哪些資料。",
+  就業與職涯支持: "可連到就業媒合、職涯諮詢、職訓課程或轉職支持服務。",
+  財務與債務協談: "可連到合作單位或好理家在的財務整理、債務盤點與諮詢服務。",
+}
+
 export default async function LifeStageDetailPage({ params }: LifeStageDetailPageProps) {
   const { stage } = await params
   const data = findLifeStage(stage)
@@ -238,25 +245,30 @@ export default async function LifeStageDetailPage({ params }: LifeStageDetailPag
                     <div key={partner} className="rounded-lg border border-border/70 bg-background/75 p-4">
                       <Landmark className="mb-3 h-5 w-5 text-primary" />
                       <p className="font-medium text-foreground">{partner}</p>
+                      {partnerDescriptions[partner] ? (
+                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{partnerDescriptions[partner]}</p>
+                      ) : null}
                     </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-border/80 bg-card/90">
-              <CardContent className="p-5">
-                <h2 className="text-xl font-semibold text-foreground">合作模式</h2>
-                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  {collaborationModes.map((action) => (
-                    <div key={action} className="rounded-lg border border-border/70 bg-background/75 p-4">
-                      <Network className="mb-3 h-5 w-5 text-primary" />
-                      <p className="font-medium text-foreground">{action}</p>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            {data.slug !== "working-life" ? (
+              <Card className="border-border/80 bg-card/90">
+                <CardContent className="p-5">
+                  <h2 className="text-xl font-semibold text-foreground">合作模式</h2>
+                  <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    {collaborationModes.map((action) => (
+                      <div key={action} className="rounded-lg border border-border/70 bg-background/75 p-4">
+                        <Network className="mb-3 h-5 w-5 text-primary" />
+                        <p className="font-medium text-foreground">{action}</p>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ) : null}
           </main>
 
           <aside className="space-y-4 lg:sticky lg:top-24">
