@@ -4,7 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { useState } from "react"
 import type { LucideIcon } from "lucide-react"
-import { Menu, Route, ClipboardCheck, Wrench, BookOpen, Calendar, Users, User, ChevronDown, HandCoins } from "lucide-react"
+import { Menu, Route, ClipboardCheck, Wrench, BookOpen, Calendar, Users, User, ChevronDown, HandCoins, Map } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { externalLinks } from "@/lib/external-links"
@@ -92,6 +92,11 @@ const baseNavItems: NavItem[] = [
     href: "/social-worker",
     label: "助人工作者",
     icon: Users,
+  },
+  {
+    href: "https://www.familyfinhealth.com/sitemap",
+    label: "網站導覽",
+    icon: Map,
   },
 ]
 

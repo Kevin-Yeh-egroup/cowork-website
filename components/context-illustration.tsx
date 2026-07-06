@@ -16,7 +16,7 @@ const audienceImages: Record<string, { alt: string; src: string }> = {
     src: "/audiences/health-challenge.webp",
   },
   "independent-life": {
-    alt: "自立少年整理生活物品的插圖",
+    alt: "自立青少年整理生活物品的插圖",
     src: "/audiences/independent-life.webp",
   },
   "family-caregiver": {

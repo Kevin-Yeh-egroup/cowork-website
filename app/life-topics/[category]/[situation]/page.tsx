@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { ArrowRight, BookOpen, ClipboardCheck, HandCoins, LifeBuoy, Wrench } from "lucide-react"
+import { ArrowRight, BookOpen, ClipboardCheck, HandCoins, Headphones, LifeBuoy, Newspaper, Wrench } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { externalLinks } from "@/lib/external-links"
 import { findScenarioSituation, scenarioCategories } from "@/lib/scenarios-data"
@@ -124,6 +124,104 @@ function getSituationIntro(slug: string, title: string, categoryTitle: string) {
   )
 }
 
+const firstJobIntroItems = [
+  "\u5206\u914d\u7b2c\u4e00\u4efd\u85aa\u6c34",
+  "\u8655\u7406\u4ea4\u901a\u8207\u9910\u8cbb",
+  "\u9762\u5c0d\u5bb6\u7528\u6216\u5b78\u8cb8",
+  "\u5efa\u7acb\u7b2c\u4e00\u7b46\u9810\u5099\u91d1",
+]
+
+function getSituationIntroItems(title: string) {
+  return [
+    `先看清楚「${title}」正在影響哪些收支`,
+    "整理目前已經知道的數字與資料",
+    "確認可以先做的一個小行動",
+    "需要時找諮詢或資源一起討論",
+  ]
+}
+
+function getArticleOverviewHref(slug: string) {
+  return `/content/articles?scenario=${slug}`
+}
+
+function getScenarioArticleLinks(title: string, slug: string) {
+  const href = getArticleOverviewHref(slug)
+
+  return {
+    concerns: [
+      {
+        title: `「${title}」可以先從哪些數字開始整理？`,
+        href,
+      },
+      {
+        title: `遇到「${title}」時，下一步可以先做什麼？`,
+        href,
+      },
+      {
+        title: `如果不確定怎麼處理「${title}」，可以找哪些資源？`,
+        href,
+      },
+    ],
+    blindSpots: [
+      {
+        title: `不要只看眼前壓力，也要看「${title}」對每月生活的影響`,
+        href,
+      },
+      {
+        title: `先把資料留下來，之後討論「${title}」會比較清楚`,
+        href,
+      },
+      {
+        title: "有些資源不一定要等到很嚴重才使用",
+        href,
+      },
+    ],
+  }
+}
+
+function getContentResources(title: string, slug: string) {
+  const articleOverviewHref = getArticleOverviewHref(slug)
+
+  return [
+    {
+      label: "\u6587\u7ae0",
+      icon: BookOpen,
+      items: [
+        {
+          title: "\u67e5\u770b\u9019\u500b\u60c5\u5883\u7684\u6587\u7ae0\u7e3d\u89bd",
+          description: "\u628a\u9019\u500b\u60c5\u5883\u76f8\u95dc\u7684\u6587\u7ae0\u653e\u5728\u4e00\u8d77\uff0c\u53ef\u4ee5\u4f9d\u76ee\u524d\u6700\u5728\u610f\u7684\u554f\u984c\u6162\u6162\u770b\u3002",
+          href: articleOverviewHref,
+          meta: "\u6587\u7ae0\u7e3d\u89bd",
+        },
+      ],
+    },
+    {
+      label: "Podcast",
+      icon: Headphones,
+      items: [
+        {
+          title: "\u7b2c\u4e00\u6b21\u9818\u85aa\u6c34\uff0c\u600e\u9ebc\u4e0d\u8b93\u9322\u4e00\u4e0b\u5c31\u4e0d\u898b\uff1f",
+          description: "\u7528\u804a\u5929\u65b9\u5f0f\u807d\u65b0\u9bae\u4eba\u5e38\u898b\u7684\u82b1\u8cbb\u8207\u7126\u616e\u3002",
+          href: "/content/podcast/1",
+          meta: "25 \u5206\u9418",
+        },
+      ],
+    },
+    {
+      label: "\u5c08\u6b04",
+      icon: Newspaper,
+      items: [
+        {
+          title: "\u65b0\u9bae\u4eba\u7684\u7b2c\u4e00\u5e74\uff1a\u4e0d\u662f\u5b58\u5f88\u591a\uff0c\u800c\u662f\u5148\u770b\u61c2\u81ea\u5df1\u7684\u9322\u6d41",
+          description: "\u7528\u6848\u4f8b\u770b\u6536\u5165\u3001\u652f\u51fa\u8207\u5bb6\u4eba\u671f\u5f85\u600e\u9ebc\u4e00\u8d77\u6574\u7406\u3002",
+          href: "/content/column/1",
+          meta: "\u6848\u4f8b",
+        },
+      ],
+    },
+  ]
+}
+
 export default async function LifeTopicDetailPage({ params }: LifeTopicDetailPageProps) {
   const { category, situation } = await params
   const data = findScenarioSituation(category, situation)
@@ -133,7 +231,11 @@ export default async function LifeTopicDetailPage({ params }: LifeTopicDetailPag
   const { category: categoryData, situation: situationData } = data
   const siblingSituations = categoryData.situations.filter((item) => item.slug !== situationData.slug)
   const situationIntro = getSituationIntro(situationData.slug, situationData.title, categoryData.title)
-  const siblingSituationsTitle = `關於${categoryData.title}`
+  const situationIntroItems =
+    situationData.slug === "first-job" ? firstJobIntroItems : getSituationIntroItems(situationData.title)
+  const scenarioArticleLinks = getScenarioArticleLinks(situationData.title, situationData.slug)
+  const contentResources = getContentResources(situationData.title, situationData.slug)
+  const siblingSituationsTitle = "\u4f60\u53ef\u80fd\u4e5f\u6703\u95dc\u5fc3"
 
   return (
     <div className="min-h-screen px-4 py-10 sm:py-14">
@@ -150,46 +252,80 @@ export default async function LifeTopicDetailPage({ params }: LifeTopicDetailPag
           <main className="space-y-5">
             <Card className="border-border/80 bg-card/90">
               <CardContent className="p-5">
-                <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">{situationIntro}</p>
+                <div className="space-y-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
+                  {situationData.slug === "first-job" ? (
+                    <div className="space-y-1">
+                      <p className="font-semibold text-foreground">{"\u525b\u958b\u59cb\u5de5\u4f5c\uff0c"}</p>
+                      <p>{"\u6536\u5165\u958b\u59cb\u7a69\u5b9a\u4e86\uff0c"}</p>
+                      <p>{"\u751f\u6d3b\u958b\u92b7\u4e5f\u6162\u6162\u589e\u52a0\u3002"}</p>
+                    </div>
+                  ) : (
+                    <p>{situationIntro}</p>
+                  )}
+                  <div>
+                    <p className="font-medium text-foreground">{"\u4f60\u53ef\u80fd\u6b63\u5728\u5b78\u8457\uff1a"}</p>
+                    <ul className="mt-2 grid grid-cols-1 gap-1 text-sm sm:grid-cols-2 sm:text-base">
+                      {situationIntroItems.map((item) => (
+                        <li key={item} className="flex gap-2">
+                          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
             <Card className="border-border/80 bg-card/90">
               <CardContent className="p-5">
-                <h2 className="text-xl font-semibold text-foreground">常見困擾</h2>
-                <ul className="mt-3 space-y-3 text-sm leading-relaxed text-muted-foreground">
-                  {getCommonConcerns(situationData.title).map((item) => (
-                    <li key={item} className="flex gap-2">
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                      <span>{item}</span>
-                    </li>
+                <h2 className="text-xl font-semibold text-foreground">{"\u5927\u5bb6\u6700\u5e38\u554f"}</h2>
+                <div className="mt-3 space-y-2">
+                  {scenarioArticleLinks.concerns.map((item) => (
+                    <Link
+                      key={item.title}
+                      href={item.href}
+                      className="group block rounded-xl border border-border/60 bg-background/70 px-4 py-3 transition-colors hover:border-primary/30 hover:bg-primary/10"
+                    >
+                      <span className="font-medium leading-relaxed text-primary underline-offset-4 group-hover:underline">
+                        {item.title}
+                      </span>
+                    </Link>
                   ))}
-                </ul>
+                </div>
               </CardContent>
             </Card>
 
             <Card className="border-border/80 bg-card/90">
               <CardContent className="p-5">
-                <h2 className="text-xl font-semibold text-foreground">容易忽略</h2>
-                <ul className="mt-3 space-y-3 text-sm leading-relaxed text-muted-foreground">
-                  {getBlindSpots(situationData.title).map((item) => (
-                    <li key={item} className="flex gap-2">
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                      <span>{item}</span>
-                    </li>
+                <h2 className="text-xl font-semibold text-foreground">{"\u5bb9\u6613\u5ffd\u7565"}</h2>
+                <div className="mt-3 space-y-2">
+                  {scenarioArticleLinks.blindSpots.map((item) => (
+                    <Link
+                      key={item.title}
+                      href={item.href}
+                      className="group block rounded-xl border border-border/60 bg-background/70 px-4 py-3 transition-colors hover:border-primary/30 hover:bg-primary/10"
+                    >
+                      <span className="font-medium leading-relaxed text-primary underline-offset-4 group-hover:underline">
+                        {item.title}
+                      </span>
+                    </Link>
                   ))}
-                </ul>
+                </div>
               </CardContent>
             </Card>
 
             <Card className="border-border/80 bg-card/90">
               <CardContent className="p-5">
-                <h2 className="text-xl font-semibold text-foreground">可以試試</h2>
+                <h2 className="text-xl font-semibold text-foreground">{"\u53ef\u4ee5\u8a66\u8a66"}</h2>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                  {"\u5982\u679c\u770b\u5230\u9019\u88e1\u89ba\u5f97\u60f3\u518d\u5f80\u524d\u4e00\u6b65\uff0c\u53ef\u4ee5\u5148\u9078\u4e00\u500b\u6700\u5bb9\u6613\u958b\u59cb\u7684\u884c\u52d5\u3002"}
+                </p>
                 <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
                   {[
-                    { title: "檢測", description: "先用簡單檢測看壓力與風險輪廓。", href: "/assessment", icon: ClipboardCheck },
-                    { title: "工具", description: "用工具整理收入、支出或債務。", href: "/toolbox", icon: Wrench },
-                    { title: "免費諮詢", description: "需要有人一起看時，可以申請諮詢。", href: externalLinks.onlineConsultation, icon: HandCoins },
+                    { title: "\u6aa2\u6e2c", description: "\u5148\u7528\u7c21\u55ae\u6aa2\u6e2c\u770b\u58d3\u529b\u8207\u98a8\u96aa\u8f2a\u5ed3\u3002", href: "/assessment", icon: ClipboardCheck },
+                    { title: "\u5de5\u5177", description: "\u7528\u5de5\u5177\u6574\u7406\u6536\u5165\u3001\u652f\u51fa\u6216\u50b5\u52d9\u3002", href: "/toolbox", icon: Wrench },
+                    { title: "\u514d\u8cbb\u8aee\u8a62", description: "\u9700\u8981\u6709\u4eba\u4e00\u8d77\u770b\u6642\uff0c\u53ef\u4ee5\u7533\u8acb\u8aee\u8a62\u3002", href: externalLinks.onlineConsultation, icon: HandCoins },
                   ].map((item) => {
                     const Icon = item.icon
 
@@ -211,30 +347,75 @@ export default async function LifeTopicDetailPage({ params }: LifeTopicDetailPag
 
             <Card className="border-border/80 bg-card/90">
               <CardContent className="p-5">
-                <h2 className="text-xl font-semibold text-foreground">可以看看</h2>
-                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                  {[
-                    { title: "文章", href: "/content/articles" },
-                    { title: "Podcast", href: "/content/podcast" },
-                    { title: "專欄", href: "/content/column" },
-                  ].map((item) => (
-                    <Link
-                      key={item.title}
-                      href={item.href}
-                      className="rounded-lg border border-border/70 bg-background/75 p-4 transition-colors hover:border-primary/35"
-                    >
-                      <BookOpen className="mb-3 h-5 w-5 text-primary" />
-                      <p className="font-medium text-foreground">{item.title}</p>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">後續可放與這個情境相關的內容入口。</p>
-                    </Link>
-                  ))}
+                <h2 className="text-xl font-semibold text-foreground">{"\u770b\u770b\u5225\u4eba\u600e\u9ebc\u6574\u7406"}</h2>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                  {"\u7528\u6587\u7ae0\u3001\u8072\u97f3\u6216\u6848\u4f8b\u770b\u770b\u76f8\u4f3c\u72c0\u6cc1\u7684\u4eba\u600e\u9ebc\u60f3\u3001\u600e\u9ebc\u958b\u59cb\u8655\u7406\u3002"}
+                </p>
+                <div className="mt-4 space-y-3">
+                  {contentResources.slice(0, 1).map((group) => {
+                    const Icon = group.icon
+
+                    return (
+                      <div key={group.label} className="rounded-lg border border-border/70 bg-background/75 p-4">
+                        <div className="mb-2 flex items-center gap-2">
+                          <Icon className="h-5 w-5 text-primary" />
+                          <p className="font-semibold text-foreground">{group.label}</p>
+                        </div>
+                        <div className={group.items.length > 1 ? "grid grid-cols-1 gap-3 md:grid-cols-2" : "grid grid-cols-1 gap-3"}>
+                          {group.items.map((item) => (
+                            <Link
+                              key={item.title}
+                              href={item.href}
+                              className="group block rounded-xl bg-card/80 p-3 transition-colors hover:bg-primary/10"
+                            >
+                              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                <div>
+                                  <p className="text-xs font-medium text-primary">{item.meta}</p>
+                                  <h3 className="mt-1 font-semibold leading-snug text-primary underline-offset-4 group-hover:underline">{item.title}</h3>
+                                </div>
+                                <ArrowRight className="hidden h-4 w-4 shrink-0 text-primary sm:block" />
+                              </div>
+                              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })}
+                  <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                    {contentResources.slice(1).map((group) => {
+                      const Icon = group.icon
+
+                      return (
+                        <div key={group.label} className="rounded-lg border border-border/70 bg-background/75 p-4">
+                          <div className="mb-3 flex items-center gap-2">
+                            <Icon className="h-5 w-5 text-primary" />
+                            <p className="font-semibold text-foreground">{group.label}</p>
+                          </div>
+                          <div className="space-y-3">
+                            {group.items.map((item) => (
+                              <Link
+                                key={item.title}
+                                href={item.href}
+                                className="group block rounded-xl bg-card/80 p-3 transition-colors hover:bg-primary/10"
+                              >
+                                <p className="text-xs font-medium text-primary">{item.meta}</p>
+                                <h3 className="mt-1 font-semibold leading-snug text-primary underline-offset-4 group-hover:underline">{item.title}</h3>
+                                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="border-border/80 bg-card/90">
               <CardContent className="p-5">
-                <h2 className="text-xl font-semibold text-foreground">更多資源</h2>
+                <h2 className="text-xl font-semibold text-foreground">{"\u4f60\u53ef\u80fd\u7528\u5f97\u5230\u7684\u8cc7\u6e90"}</h2>
                 <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div className="rounded-lg border border-border/70 bg-background/75 p-4">
                     <LifeBuoy className="mb-3 h-5 w-5 text-primary" />
@@ -249,6 +430,10 @@ export default async function LifeTopicDetailPage({ params }: LifeTopicDetailPag
                 </div>
               </CardContent>
             </Card>
+
+            <p className="rounded-lg border border-primary/20 bg-primary/10 px-5 py-4 text-sm leading-relaxed text-foreground">
+              {"\u5982\u679c\u9084\u662f\u4e0d\u77e5\u9053\u5f9e\u54ea\u958b\u59cb\uff0c\u4e5f\u53ef\u4ee5\u627e\u6211\u5011\u4e00\u8d77\u6574\u7406\u3002"}
+            </p>
           </main>
 
           <aside className="space-y-4 lg:sticky lg:top-24">

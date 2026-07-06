@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { SaveToProfilePrompt } from "@/app/toolbox/_components/save-to-profile-prompt"
 import { currentMemberId } from "@/lib/achievements-data"
 import { recordAchievementEvent } from "@/lib/achievements-service"
 
@@ -438,8 +439,7 @@ const resetForm = () => {
                   </p>
                 </div>
 
-                <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-sm text-muted-foreground">外層可先記最近幾筆；登入後會保存完整紀錄，並可回到我的財務與生活修改。</p>
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
                   <div className="flex flex-col gap-2 sm:flex-row">
                     {editingIndex !== null ? (
                       <Button type="button" variant="outline" onClick={resetForm}>
@@ -510,6 +510,25 @@ const resetForm = () => {
                     <p>若長期記錄頻率，之後可以看出哪些是每月固定、每季、半年或年度才會出現的收支。</p>
                     <p>公司帳戶與個人帳戶分開記，之後比較能看出生活收支與生意收支是否混在一起。</p>
                   </div>
+                </div>
+
+                <SaveToProfilePrompt
+                  toolPath="/toolbox/accounting"
+                  title="留下這次記帳紀錄"
+                  description="登入後可保存到「我的財務與生活」，之後帶入財務月報表與家庭財務全貌，也能回來修改完整紀錄。"
+                  buttonLabel="保存記帳紀錄"
+                />
+
+                <div className="mt-4 rounded-2xl border border-border bg-background/75 p-4">
+                  <p className="font-semibold text-foreground">需要時，也可以找我們一起整理</p>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    如果整理後發現每月都入不敷出，或不知道哪些支出可以先調整，可以預約免費諮詢。
+                  </p>
+                  <Button asChild variant="outline" className="mt-3 justify-start">
+                    <Link href="/online-consultation">
+                      預約免費諮詢 <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
                 </div>
 
                 <div className="mt-4 flex flex-col gap-2">

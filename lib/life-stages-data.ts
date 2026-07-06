@@ -20,7 +20,7 @@ export const lifeStages: LifeStage[] = [
     slug: "independent-life",
     emoji: "🧑‍🎓",
     title: "開始獨立生活",
-    audience: "自立少年",
+    audience: "自立青少年",
     summary: "從第一次自己安排收入、住處、生活費開始，建立能被理解也能被追蹤的財務生活節奏。",
     commonTopics: [
       { title: "剛開始工作", href: "/life-topics/work-income/first-job" },
@@ -29,7 +29,7 @@ export const lifeStages: LifeStage[] = [
       { title: "財務焦慮與入不敷出", href: "/life-topics/debt-pressure/financial-anxiety" },
     ],
     offerings: ["財務健康檢測", "財務生活記帳助理", "免費諮詢", "社工合作服務"],
-    partners: ["自立少年服務單位", "學校與青年支持資源", "就業服務資源", "社福合作單位"],
+    partners: ["自立青少年服務單位", "學校與青年支持資源", "就業服務資源", "社福合作單位"],
     actions: ["整理生活費與固定支出", "建立第一份收支表", "陪同設定短期目標", "連結可用的支持資源"],
   },
   {

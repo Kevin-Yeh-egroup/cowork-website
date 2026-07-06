@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { SaveToProfilePrompt } from "@/app/toolbox/_components/save-to-profile-prompt"
 
 type ToolKind = "association" | "pawn"
 
@@ -511,7 +512,10 @@ function AlternativeDebtLayout({
 
         <div className="grid gap-5 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
           {childArray[0]}
-          <section>{childArray[1]}</section>
+          <section>
+            {childArray[1]}
+            <SaveToProfilePrompt toolPath={kind === "association" ? "/toolbox/aid-association" : "/toolbox/pawn-shop"} />
+          </section>
         </div>
 
         <section className="mt-5 rounded-2xl border border-border bg-card/95 p-5 shadow-sm sm:p-6">

@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { SaveToProfilePrompt } from "@/app/toolbox/_components/save-to-profile-prompt"
 
 type MortgageMode = "standard" | "youth"
 
@@ -770,6 +771,8 @@ export function MortgageToolDraft({ initialMode = "standard" }: { initialMode?: 
                     </p>
                   </div>
                 </div>
+
+                <SaveToProfilePrompt toolPath={mode === "youth" ? "/toolbox/new-youth-loan" : "/toolbox/mortgage"} />
               </CardContent>
             </Card>
           </section>

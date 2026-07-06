@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { SaveToProfilePrompt } from "@/app/toolbox/_components/save-to-profile-prompt"
 
 type PaymentMode = "minimum" | "fixed" | "target"
 
@@ -490,6 +491,8 @@ export default function CreditCardToolDraftPage() {
                     </p>
                   </div>
                 </div>
+
+                <SaveToProfilePrompt toolPath="/toolbox/credit-card" />
               </CardContent>
             </Card>
           </section>

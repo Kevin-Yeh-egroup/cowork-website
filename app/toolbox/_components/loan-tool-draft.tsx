@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { SaveToProfilePrompt } from "@/app/toolbox/_components/save-to-profile-prompt"
 
 type LoanMode = "current" | "remaining" | "target"
 
@@ -508,6 +509,8 @@ export function LoanToolDraft({ config }: { config: LoanToolConfig }) {
                     <p className="text-sm leading-6 text-sky-950">{config.cautionText}</p>
                   </div>
                 </div>
+
+                <SaveToProfilePrompt toolPath={config.kind === "car" ? "/toolbox/car-loan" : "/toolbox/personal-loan"} />
               </CardContent>
             </Card>
           </section>

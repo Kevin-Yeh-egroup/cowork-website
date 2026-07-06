@@ -6,9 +6,6 @@ import { externalLinks } from "@/lib/external-links"
 
 const financialCalculatorBase = externalLinks.financialCalculator
 
-const debtToolLink = (tool: string, debtTab: number) =>
-  `${financialCalculatorBase}?tab=financial-calculator&subTab=debt&debtTab=${debtTab}&tool=${tool}`
-
 const accountingToolLink = (tool: string, accountingTab: number) =>
   `${financialCalculatorBase}?tab=financial-calculator&subTab=accounting&accountingTab=${accountingTab}&tool=${tool}`
 
@@ -24,7 +21,7 @@ const categories = [
         icon: Calculator,
       },
       {
-        href: accountingToolLink("monthly-financial-report", 1),
+        href: "/toolbox/monthly-report",
         title: "財務月報表",
         description: "彙整收入、支出與結餘，快速看懂每月財務狀況。",
         icon: Banknote,
@@ -60,21 +57,9 @@ const categories = [
     title: "風險處理",
     tools: [
       {
-        href: debtToolLink("debt-warning-tool", 3),
-        title: "債務警示工具",
-        description: "檢測 DBR、月負債比與資產負債率，取得風險評估。",
-        icon: FileText,
-      },
-      {
-        href: debtToolLink("interest-calculator", 1),
-        title: "債務利率試算",
-        description: "輸入本金、利率與期數，初步估算利息與還款壓力。",
-        icon: Calculator,
-      },
-      {
-        href: accountingToolLink("debt-assessment", 1),
+        href: "/toolbox/debt",
         title: "債務盤點表",
-        description: "整理債務項目、金額與還款狀態，先看清楚整體壓力。",
+        description: "整理每筆債務後，自動看利率排序、每月還款壓力與 DBR 等警示訊號。",
         icon: FileText,
       },
     ],
