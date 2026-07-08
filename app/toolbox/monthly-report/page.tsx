@@ -81,6 +81,11 @@ const baseReports = {
       { label: "親友借款每月還款", amount: 2600, source: "債務盤點", href: "/toolbox/debt" },
       { label: "當鋪、標會或其他還款", amount: 2200, source: "債務盤點", href: "/toolbox/debt" },
     ],
+    savings: [
+      { label: "緊急預備金", amount: 3000, source: "生活目標財務規劃", href: "/toolbox/planning" },
+      { label: "孩子教育費準備", amount: 2000, source: "生活目標財務規劃", href: "/toolbox/planning" },
+      { label: "一般儲蓄", amount: 1500, source: "記帳助理", href: "/toolbox/accounting" },
+    ],
     businessIncome: [
       { label: "營業額", amount: 0, source: "記帳助理-公司帳", href: "/toolbox/accounting" },
       { label: "其他營業收入", amount: 0, source: "記帳助理-公司帳", href: "/toolbox/accounting" },
@@ -140,6 +145,11 @@ const baseReports = {
       { label: "親友借款每月還款", amount: 0, source: "債務盤點", href: "/toolbox/debt" },
       { label: "當鋪、標會或其他還款", amount: 0, source: "債務盤點", href: "/toolbox/debt" },
     ],
+    savings: [
+      { label: "緊急預備金", amount: 3000, source: "生活目標財務規劃", href: "/toolbox/planning" },
+      { label: "一般儲蓄", amount: 1000, source: "記帳助理", href: "/toolbox/accounting" },
+      { label: "進修或證照準備", amount: 0, source: "生活目標財務規劃", href: "/toolbox/planning" },
+    ],
     businessIncome: [
       { label: "營業額", amount: 0, source: "記帳助理-公司帳", href: "/toolbox/accounting" },
       { label: "其他營業收入", amount: 0, source: "記帳助理-公司帳", href: "/toolbox/accounting" },
@@ -180,20 +190,24 @@ export default function MonthlyReportPage() {
     const income = sum(report.income) * multiplier
     const livingExpense = sum(report.livingExpense) * multiplier
     const debtPayment = sum(report.debtPayment) * multiplier
+    const savings = sum(report.savings) * multiplier
     const businessIncome = sum(report.businessIncome) * multiplier
     const businessExpense = sum(report.businessExpense) * multiplier
     const assets = sum(report.assets)
     const liabilities = sum(report.liabilities)
-    const cashFlow = income + businessIncome - livingExpense - debtPayment - businessExpense
+    const cashBeforeSavings = income + businessIncome - livingExpense - debtPayment - businessExpense
+    const cashFlow = cashBeforeSavings - savings
 
     return {
       income,
       livingExpense,
       debtPayment,
+      savings,
       businessIncome,
       businessExpense,
       assets,
       liabilities,
+      cashBeforeSavings,
       cashFlow,
       netWorth: assets - liabilities,
     }
@@ -208,7 +222,7 @@ export default function MonthlyReportPage() {
               <p className="text-sm font-semibold text-primary">{report.dateLabel}</p>
               <h1 className="mt-1 text-3xl font-bold text-foreground">{periodLabels[period]}｜{report.title}</h1>
               <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-                這份報表彙整收入、支出、債務還款、資產與負債，讓你一次看見本月現金流與家庭財務全貌。
+                這份報表彙整收入、支出、債務還款、儲蓄目標、資產與負債，讓你一次看見本月現金流與家庭財務全貌。
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -232,11 +246,12 @@ export default function MonthlyReportPage() {
             </div>
           </div>
 
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <SummaryCard icon={WalletCards} label="總收入" value={totals.income + totals.businessIncome} />
             <SummaryCard icon={ReceiptText} label="總支出" value={totals.livingExpense + totals.businessExpense} />
             <SummaryCard icon={Landmark} label="債務還款" value={totals.debtPayment} />
-            <SummaryCard icon={PiggyBank} label="現金流" value={totals.cashFlow} highlight={totals.cashFlow >= 0} />
+            <SummaryCard icon={PiggyBank} label="儲蓄準備" value={totals.savings} />
+            <SummaryCard icon={PiggyBank} label="儲蓄後現金流" value={totals.cashFlow} highlight={totals.cashFlow >= 0} />
           </div>
         </section>
 
@@ -245,6 +260,7 @@ export default function MonthlyReportPage() {
             <ReportTable title="家庭收入" rows={scaleRows(report.income, multiplier)} total={totals.income} />
             <ReportTable title="生活支出" rows={scaleRows(report.livingExpense, multiplier)} total={totals.livingExpense} />
             <ReportTable title="債務還款" rows={scaleRows(report.debtPayment, multiplier)} total={totals.debtPayment} />
+            <ReportTable title="儲蓄與目標準備" rows={scaleRows(report.savings, multiplier)} total={totals.savings} />
             <ReportTable title="營業收入" rows={scaleRows(report.businessIncome, multiplier)} total={totals.businessIncome} />
             <ReportTable title="營業支出" rows={scaleRows(report.businessExpense, multiplier)} total={totals.businessExpense} />
             <ReportTable title="資產" rows={report.assets} total={totals.assets} />
@@ -259,7 +275,9 @@ export default function MonthlyReportPage() {
                   <AmountLine label="收入合計" value={totals.income + totals.businessIncome} />
                   <AmountLine label="支出合計" value={totals.livingExpense + totals.businessExpense} />
                   <AmountLine label="債務還款" value={totals.debtPayment} />
-                  <AmountLine label="現金流" value={totals.cashFlow} strong />
+                  <AmountLine label="儲蓄前現金流" value={totals.cashBeforeSavings} />
+                  <AmountLine label="儲蓄與目標準備" value={totals.savings} />
+                  <AmountLine label="儲蓄後現金流" value={totals.cashFlow} strong />
                   <AmountLine label="資產總額" value={totals.assets} />
                   <AmountLine label="負債總額" value={totals.liabilities} />
                   <AmountLine label="淨值" value={totals.netWorth} strong />

@@ -2,12 +2,6 @@ import Link from "next/link"
 import { Banknote, Calculator, FileText, MessageSquare, Target } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { externalLinks } from "@/lib/external-links"
-
-const financialCalculatorBase = externalLinks.financialCalculator
-
-const accountingToolLink = (tool: string, accountingTab: number) =>
-  `${financialCalculatorBase}?tab=financial-calculator&subTab=accounting&accountingTab=${accountingTab}&tool=${tool}`
 
 const categories = [
   {
@@ -17,19 +11,19 @@ const categories = [
       {
         href: "/toolbox/accounting",
         title: "記帳助理",
-        description: "輸入日常收支、分類與備註，逐步整理每月金流與生活支出。",
+        description: "記錄收入與支出，協助整理每月現金流。",
         icon: Calculator,
       },
       {
         href: "/toolbox/monthly-report",
         title: "財務月報表",
-        description: "彙整收入、支出與結餘，快速看懂每月財務狀況。",
+        description: "彙整收入、支出、資產與負債，看見財務全貌。",
         icon: Banknote,
       },
       {
-        href: accountingToolLink("financial-health-dashboard", 3),
+        href: "/toolbox/financial-health-dashboard",
         title: "財務健康儀表板",
-        description: "檢視收入、支出、負債與資產，掌握整體財務健康。",
+        description: "用指標檢視收支、預備金、負債與保障狀況。",
         icon: Target,
       },
     ],
@@ -39,13 +33,13 @@ const categories = [
     title: "目標規劃",
     tools: [
       {
-        href: externalLinks.financialPlanning,
+        href: "/toolbox/planning",
         title: "生活目標財務規劃",
-        description: "依照人生目標整理金額、時間與行動計畫。",
+        description: "依照生活目標整理金額、時間與每月準備方式。",
         icon: Target,
       },
       {
-        href: "/toolbox/simulator",
+        href: "/toolbox/planning/quick",
         title: "儲蓄目標試算",
         description: "輸入目標金額與每月可存金額，估算達成時間。",
         icon: Calculator,
@@ -59,7 +53,7 @@ const categories = [
       {
         href: "/toolbox/debt",
         title: "債務盤點表",
-        description: "整理每筆債務後，自動看利率排序、每月還款壓力與 DBR 等警示訊號。",
+        description: "整理每一筆債務，查看利率排序、壓力與警示。",
         icon: FileText,
       },
     ],
@@ -71,43 +65,43 @@ const categories = [
       {
         href: "/toolbox/credit-card",
         title: "信用卡",
-        description: "分析信用卡債務、利息與最低還款額，降低卡債壓力。",
+        description: "試算信用卡還款時間、利息與每月負擔。",
         icon: Banknote,
       },
       {
         href: "/toolbox/personal-loan",
         title: "信貸",
-        description: "試算信貸月付金、利息與還款期數，評估每月負擔。",
+        description: "試算信貸月付、利息與還款壓力。",
         icon: Calculator,
       },
       {
         href: "/toolbox/car-loan",
         title: "車貸",
-        description: "比較車貸利率與條件，找出符合預算的貸款方案。",
+        description: "整理車貸金額、利率、期數與每月負擔。",
         icon: Banknote,
       },
       {
         href: "/toolbox/mortgage",
         title: "房貸",
-        description: "試算房貸月付金、利息總額與攤還表，規劃長期房貸。",
+        description: "試算房貸月付，也一起檢視家庭負擔。",
         icon: Target,
       },
       {
         href: "/toolbox/new-youth-loan",
         title: "新青安",
-        description: "試算新青安貸款利率、補貼與月付金，掌握購屋壓力。",
+        description: "檢視補貼期、寬限期與補貼結束後的月付變化。",
         icon: Target,
       },
       {
         href: "/toolbox/aid-association",
         title: "標會",
-        description: "計算標會投資報酬與風險，了解不同制度下的收益情況。",
+        description: "整理會款、標金與可能風險，先看清楚再決定。",
         icon: MessageSquare,
       },
       {
         href: "/toolbox/pawn-shop",
         title: "當鋪",
-        description: "試算當鋪借款利息與還款成本，避免高成本借貸風險。",
+        description: "整理借款、利息、倉棧費與流當風險。",
         icon: Banknote,
       },
     ],
@@ -117,21 +111,21 @@ const categories = [
     title: "權益試算",
     tools: [
       {
-        href: accountingToolLink("severance-calculator", 2),
+        href: "https://calcr2.mol.gov.tw/SeverancePay",
         title: "資遣費試算",
-        description: "依勞基法與勞退條例試算資遣費，支援多種年資情境。",
+        description: "連至勞動部官方試算頁，建議以政府單位資料為準。",
         icon: FileText,
       },
       {
-        href: accountingToolLink("overtime-calculator", 2),
+        href: "https://calcr2.mol.gov.tw/Index",
         title: "加班費試算",
-        description: "依勞基法試算平日、休息日與國定假日加班費。",
+        description: "連至勞動部官方試算頁，協助確認加班費權益。",
         icon: Calculator,
       },
       {
-        href: accountingToolLink("annual-leave-calculator", 2),
+        href: "https://calcr2.mol.gov.tw/RestDays",
         title: "特休假試算",
-        description: "依勞基法第 38 條試算特休天數與不同給假方式。",
+        description: "連至勞動部官方試算頁，方便核對特休假天數。",
         icon: Target,
       },
     ],
@@ -145,7 +139,7 @@ export default function ToolboxPage() {
         <div className="mb-7 text-center">
           <h1 className="mb-3 text-3xl font-bold text-foreground">財務工具</h1>
           <p className="text-lg text-muted-foreground">
-            如果你想先自己整理，可以從記帳、規劃、風險與試算工具開始。
+            先從最需要整理的地方開始，工具可以單獨使用，也可以登入後慢慢累積成自己的財務紀錄。
           </p>
         </div>
 
@@ -156,9 +150,16 @@ export default function ToolboxPage() {
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {category.tools.map((tool) => {
                   const Icon = tool.icon
+                  const isExternal = tool.href.startsWith("http")
 
                   return (
-                    <Link key={tool.href} href={tool.href} className="group">
+                    <Link
+                      key={tool.href}
+                      href={tool.href}
+                      className="group"
+                      target={isExternal ? "_blank" : undefined}
+                      rel={isExternal ? "noreferrer" : undefined}
+                    >
                       <Card className="h-full border-border transition-all duration-200 hover:border-primary/35 hover:bg-primary/5">
                         <CardContent className="flex gap-3 p-4">
                           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">

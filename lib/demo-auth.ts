@@ -36,10 +36,10 @@ function normalizeAuthState(value: unknown): DemoAuthState {
 export function getDemoAuthState(): DemoAuthState {
   if (typeof window === "undefined") return defaultAuthState
 
-  const storedState = window.localStorage.getItem(storageKey)
-  if (!storedState) return defaultAuthState
-
   try {
+    const storedState = window.localStorage.getItem(storageKey)
+    if (!storedState) return defaultAuthState
+
     return normalizeAuthState(JSON.parse(storedState))
   } catch {
     return defaultAuthState
@@ -60,7 +60,11 @@ export function setDemoAuthState(authState: DemoAuthState) {
   if (typeof window === "undefined") return
 
   const normalizedState = normalizeAuthState(authState)
-  window.localStorage.setItem(storageKey, JSON.stringify(normalizedState))
+  try {
+    window.localStorage.setItem(storageKey, JSON.stringify(normalizedState))
+  } catch {
+    // The demo login should still work when browser storage is unavailable.
+  }
   window.dispatchEvent(new CustomEvent<DemoAuthState>(demoAuthChangeEvent, { detail: normalizedState }))
 }
 
@@ -70,9 +74,11 @@ export function clearDemoAuthState() {
 
 export function useDemoAuth() {
   const [authState, setAuthState] = useState<DemoAuthState>(defaultAuthState)
-  const [isReady, setIsReady] = useState(false)
+  const [isReady, setIsReady] = useState(true)
 
   useEffect(() => {
+    let fallbackTimer: ReturnType<typeof window.setTimeout> | null = null
+
     const syncAuthState = () => {
       setAuthState(getDemoAuthState())
       setIsReady(true)
@@ -91,10 +97,14 @@ export function useDemoAuth() {
     }
 
     syncAuthState()
+    fallbackTimer = window.setTimeout(() => {
+      setIsReady(true)
+    }, 300)
     window.addEventListener(demoAuthChangeEvent, handleDemoAuthChange)
     window.addEventListener("storage", handleStorageChange)
 
     return () => {
+      if (fallbackTimer) window.clearTimeout(fallbackTimer)
       window.removeEventListener(demoAuthChangeEvent, handleDemoAuthChange)
       window.removeEventListener("storage", handleStorageChange)
     }

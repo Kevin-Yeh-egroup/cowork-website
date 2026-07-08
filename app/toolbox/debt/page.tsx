@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import {
   AlertTriangle,
@@ -19,7 +19,6 @@ import {
 } from "lucide-react"
 
 import { SaveToProfilePrompt } from "@/app/toolbox/_components/save-to-profile-prompt"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -27,6 +26,7 @@ import { Input } from "@/components/ui/input"
 type DebtStatus = "normal" | "late" | "negotiating" | "legal" | "paused"
 type SortKey = "annualRate" | "remainingAmount" | "monthlyPayment" | "status"
 type SortDirection = "asc" | "desc"
+type DebtStep = "form" | "results" | "save"
 
 type DebtItem = {
   id: number
@@ -34,12 +34,19 @@ type DebtItem = {
   debtType: string
   creditorType: string
   creditor: string
+  reason: string
+  borrowedAt: string
   totalAmount: number
+  actualAmount: number
+  feeAmount: number
   remainingAmount: number
   annualRate: number
   rateNote: string
+  repaymentTerm: string
+  paymentFrequency: string
   monthlyPayment: number
   deadline: string
+  stoppedAt: string
   status: DebtStatus
 }
 
@@ -52,6 +59,47 @@ const money = new Intl.NumberFormat("zh-TW", {
 const number = new Intl.NumberFormat("zh-TW", {
   maximumFractionDigits: 1,
 })
+
+const debtStepItems: { id: DebtStep; title: string; description: string }[] = [
+  { id: "form", title: "1 填寫債務資料", description: "先把每一筆債務加進來" },
+  { id: "results", title: "2 查看盤點結果", description: "看排序、壓力與警示" },
+  { id: "save", title: "3 儲存與下一步", description: "留下紀錄或預約諮詢" },
+]
+
+const reasonOptions = ["生活費", "醫療", "教育或學費", "房租或搬家", "交通或車輛", "生意週轉", "借新還舊", "家人急用", "其他"]
+
+const paymentFrequencyOptions = ["每月", "每兩週", "每週", "每日", "不固定", "只還利息", "無固定約定"]
+
+const borrowedAtOptions = ["最近 1 個月", "1-3 個月前", "3-6 個月前", "6-12 個月前", "1-3 年前", "3 年以上", "記不清楚", "自行輸入"]
+
+const creditorNameOptions = ["A 銀行", "信用卡公司", "融資公司", "當鋪", "親友", "民間借貸", "法院或執行程序", "自行輸入"]
+
+const rateNoteOptions = ["循環信用利率", "固定年利率", "免息", "只收手續費", "每月固定費用", "不確定，待確認", "自行輸入"]
+
+const repaymentTermOptions = ["12 期", "24 期", "36 期", "剩 6 期內", "剩 12 期內", "無固定期數", "記不清楚", "自行輸入"]
+
+const deadlineOptions = ["3 個月內", "6 個月內", "1 年內", "2 年內", "3 年以上", "無固定期限", "記不清楚", "自行輸入"]
+
+const stoppedAtOptions = ["尚未停止", "最近 1 個月", "1-3 個月前", "3-6 個月前", "6 個月以上", "記不清楚", "自行輸入"]
+
+const customOption = "自行輸入"
+
+function getSelectValue(value: string, options: string[], fallback: string) {
+  if (!value) return fallback
+  return options.includes(value) ? value : customOption
+}
+
+function shouldShowCustomInput(value: string, options: string[]) {
+  return value === customOption || Boolean(value && !options.includes(value))
+}
+
+function isCustomSelectValue(value: string, options: string[], fallback: string) {
+  return getSelectValue(value, options, fallback) === customOption
+}
+
+function getCustomInputValue(value: string, options: string[]) {
+  return value && !options.includes(value) ? value : ""
+}
 
 const debtorOptions = ["本人", "配偶", "父母", "子女", "其他家人", "共同債務", "其他"]
 
@@ -87,12 +135,19 @@ const defaultDebt: Omit<DebtItem, "id"> = {
   debtType: "信用卡",
   creditorType: "信用卡公司",
   creditor: "信用卡 A 銀行",
+  reason: "生活費",
+  borrowedAt: "6-12 個月前",
   totalAmount: 90000,
+  actualAmount: 90000,
+  feeAmount: 0,
   remainingAmount: 80000,
   annualRate: 15,
   rateNote: "循環信用利率",
+  repaymentTerm: "18 期",
+  paymentFrequency: "每月",
   monthlyPayment: 6000,
   deadline: "2027-12",
+  stoppedAt: "",
   status: "normal",
 }
 
@@ -102,12 +157,19 @@ function createEmptyDebt(): Omit<DebtItem, "id"> {
     debtType: "信用卡",
     creditorType: "銀行",
     creditor: "",
+    reason: "生活費",
+    borrowedAt: "記不清楚",
     totalAmount: 0,
+    actualAmount: 0,
+    feeAmount: 0,
     remainingAmount: 0,
     annualRate: 0,
     rateNote: "",
+    repaymentTerm: "",
+    paymentFrequency: "每月",
     monthlyPayment: 0,
     deadline: "",
+    stoppedAt: "",
     status: "normal",
   }
 }
@@ -119,12 +181,19 @@ const importedToolDebts: DebtItem[] = [
     debtType: "信用卡",
     creditorType: "信用卡公司",
     creditor: "信用卡工具帶入",
+    reason: "生活費",
+    borrowedAt: "6-12 個月前",
     totalAmount: 80000,
+    actualAmount: 80000,
+    feeAmount: 0,
     remainingAmount: 80000,
     annualRate: 15,
     rateNote: "循環信用利率，仍需對照帳單確認",
+    repaymentTerm: "期限待補",
+    paymentFrequency: "每月",
     monthlyPayment: 6000,
     deadline: "期限待補",
+    stoppedAt: "",
     status: "normal",
   },
   {
@@ -133,12 +202,19 @@ const importedToolDebts: DebtItem[] = [
     debtType: "車貸",
     creditorType: "融資公司",
     creditor: "車貸工具帶入",
+    reason: "交通或車輛",
+    borrowedAt: "1-3 年前",
     totalAmount: 360000,
+    actualAmount: 360000,
+    feeAmount: 0,
     remainingAmount: 320000,
     annualRate: 4.5,
     rateNote: "車貸年利率，仍需確認剩餘期數",
+    repaymentTerm: "36 期",
+    paymentFrequency: "每月",
     monthlyPayment: 9800,
     deadline: "2028-06",
+    stoppedAt: "",
     status: "normal",
   },
 ]
@@ -179,6 +255,7 @@ function getRateTone(rate: number) {
 }
 
 export default function DebtPage() {
+  const [activeStep, setActiveStep] = useState<DebtStep>("form")
   const [debts, setDebts] = useState<DebtItem[]>([{ ...defaultDebt, id: 1 }])
   const [form, setForm] = useState<Omit<DebtItem, "id">>(createEmptyDebt())
   const [editingId, setEditingId] = useState<number | null>(null)
@@ -187,6 +264,20 @@ export default function DebtPage() {
   const [monthlyIncome, setMonthlyIncome] = useState("45000")
   const [assets, setAssets] = useState("120000")
   const [voiceText, setVoiceText] = useState("我有一張信用卡還欠八萬元，每個月大概繳六千，利率十五趴，還有一筆朋友借款三萬元，沒有算利息。")
+
+  useEffect(() => {
+    const syncStepFromHash = () => {
+      const step = window.location.hash.replace("#debt-step-", "") as DebtStep
+      if (step === "form" || step === "results" || step === "save") {
+        setActiveStep(step)
+      }
+    }
+
+    syncStepFromHash()
+    window.addEventListener("hashchange", syncStepFromHash)
+
+    return () => window.removeEventListener("hashchange", syncStepFromHash)
+  }, [])
 
   const totals = useMemo(() => {
     const totalRemaining = debts.reduce((sum, debt) => sum + debt.remainingAmount, 0)
@@ -287,12 +378,19 @@ export default function DebtPage() {
       debtType: "信用卡",
       creditorType: "信用卡公司",
       creditor: "口述待確認",
+      reason: "生活費",
+      borrowedAt: "記不清楚",
       totalAmount: 80000,
+      actualAmount: 80000,
+      feeAmount: 0,
       remainingAmount: 80000,
       annualRate: 15,
       rateNote: "由口述內容先暫填，仍需對照帳單確認",
+      repaymentTerm: "",
+      paymentFrequency: "每月",
       monthlyPayment: 6000,
       deadline: "",
+      stoppedAt: "",
       status: "normal",
     })
   }
@@ -303,7 +401,26 @@ export default function DebtPage() {
 
   return (
     <main className="min-h-screen px-4 py-8 sm:py-10">
-      <div className="mx-auto max-w-6xl">
+      <div className="debt-tool-shell mx-auto max-w-6xl">
+        <style>{`
+          .debt-tool-shell .debt-step-section {
+            display: none;
+          }
+
+          .debt-tool-shell #debt-step-form-section {
+            display: block;
+          }
+
+          .debt-tool-shell:has(#debt-step-results:target) #debt-step-form-section,
+          .debt-tool-shell:has(#debt-step-save:target) #debt-step-form-section {
+            display: none;
+          }
+
+          .debt-tool-shell:has(#debt-step-results:target) #debt-step-results-section,
+          .debt-tool-shell:has(#debt-step-save:target) #debt-step-save-section {
+            display: block;
+          }
+        `}</style>
         <section className="mb-7 rounded-2xl border border-border bg-card/85 p-5 shadow-sm sm:p-7">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
@@ -336,6 +453,32 @@ export default function DebtPage() {
           </div>
         </section>
 
+        <section className="mb-7 rounded-2xl border border-border bg-card/90 p-3 shadow-sm sm:p-4">
+          <div className="grid gap-2 md:grid-cols-3">
+            {debtStepItems.map((step) => {
+              const isActive = activeStep === step.id
+
+              return (
+                <a
+                  key={step.id}
+                  href={`#debt-step-${step.id}`}
+                  onClick={() => setActiveStep(step.id)}
+                  className={`rounded-xl border p-4 text-left transition-colors ${
+                    isActive
+                      ? "border-primary bg-primary/10 text-foreground"
+                      : "border-border bg-background/70 text-muted-foreground hover:border-primary/30 hover:bg-primary/5"
+                  }`}
+                >
+                  <span className="block text-sm font-semibold">{step.title}</span>
+                  <span className="mt-1 block text-xs leading-5">{step.description}</span>
+                </a>
+              )
+            })}
+          </div>
+        </section>
+
+        <div id="debt-step-form" className="scroll-mt-24" />
+        <div id="debt-step-form-section" className="debt-step-section">
         <section className="mb-7 rounded-2xl border border-border bg-card/90 p-5 shadow-sm sm:p-6">
           <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -385,7 +528,7 @@ export default function DebtPage() {
                         <div>
                           <p className="font-semibold text-foreground">{debt.debtType}｜{debt.creditor}</p>
                           <p className="mt-1 text-sm text-muted-foreground">
-                            剩餘 {money.format(debt.remainingAmount)} · 年利率 {number.format(debt.annualRate)}% · 月付 {money.format(debt.monthlyPayment)}
+                            剩餘 {money.format(debt.remainingAmount)} · 年利率 {number.format(debt.annualRate)}% · {debt.paymentFrequency}還 {money.format(debt.monthlyPayment)}
                           </p>
                         </div>
                         <Button
@@ -414,7 +557,44 @@ export default function DebtPage() {
                   </div>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-2">
+                <datalist id="creditor-name-options">
+                  {creditorNameOptions.map((option) => (
+                    <option key={option} value={option} />
+                  ))}
+                </datalist>
+                <datalist id="borrowed-at-options">
+                  {borrowedAtOptions.map((option) => (
+                    <option key={option} value={option} />
+                  ))}
+                </datalist>
+                <datalist id="rate-note-options">
+                  {rateNoteOptions.map((option) => (
+                    <option key={option} value={option} />
+                  ))}
+                </datalist>
+                <datalist id="repayment-term-options">
+                  {repaymentTermOptions.map((option) => (
+                    <option key={option} value={option} />
+                  ))}
+                </datalist>
+                <datalist id="deadline-options">
+                  {deadlineOptions.map((option) => (
+                    <option key={option} value={option} />
+                  ))}
+                </datalist>
+                <datalist id="stopped-at-options">
+                  {stoppedAtOptions.map((option) => (
+                    <option key={option} value={option} />
+                  ))}
+                </datalist>
+
+                <div className="space-y-4">
+                  <div className="rounded-2xl border border-border bg-background/60 p-4">
+                    <div className="mb-3">
+                      <p className="text-sm font-semibold text-primary">1. 這筆債一開始怎麼來的</p>
+                      <p className="mt-1 text-xs leading-5 text-muted-foreground">先回想當時是誰借、向誰借、為什麼借，以及一開始拿到多少錢。</p>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2">
                   <label className="grid gap-2 text-sm font-medium text-foreground">
                     債務人
                     <select
@@ -440,6 +620,39 @@ export default function DebtPage() {
                     </select>
                   </label>
                   <label className="grid gap-2 text-sm font-medium text-foreground">
+                    債務時間
+                    <select
+                      value={getSelectValue(form.borrowedAt, borrowedAtOptions, "記不清楚")}
+                      onChange={(event) => setForm({ ...form, borrowedAt: event.target.value })}
+                      className="h-12 rounded-md border border-input bg-background px-3 text-base text-foreground shadow-xs outline-none focus:border-primary"
+                    >
+                      {borrowedAtOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                    {isCustomSelectValue(form.borrowedAt, borrowedAtOptions, "記不清楚") ? (
+                      <Input
+                        value={getCustomInputValue(form.borrowedAt, borrowedAtOptions)}
+                        onChange={(event) => setForm({ ...form, borrowedAt: event.target.value })}
+                        placeholder="請輸入實際借款時間，例如 2025/06"
+                      />
+                    ) : null}
+                    <span className="text-xs leading-5 text-muted-foreground">先抓大概時間即可，用來看債務是近期發生，還是已累積一段時間。</span>
+                  </label>
+                  <label className="grid gap-2 text-sm font-medium text-foreground">
+                    借錢原因
+                    <select
+                      value={form.reason}
+                      onChange={(event) => setForm({ ...form, reason: event.target.value })}
+                      className="h-12 rounded-md border border-input bg-background px-3 text-base text-foreground shadow-xs outline-none focus:border-primary"
+                    >
+                      {reasonOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                    <span className="text-xs leading-5 text-muted-foreground">可以先大略分類，之後會幫助判斷是不是生活費不足、借新還舊或突發支出。</span>
+                  </label>
+                  <label className="grid gap-2 text-sm font-medium text-foreground">
                     債權人類型
                     <select
                       value={form.creditorType}
@@ -453,23 +666,100 @@ export default function DebtPage() {
                   </label>
                   <label className="grid gap-2 text-sm font-medium text-foreground">
                     債權人名稱
-                    <Input value={form.creditor} onChange={(event) => setForm({ ...form, creditor: event.target.value })} placeholder="例如：A 銀行、某某親友" />
+                    <select
+                      value={getSelectValue(form.creditor, creditorNameOptions, customOption)}
+                      onChange={(event) => setForm({ ...form, creditor: event.target.value })}
+                      className="h-12 rounded-md border border-input bg-background px-3 text-base text-foreground shadow-xs outline-none focus:border-primary"
+                    >
+                      {creditorNameOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                    {isCustomSelectValue(form.creditor, creditorNameOptions, customOption) ? (
+                      <Input
+                        value={getCustomInputValue(form.creditor, creditorNameOptions)}
+                        onChange={(event) => setForm({ ...form, creditor: event.target.value })}
+                        placeholder="請輸入債權人名稱，例如 A 銀行、某某親友"
+                      />
+                    ) : null}
                   </label>
                   <label className="grid gap-2 text-sm font-medium text-foreground">
                     債務總額
                     <Input inputMode="numeric" value={form.totalAmount || ""} onChange={(event) => setForm({ ...form, totalAmount: Number(event.target.value) || 0 })} placeholder="一開始借了多少" />
+                    <span className="text-xs leading-5 text-muted-foreground">名目借款金額，不一定等於實際拿到手的金額。</span>
                   </label>
                   <label className="grid gap-2 text-sm font-medium text-foreground">
-                    目前剩餘金額
-                    <Input inputMode="numeric" value={form.remainingAmount || ""} onChange={(event) => setForm({ ...form, remainingAmount: Number(event.target.value) || 0 })} placeholder="目前還欠多少" />
+                    實拿金額
+                    <Input inputMode="numeric" value={form.actualAmount || ""} onChange={(event) => setForm({ ...form, actualAmount: Number(event.target.value) || 0 })} placeholder="實際拿到多少錢" />
+                    <span className="text-xs leading-5 text-muted-foreground">若有先扣手續費、代辦費或其他費用，這裡會比債務總額少。</span>
                   </label>
+                  <label className="grid gap-2 text-sm font-medium text-foreground">
+                    開辦費／手續費
+                    <Input inputMode="numeric" value={form.feeAmount || ""} onChange={(event) => setForm({ ...form, feeAmount: Number(event.target.value) || 0 })} placeholder="沒有可填 0" />
+                    <span className="text-xs leading-5 text-muted-foreground">利率不高也可能有其他費用，先記下來比較看得出真實成本。</span>
+                  </label>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-border bg-background/60 p-4">
+                    <div className="mb-3">
+                      <p className="text-sm font-semibold text-primary">2. 當初約定怎麼還</p>
+                      <p className="mt-1 text-xs leading-5 text-muted-foreground">再整理利率、期數、頻率和每期金額，這些會影響後面的成本排序。</p>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2">
                   <label className="grid gap-2 text-sm font-medium text-foreground">
                     年利率
                     <Input inputMode="decimal" value={form.annualRate || ""} onChange={(event) => setForm({ ...form, annualRate: Number(event.target.value) || 0 })} placeholder="若免息可填 0" />
                   </label>
                   <label className="grid gap-2 text-sm font-medium text-foreground">
                     利率或免息說明
-                    <Input value={form.rateNote} onChange={(event) => setForm({ ...form, rateNote: event.target.value })} placeholder="例如：循環利率、免息、每月固定費用" />
+                    <select
+                      value={getSelectValue(form.rateNote, rateNoteOptions, "不確定，待確認")}
+                      onChange={(event) => setForm({ ...form, rateNote: event.target.value })}
+                      className="h-12 rounded-md border border-input bg-background px-3 text-base text-foreground shadow-xs outline-none focus:border-primary"
+                    >
+                      {rateNoteOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                    {isCustomSelectValue(form.rateNote, rateNoteOptions, "不確定，待確認") ? (
+                      <Input
+                        value={getCustomInputValue(form.rateNote, rateNoteOptions)}
+                        onChange={(event) => setForm({ ...form, rateNote: event.target.value })}
+                        placeholder="請輸入利率或費用說明"
+                      />
+                    ) : null}
+                  </label>
+                  <label className="grid gap-2 text-sm font-medium text-foreground">
+                    還款期數
+                    <select
+                      value={getSelectValue(form.repaymentTerm, repaymentTermOptions, "記不清楚")}
+                      onChange={(event) => setForm({ ...form, repaymentTerm: event.target.value })}
+                      className="h-12 rounded-md border border-input bg-background px-3 text-base text-foreground shadow-xs outline-none focus:border-primary"
+                    >
+                      {repaymentTermOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                    {isCustomSelectValue(form.repaymentTerm, repaymentTermOptions, "記不清楚") ? (
+                      <Input
+                        value={getCustomInputValue(form.repaymentTerm, repaymentTermOptions)}
+                        onChange={(event) => setForm({ ...form, repaymentTerm: event.target.value })}
+                        placeholder="請輸入還款期數，例如 48 期、剩 8 期"
+                      />
+                    ) : null}
+                  </label>
+                  <label className="grid gap-2 text-sm font-medium text-foreground">
+                    約定還款頻率
+                    <select
+                      value={form.paymentFrequency}
+                      onChange={(event) => setForm({ ...form, paymentFrequency: event.target.value })}
+                      className="h-12 rounded-md border border-input bg-background px-3 text-base text-foreground shadow-xs outline-none focus:border-primary"
+                    >
+                      {paymentFrequencyOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
                   </label>
                   <label className="grid gap-2 text-sm font-medium text-foreground">
                     每期還款金額
@@ -477,27 +767,76 @@ export default function DebtPage() {
                   </label>
                   <label className="grid gap-2 text-sm font-medium text-foreground">
                     還款期限
-                    <Input value={form.deadline} onChange={(event) => setForm({ ...form, deadline: event.target.value })} placeholder="例如：2027/12、無固定期限" />
+                    <select
+                      value={getSelectValue(form.deadline, deadlineOptions, "記不清楚")}
+                      onChange={(event) => setForm({ ...form, deadline: event.target.value })}
+                      className="h-12 rounded-md border border-input bg-background px-3 text-base text-foreground shadow-xs outline-none focus:border-primary"
+                    >
+                      {deadlineOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                    {isCustomSelectValue(form.deadline, deadlineOptions, "記不清楚") ? (
+                      <Input
+                        value={getCustomInputValue(form.deadline, deadlineOptions)}
+                        onChange={(event) => setForm({ ...form, deadline: event.target.value })}
+                        placeholder="請輸入還款期限，例如 2027/12"
+                      />
+                    ) : null}
                   </label>
-                </div>
+                    </div>
+                  </div>
 
-                <label className="mt-4 grid gap-2 text-sm font-medium text-foreground">
-                  還款狀況
-                  <select
-                    value={form.status}
-                    onChange={(event) => setForm({ ...form, status: event.target.value as DebtStatus })}
-                    className="h-12 rounded-md border border-input bg-background px-3 text-base text-foreground shadow-xs outline-none focus:border-primary"
-                  >
-                    {statusOptions.map((status) => (
-                      <option key={status.id} value={status.id}>
-                        {status.label}
-                      </option>
-                    ))}
-                  </select>
-                  <span className="text-xs leading-5 text-muted-foreground">
-                    {statusOptions.find((status) => status.id === form.status)?.description}
-                  </span>
-                </label>
+                  <div className="rounded-2xl border border-border bg-background/60 p-4">
+                    <div className="mb-3">
+                      <p className="text-sm font-semibold text-primary">3. 現在還到哪裡</p>
+                      <p className="mt-1 text-xs leading-5 text-muted-foreground">最後看目前剩多少、是否正常還款，才知道下一步要先處理哪一筆。</p>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                  <label className="grid gap-2 text-sm font-medium text-foreground">
+                    目前剩餘金額
+                    <Input inputMode="numeric" value={form.remainingAmount || ""} onChange={(event) => setForm({ ...form, remainingAmount: Number(event.target.value) || 0 })} placeholder="目前還欠多少" />
+                  </label>
+                  <label className="grid gap-2 text-sm font-medium text-foreground">
+                    還款狀況
+                    <select
+                      value={form.status}
+                      onChange={(event) => setForm({ ...form, status: event.target.value as DebtStatus })}
+                      className="h-12 rounded-md border border-input bg-background px-3 text-base text-foreground shadow-xs outline-none focus:border-primary"
+                    >
+                      {statusOptions.map((status) => (
+                        <option key={status.id} value={status.id}>
+                          {status.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="text-xs leading-5 text-muted-foreground">
+                      {statusOptions.find((status) => status.id === form.status)?.description}
+                    </span>
+                  </label>
+                  <label className="grid gap-2 text-sm font-medium text-foreground">
+                    何時停止還款或最後一次還款
+                    <select
+                      value={getSelectValue(form.stoppedAt, stoppedAtOptions, "尚未停止")}
+                      onChange={(event) => setForm({ ...form, stoppedAt: event.target.value })}
+                      className="h-12 rounded-md border border-input bg-background px-3 text-base text-foreground shadow-xs outline-none focus:border-primary"
+                    >
+                      {stoppedAtOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                    {isCustomSelectValue(form.stoppedAt, stoppedAtOptions, "尚未停止") ? (
+                      <Input
+                        value={getCustomInputValue(form.stoppedAt, stoppedAtOptions)}
+                        onChange={(event) => setForm({ ...form, stoppedAt: event.target.value })}
+                        placeholder="請輸入停止還款或最後一次還款時間"
+                      />
+                    ) : null}
+                    <span className="text-xs leading-5 text-muted-foreground">若已停繳或只偶爾還，這個時間會影響風險提醒。</span>
+                  </label>
+                    </div>
+                  </div>
+                </div>
 
                 <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-end">
                   {editingId ? (
@@ -539,7 +878,23 @@ export default function DebtPage() {
             </Card>
           </section>
 
-          <section className="space-y-5">
+          <div className="flex justify-end">
+            <Button
+              type="button"
+              onClick={() => {
+                setActiveStep("results")
+                window.location.hash = "debt-step-results"
+              }}
+              disabled={!debts.length}
+            >
+              下一步：查看盤點結果 <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+        </div>
+
+        <div id="debt-step-results" className="scroll-mt-24" />
+        <section id="debt-step-results-section" className="debt-step-section space-y-5">
             <Card className="border-border bg-card/90">
               <CardContent className="p-5">
                 <div className="mb-4 flex items-center gap-3">
@@ -593,6 +948,9 @@ export default function DebtPage() {
                             <td className="px-3 py-3">
                               <p className="font-semibold text-foreground">{debt.debtType}｜{debt.creditor}</p>
                               <p className="mt-1 text-xs leading-5 text-muted-foreground">{rateTone.label}：{rateTone.description}</p>
+                              <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                                原因：{debt.reason || "待補"} · 實拿 {money.format(debt.actualAmount || debt.totalAmount)} · 手續費 {money.format(debt.feeAmount || 0)}
+                              </p>
                             </td>
                             <td className="px-3 py-3 font-semibold text-foreground">{number.format(debt.annualRate)}%</td>
                             <td className="px-3 py-3 text-foreground">{money.format(debt.remainingAmount)}</td>
@@ -637,7 +995,10 @@ export default function DebtPage() {
                         <p className="mt-3 text-sm leading-6 text-muted-foreground">{rateTone.description}</p>
                         <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted-foreground">
                           <span className="rounded-full bg-card px-2 py-1">月付 {money.format(debt.monthlyPayment)}</span>
+                          <span className="rounded-full bg-card px-2 py-1">{debt.paymentFrequency || "頻率待補"}</span>
+                          <span className="rounded-full bg-card px-2 py-1">{debt.repaymentTerm || "期數待補"}</span>
                           <span className="rounded-full bg-card px-2 py-1">{debt.deadline || "期限待補"}</span>
+                          {debt.stoppedAt ? <span className="rounded-full bg-card px-2 py-1">停繳/最後還款：{debt.stoppedAt}</span> : null}
                           <span className="rounded-full bg-card px-2 py-1">{debt.rateNote || "利率說明待補"}</span>
                         </div>
                         <div className="mt-3 flex gap-2">
@@ -678,13 +1039,11 @@ export default function DebtPage() {
                     <span className="text-xs leading-5 text-muted-foreground">可先填存款、可動用資金或其他可估算資產；之後可由我的財務與生活彙整。</span>
                   </label>
                 </div>
-                <Accordion type="single" collapsible className="mt-4">
-                  <AccordionItem value="warning-signals" className="rounded-xl border border-border bg-background/70 px-4">
-                    <AccordionTrigger className="text-left font-semibold text-foreground">
-                      查看債務警示與白話說明
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-3 pb-4">
+                <details className="mt-4 rounded-xl border border-border bg-background/70 px-4">
+                  <summary className="cursor-pointer py-4 text-left font-semibold text-foreground">
+                    查看債務警示與白話說明
+                  </summary>
+                  <div className="space-y-3 pb-4">
                         <div className={`rounded-xl border p-4 ${dbrTone.className}`}>
                           <div className="mb-1 flex items-center justify-between gap-2">
                             <p className="font-semibold text-foreground">債務收入比 DBR</p>
@@ -734,33 +1093,96 @@ export default function DebtPage() {
                             如果月付已壓縮生活費，或有逾期、催收、法律程序，建議不要只比較利率，也要一起看生活費、可用支持與還款順序。
                           </p>
                         </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
+                  </div>
+                </details>
 
-                <SaveToProfilePrompt
-                  toolPath="/toolbox/debt"
-                  title="留下這次債務盤點"
-                  description="登入後可保存到「我的財務與生活」，之後帶入財務月報表、家庭財務全貌與後續諮詢討論。"
-                  buttonLabel="保存債務盤點"
-                />
-
-                <div className="mt-4 rounded-2xl border border-border bg-background/75 p-4">
-                  <p className="font-semibold text-foreground">需要時，也可以找我們一起看還款順序</p>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    如果已有逾期、催收、法律程序，或每月還款已壓縮生活費，建議不要自己硬撐，可以預約免費諮詢。
-                  </p>
-                  <Button asChild variant="outline" className="mt-3 justify-start">
-                    <Link href="/online-consultation">
-                      預約免費諮詢 <ArrowRight className="h-4 w-4" />
-                    </Link>
+                <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-between">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setActiveStep("form")
+                      window.location.hash = "debt-step-form"
+                    }}
+                  >
+                    回上一頁修改資料
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      setActiveStep("save")
+                      window.location.hash = "debt-step-save"
+                    }}
+                  >
+                    下一步：儲存與下一步 <ArrowRight className="h-4 w-4" />
                   </Button>
                 </div>
               </CardContent>
             </Card>
           </section>
-        </div>
+
+        <div id="debt-step-save" className="scroll-mt-24" />
+        <section id="debt-step-save-section" className="debt-step-section space-y-5">
+            <Card className="border-border bg-card/90">
+              <CardContent className="p-5">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <Save className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-primary">儲存與下一步</p>
+                    <h2 className="text-xl font-semibold text-foreground">留下這次債務盤點</h2>
+                  </div>
+                </div>
+
+                <div className="mb-4 grid gap-3 sm:grid-cols-3">
+                  <div className="rounded-xl border border-border bg-background/75 p-4">
+                    <p className="text-sm text-muted-foreground">已盤點</p>
+                    <p className="mt-1 text-2xl font-bold text-foreground">{debts.length} 筆</p>
+                  </div>
+                  <div className="rounded-xl border border-border bg-background/75 p-4">
+                    <p className="text-sm text-muted-foreground">剩餘總額</p>
+                    <p className="mt-1 text-2xl font-bold text-foreground">{money.format(totals.totalRemaining)}</p>
+                  </div>
+                  <div className="rounded-xl border border-border bg-background/75 p-4">
+                    <p className="text-sm text-muted-foreground">每期還款</p>
+                    <p className="mt-1 text-2xl font-bold text-foreground">{money.format(totals.totalMonthly)}</p>
+                  </div>
+                </div>
+
+                <SaveToProfilePrompt
+                  toolPath="/toolbox/debt"
+                  title="留下這次債務盤點"
+                  description="登入後可保存到「我的財務與生活」，之後帶入財務月報表、家庭財務全貌與後續諮詢討論。"
+                  buttonLabel="儲存債務盤點"
+                />
+
+                <div className="mt-4 rounded-2xl border border-border bg-background/75 p-4">
+                  <p className="font-semibold text-foreground">需要時，也可以找我們一起看還款順序</p>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    如果已有逾期、催收、法律程序，或每月還款已經壓縮生活費，建議不要自己硬撐，可以預約免費諮詢。
+                  </p>
+                  <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        setActiveStep("results")
+                        window.location.hash = "debt-step-results"
+                      }}
+                    >
+                      回到盤點結果
+                    </Button>
+                    <Button asChild variant="outline" className="justify-start">
+                      <Link href="/online-consultation">
+                        預約免費諮詢 <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+        </section>
       </div>
     </main>
   )
