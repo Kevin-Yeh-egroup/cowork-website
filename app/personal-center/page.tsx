@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
   ArrowRight,
@@ -68,6 +68,13 @@ const memberMenuItems = [
     icon: BookOpen,
   },
 ]
+
+const defaultMemberPanel = "member-recent-actions"
+const memberPanelIds = memberMenuItems.map((item) => item.href.slice(1))
+
+function isMemberPanelId(value: string) {
+  return memberPanelIds.includes(value)
+}
 
 const quickTopics = ["課程推薦", "關係與人際", "親密關係", "信貸", "同志領域", "詐騙", "親子領域", "專案知能"]
 
@@ -267,6 +274,7 @@ const subscriptionArticles = [
 export default function PersonalCenterPage() {
   const router = useRouter()
   const { authState, isReady } = useDemoAuth()
+  const [activeMemberPanel, setActiveMemberPanel] = useState(defaultMemberPanel)
 
   useEffect(() => {
     if (!isReady) return
@@ -275,6 +283,23 @@ export default function PersonalCenterPage() {
       router.replace(getRoleHomePath(authState.role))
     }
   }, [authState, isReady, router])
+
+  useEffect(() => {
+    const syncPanelFromHash = () => {
+      const hashPanel = window.location.hash.replace("#", "")
+
+      if (isMemberPanelId(hashPanel)) {
+        setActiveMemberPanel(hashPanel)
+      }
+    }
+
+    syncPanelFromHash()
+    window.addEventListener("hashchange", syncPanelFromHash)
+
+    return () => {
+      window.removeEventListener("hashchange", syncPanelFromHash)
+    }
+  }, [])
 
   return (
     <div className="min-h-screen px-4 py-12">
@@ -306,29 +331,6 @@ export default function PersonalCenterPage() {
           </div>
         </section>
 
-        <style>{`
-          .member-panel {
-            display: none;
-          }
-
-          .member-panels:has(.member-panel:target) > .member-panel:target {
-            display: block;
-          }
-
-          .member-panels:not(:has(.member-panel:target)) > #member-recent-actions {
-            display: block;
-          }
-
-          .member-shell:not(:has(.member-panel:target)) .member-nav-link[href="#member-recent-actions"],
-          .member-shell:has(#member-recent-actions:target) .member-nav-link[href="#member-recent-actions"],
-          .member-shell:has(#member-accounting:target) .member-nav-link[href="#member-accounting"],
-          .member-shell:has(#member-monthly-report:target) .member-nav-link[href="#member-monthly-report"],
-          .member-shell:has(#member-data-summary:target) .member-nav-link[href="#member-data-summary"],
-          .member-shell:has(#member-articles:target) .member-nav-link[href="#member-articles"] {
-            background: hsl(var(--primary) / 0.1);
-          }
-        `}</style>
-
         <section className="member-shell grid gap-5 lg:grid-cols-[260px_1fr] lg:items-start">
           <aside className="rounded-2xl border border-border bg-card p-4 lg:sticky lg:top-24">
             <div className="mb-4">
@@ -343,7 +345,10 @@ export default function PersonalCenterPage() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="member-nav-link flex items-start gap-3 rounded-xl px-3 py-3 text-left transition-colors hover:bg-secondary/70"
+                    onClick={() => setActiveMemberPanel(item.href.slice(1))}
+                    className={`member-nav-link flex items-start gap-3 rounded-xl px-3 py-3 text-left transition-colors hover:bg-secondary/70 ${
+                      activeMemberPanel === item.href.slice(1) ? "bg-primary/10" : ""
+                    }`}
                   >
                     <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                       <Icon className="h-4 w-4" />
@@ -359,7 +364,10 @@ export default function PersonalCenterPage() {
           </aside>
 
           <div className="member-panels space-y-5 rounded-2xl border border-border bg-card p-5 sm:p-6">
-            <Card id="member-recent-actions" className="member-panel scroll-mt-24 border-border">
+            <Card
+              id="member-recent-actions"
+              className={`scroll-mt-24 border-border ${activeMemberPanel === "member-recent-actions" ? "block" : "hidden"}`}
+            >
                 <CardContent className="p-5">
                   <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                     <div>
@@ -397,7 +405,10 @@ export default function PersonalCenterPage() {
                 </CardContent>
             </Card>
 
-            <Card id="member-accounting" className="member-panel scroll-mt-24 border-border">
+            <Card
+              id="member-accounting"
+              className={`scroll-mt-24 border-border ${activeMemberPanel === "member-accounting" ? "block" : "hidden"}`}
+            >
                 <CardContent className="p-5">
                   <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                     <div>
@@ -447,7 +458,10 @@ export default function PersonalCenterPage() {
                 </CardContent>
             </Card>
 
-            <Card id="member-monthly-report" className="member-panel scroll-mt-24 border-border">
+            <Card
+              id="member-monthly-report"
+              className={`scroll-mt-24 border-border ${activeMemberPanel === "member-monthly-report" ? "block" : "hidden"}`}
+            >
                 <CardContent className="p-5">
                   <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                     <div>
@@ -584,7 +598,10 @@ export default function PersonalCenterPage() {
                 </CardContent>
             </Card>
 
-            <Card id="member-data-summary" className="member-panel scroll-mt-24 border-border">
+            <Card
+              id="member-data-summary"
+              className={`scroll-mt-24 border-border ${activeMemberPanel === "member-data-summary" ? "block" : "hidden"}`}
+            >
                 <CardContent className="p-5">
                   <div className="mb-5 grid gap-4 lg:grid-cols-[1fr_260px] lg:items-start">
                     <div>
@@ -707,7 +724,10 @@ export default function PersonalCenterPage() {
                 </CardContent>
             </Card>
 
-            <Card id="member-articles" className="member-panel scroll-mt-24 border-border">
+            <Card
+              id="member-articles"
+              className={`scroll-mt-24 border-border ${activeMemberPanel === "member-articles" ? "block" : "hidden"}`}
+            >
               <CardContent className="p-5">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
                   <div>
