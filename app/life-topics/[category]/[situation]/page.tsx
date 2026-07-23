@@ -147,6 +147,60 @@ function getArticleOverviewHref(slug: string) {
 function getScenarioArticleLinks(title: string, slug: string) {
   const href = getArticleOverviewHref(slug)
 
+  if (slug === "unstable-income") {
+    return {
+      concerns: [
+        {
+          title: "工作一直做不久，收入也不穩，該怎麼辦？",
+          href: "https://www.familyfinhealth.com/knowledge-base/sZA5ZkQOTSqggEE2b3MzWg",
+        },
+        {
+          title: "工作容易受傷，收入中斷怎麼辦？高風險工作者的家庭保障準備",
+          href: "https://www.familyfinhealth.com/knowledge-base/HZeDCfTTaPHw8AozPVIg",
+        },
+        {
+          title: "工作意外受傷，薪水中斷怎麼辦？職業災害申請流程與保障整理",
+          href: "https://www.familyfinhealth.com/knowledge-base/0qmVvepDfQa41xbutQRNiQ",
+        },
+      ],
+      blindSpots: [
+        {
+          title: "薪水不高、生活壓力大，為什麼更容易吃得不健康？",
+          href: "https://www.familyfinhealth.com/knowledge-base/0119We4fSzWr1OiArgeELg",
+        },
+      ],
+    }
+  }
+
+  if (slug === "career-transition") {
+    return {
+      concerns: [
+        {
+          title: "轉職前要學什麼？技能提升、課程選擇一次整理",
+          href: "https://www.familyfinhealth.com/knowledge-base/O2lUJet0SneyX6uX40HQDA",
+        },
+        {
+          title: "想換工作卻不知道往哪走？從職缺趨勢找到下一份工作的方向",
+          href: "https://www.familyfinhealth.com/knowledge-base/ZTtoqLb0RtKVyybXgk9vhQ",
+        },
+        {
+          title: "離開職場後，如何重新開始？婦女重返工作與職涯轉型的下一步",
+          href: "https://www.familyfinhealth.com/knowledge-base/0KwxLcezTZH7oqFdiZyQ",
+        },
+      ],
+      blindSpots: [
+        {
+          title: "來台後如何找到工作與收入？新住民女性的職涯適應之路",
+          href: "https://www.familyfinhealth.com/knowledge-base/0rvguBzQMRRWwClqCzhNYg",
+        },
+        {
+          title: "創業可行性評估與準備",
+          href: "https://www.familyfinhealth.com/knowledge-base/nHr9SJfjSFiARxOvUrdzVQ",
+        },
+      ],
+    }
+  }
+
   return {
     concerns: [
       {

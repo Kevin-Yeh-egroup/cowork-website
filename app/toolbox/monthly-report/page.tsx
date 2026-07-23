@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import {
   ArrowRight,
@@ -17,8 +17,9 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { VoiceInputDraft } from "@/app/toolbox/_components/voice-input-draft"
 
-type ReportMode = "family" | "personal"
+type ReportMode = "family" | "personal" | "business"
 type ReportPeriod = "month" | "halfYear" | "year"
 
 type ReportRow = {
@@ -181,10 +182,12 @@ const baseReports = {
 }
 
 export default function MonthlyReportPage() {
-  const [mode, setMode] = useState<ReportMode>("family")
-  const [period, setPeriod] = useState<ReportPeriod>("month")
-  const report = baseReports[mode]
+  const [mode, setMode] = useState<ReportMode>(() => getInitialMode())
+  const [period, setPeriod] = useState<ReportPeriod>(() => getInitialPeriod())
+  const report = mode === "business" ? baseReports.family : baseReports[mode]
   const multiplier = periodMultiplier[period]
+  const isBusinessMode = mode === "business"
+  const subjectLabel = mode === "personal" ? "個人" : "家庭"
 
   const totals = useMemo(() => {
     const income = sum(report.income) * multiplier
@@ -213,6 +216,17 @@ export default function MonthlyReportPage() {
     }
   }, [multiplier, report])
 
+  useEffect(() => {
+    const syncFromUrl = () => {
+      setMode(getInitialMode())
+      setPeriod(getInitialPeriod())
+    }
+
+    syncFromUrl()
+    window.addEventListener("popstate", syncFromUrl)
+    return () => window.removeEventListener("popstate", syncFromUrl)
+  }, [])
+
   return (
     <main className="min-h-screen bg-background px-4 py-8">
       <div className="mx-auto max-w-6xl space-y-5">
@@ -220,22 +234,33 @@ export default function MonthlyReportPage() {
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <p className="text-sm font-semibold text-primary">{report.dateLabel}</p>
-              <h1 className="mt-1 text-3xl font-bold text-foreground">{periodLabels[period]}｜{report.title}</h1>
+              <h1 className="mt-1 text-3xl font-bold text-foreground">
+                {periodLabels[period]}｜{isBusinessMode ? "公司帳財務報表" : report.title}
+              </h1>
               <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-                這份報表彙整收入、支出、債務還款、儲蓄目標、資產與負債，讓你一次看見本月現金流與家庭財務全貌。
+                {isBusinessMode
+                  ? "公司帳先獨立看營業收入與營業支出，再視需要帶回家庭現金流一起整理。"
+                  : "這份報表彙整收入、支出、債務還款、儲蓄目標、資產與負債，讓你一次看見本月現金流與家庭財務全貌。"}
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
               <SegmentedControl
                 value={mode}
+                fieldName="mode"
+                hiddenFieldName="period"
+                hiddenFieldValue={period}
                 options={[
                   { value: "family", label: "家庭" },
                   { value: "personal", label: "個人" },
+                  { value: "business", label: "公司帳" },
                 ]}
                 onChange={(value) => setMode(value as ReportMode)}
               />
               <SegmentedControl
                 value={period}
+                fieldName="period"
+                hiddenFieldName="mode"
+                hiddenFieldValue={mode}
                 options={[
                   { value: "month", label: "月報" },
                   { value: "halfYear", label: "半年" },
@@ -245,49 +270,119 @@ export default function MonthlyReportPage() {
               />
             </div>
           </div>
+          <MonthlyReportSwitchScript />
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            <SummaryCard icon={WalletCards} label="總收入" value={totals.income + totals.businessIncome} />
-            <SummaryCard icon={ReceiptText} label="總支出" value={totals.livingExpense + totals.businessExpense} />
-            <SummaryCard icon={Landmark} label="債務還款" value={totals.debtPayment} />
-            <SummaryCard icon={PiggyBank} label="儲蓄準備" value={totals.savings} />
-            <SummaryCard icon={PiggyBank} label="儲蓄後現金流" value={totals.cashFlow} highlight={totals.cashFlow >= 0} />
+            {isBusinessMode ? (
+              <>
+                <SummaryCard icon={WalletCards} label="營業收入" value={totals.businessIncome} />
+                <SummaryCard icon={ReceiptText} label="營業支出" value={totals.businessExpense} />
+                <SummaryCard
+                  icon={PiggyBank}
+                  label="公司帳結餘"
+                  value={totals.businessIncome - totals.businessExpense}
+                  highlight={totals.businessIncome - totals.businessExpense >= 0}
+                />
+              </>
+            ) : (
+              <>
+                <SummaryCard icon={WalletCards} label="總收入" value={totals.income} />
+                <SummaryCard
+                  icon={ReceiptText}
+                  label="支出與準備"
+                  value={totals.livingExpense + totals.debtPayment + totals.savings}
+                />
+                <SummaryCard icon={Landmark} label="債務還款" value={totals.debtPayment} />
+                <SummaryCard icon={PiggyBank} label="儲蓄準備" value={totals.savings} />
+                <SummaryCard icon={PiggyBank} label="儲蓄後現金流" value={totals.cashFlow} highlight={totals.cashFlow >= 0} />
+              </>
+            )}
           </div>
         </section>
 
+        <VoiceInputDraft
+          title="先用一句話補月報表資料"
+          description="如果還沒有完整紀錄，可以先用口述方式補上大方向，之後再回到記帳、債務或目標工具確認細項。"
+          placeholder="我這個月薪水 58,000 元，兼職 5,000 元，房租 10,000 元，餐費大約 12,000 元，信用卡還款 5,000 元，另外存 3,000 元當預備金。"
+          examples={[
+            "我這個月收入大約 63,000 元，生活支出約 42,000 元，貸款還 8,000 元",
+            "這個月有存 3,000 元緊急預備金，還有孩子教育費準備 2,000 元",
+            "家裡收入主要是薪水和補助，支出最大是房租、餐費和交通",
+          ]}
+        />
+
         <section className="grid gap-5 lg:grid-cols-[1fr_340px]">
           <div className="space-y-5">
-            <ReportTable title="家庭收入" rows={scaleRows(report.income, multiplier)} total={totals.income} />
-            <ReportTable title="生活支出" rows={scaleRows(report.livingExpense, multiplier)} total={totals.livingExpense} />
-            <ReportTable title="債務還款" rows={scaleRows(report.debtPayment, multiplier)} total={totals.debtPayment} />
-            <ReportTable title="儲蓄與目標準備" rows={scaleRows(report.savings, multiplier)} total={totals.savings} />
-            <ReportTable title="營業收入" rows={scaleRows(report.businessIncome, multiplier)} total={totals.businessIncome} />
-            <ReportTable title="營業支出" rows={scaleRows(report.businessExpense, multiplier)} total={totals.businessExpense} />
-            <ReportTable title="資產" rows={report.assets} total={totals.assets} />
-            <ReportTable title="負債" rows={report.liabilities} total={totals.liabilities} />
+            {isBusinessMode ? (
+              <>
+                <ReportSectionIntro
+                  eyebrow="公司帳"
+                  title="營業收入與營業支出"
+                  description="這裡只看自營、接案或小生意的收支，避免和家庭生活費混在一起。"
+                />
+                <ReportTable title="營業收入" rows={scaleRows(report.businessIncome, multiplier)} total={totals.businessIncome} />
+                <ReportTable title="營業支出" rows={scaleRows(report.businessExpense, multiplier)} total={totals.businessExpense} />
+              </>
+            ) : (
+              <>
+                <ReportSectionIntro
+                  eyebrow="現金流量表"
+                  title="這段時間的錢怎麼進來、怎麼出去"
+                  description={`先看${subjectLabel}收入、生活支出、債務還款和儲蓄準備，知道這段時間最後留下多少現金。`}
+                />
+                <ReportTable title={`${subjectLabel}收入`} rows={scaleRows(report.income, multiplier)} total={totals.income} />
+                <ReportTable title="生活支出" rows={scaleRows(report.livingExpense, multiplier)} total={totals.livingExpense} />
+                <ReportTable title="債務還款" rows={scaleRows(report.debtPayment, multiplier)} total={totals.debtPayment} />
+                <ReportTable title="儲蓄與目標準備" rows={scaleRows(report.savings, multiplier)} total={totals.savings} />
+
+                <ReportSectionIntro
+                  eyebrow="資產負債表"
+                  title="目前累積了什麼，也還欠多少"
+                  description="資產與負債細項可展開確認；要修改資料時回到家庭財務全貌或債務盤點。"
+                />
+                <ReportTable title="資產" rows={report.assets} total={totals.assets} />
+                <ReportTable title="負債" rows={report.liabilities} total={totals.liabilities} />
+              </>
+            )}
           </div>
 
           <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
             <Card className="border-border">
               <CardContent className="p-5">
-                <h2 className="text-xl font-bold text-foreground">報表摘要</h2>
+                <h2 className="text-xl font-bold text-foreground">{isBusinessMode ? "公司帳摘要" : "報表摘要"}</h2>
                 <div className="mt-4 space-y-3">
-                  <AmountLine label="收入合計" value={totals.income + totals.businessIncome} />
-                  <AmountLine label="支出合計" value={totals.livingExpense + totals.businessExpense} />
-                  <AmountLine label="債務還款" value={totals.debtPayment} />
-                  <AmountLine label="儲蓄前現金流" value={totals.cashBeforeSavings} />
-                  <AmountLine label="儲蓄與目標準備" value={totals.savings} />
-                  <AmountLine label="儲蓄後現金流" value={totals.cashFlow} strong />
-                  <AmountLine label="資產總額" value={totals.assets} />
-                  <AmountLine label="負債總額" value={totals.liabilities} />
-                  <AmountLine label="淨值" value={totals.netWorth} strong />
+                  {isBusinessMode ? (
+                    <>
+                      <AmountLine label="營業收入" value={totals.businessIncome} />
+                      <AmountLine label="營業支出" value={totals.businessExpense} />
+                      <AmountLine
+                        label="公司帳結餘"
+                        value={totals.businessIncome - totals.businessExpense}
+                        strong
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <AmountLine label="收入合計" value={totals.income} />
+                      <AmountLine label="生活支出" value={totals.livingExpense} />
+                      <AmountLine label="債務還款" value={totals.debtPayment} />
+                      <AmountLine label="儲蓄前現金流" value={totals.cashBeforeSavings} />
+                      <AmountLine label="儲蓄與目標準備" value={totals.savings} />
+                      <AmountLine label="儲蓄後現金流" value={totals.cashFlow} strong />
+                      <AmountLine label="資產總額" value={totals.assets} />
+                      <AmountLine label="負債總額" value={totals.liabilities} />
+                      <AmountLine label="淨值" value={totals.netWorth} strong />
+                    </>
+                  )}
                 </div>
-                <Button asChild className="mt-5 w-full">
-                  <Link href={healthDashboardHref}>
-                    <ShieldCheck className="h-4 w-4" />
-                    查看財務健康安全儀表板
-                  </Link>
-                </Button>
+                {!isBusinessMode && (
+                  <Button asChild className="mt-5 w-full">
+                    <Link href={healthDashboardHref}>
+                      <ShieldCheck className="h-4 w-4" />
+                      查看財務健康安全儀表板
+                    </Link>
+                  </Button>
+                )}
               </CardContent>
             </Card>
 
@@ -337,34 +432,83 @@ function sum(rows: ReportRow[]) {
   return rows.reduce((total, row) => total + row.amount, 0)
 }
 
+function getInitialMode(): ReportMode {
+  if (typeof window === "undefined") return "family"
+  const mode = new URLSearchParams(window.location.search).get("mode")
+  return mode === "personal" || mode === "business" ? mode : "family"
+}
+
+function getInitialPeriod(): ReportPeriod {
+  if (typeof window === "undefined") return "month"
+  const period = new URLSearchParams(window.location.search).get("period")
+  return period === "halfYear" || period === "year" ? period : "month"
+}
+
 function scaleRows(rows: ReportRow[], multiplier: number) {
   return rows.map((row) => ({ ...row, amount: row.amount * multiplier }))
 }
 
 function SegmentedControl({
   value,
+  fieldName,
+  hiddenFieldName,
+  hiddenFieldValue,
   options,
   onChange,
 }: {
   value: string
+  fieldName: string
+  hiddenFieldName: string
+  hiddenFieldValue: string
   options: { value: string; label: string }[]
   onChange: (value: string) => void
 }) {
   return (
     <div className="flex rounded-full border border-border bg-muted/40 p-1">
       {options.map((option) => (
-        <button
+        <a
           key={option.value}
-          type="button"
-          onClick={() => onChange(option.value)}
+          href={`/toolbox/monthly-report?${fieldName}=${option.value}&${hiddenFieldName}=${hiddenFieldValue}`}
+          data-monthly-report-switch="true"
+          data-monthly-report-field={fieldName}
+          data-monthly-report-value={option.value}
+          data-monthly-report-hidden-field={hiddenFieldName}
+          data-monthly-report-hidden-value={hiddenFieldValue}
+          onClick={() => {
+            onChange(option.value)
+          }}
           className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
             value === option.value ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground"
           }`}
         >
           {option.label}
-        </button>
+        </a>
       ))}
     </div>
+  )
+}
+
+function MonthlyReportSwitchScript() {
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `
+          (() => {
+            if (window.__monthlyReportSwitchReady) return;
+            window.__monthlyReportSwitchReady = true;
+            document.addEventListener("click", (event) => {
+              const link = event.target.closest("[data-monthly-report-switch='true']");
+              if (!link) return;
+              event.preventDefault();
+              const params = new URLSearchParams();
+              params.set(link.dataset.monthlyReportField, link.dataset.monthlyReportValue);
+              params.set(link.dataset.monthlyReportHiddenField, link.dataset.monthlyReportHiddenValue);
+              window.location.href = "/toolbox/monthly-report?" + params.toString();
+            }, true);
+          })();
+        `,
+      }}
+    />
   )
 }
 
@@ -390,52 +534,73 @@ function SummaryCard({
   )
 }
 
+function ReportSectionIntro({
+  eyebrow,
+  title,
+  description,
+}: {
+  eyebrow: string
+  title: string
+  description: string
+}) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-5">
+      <p className="text-sm font-semibold text-primary">{eyebrow}</p>
+      <h2 className="mt-1 text-2xl font-bold text-foreground">{title}</h2>
+      <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
+    </div>
+  )
+}
+
 function ReportTable({ title, rows, total }: { title: string; rows: ReportRow[]; total: number }) {
   return (
     <Card className="border-border">
       <CardContent className="p-0">
-        <div className="flex items-center justify-between border-b border-border px-5 py-4">
-          <h2 className="text-xl font-bold text-foreground">{title}</h2>
-          <span className="text-lg font-bold text-foreground">{money.format(total)}</span>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] text-sm">
-            <thead className="bg-muted/35 text-left text-muted-foreground">
-              <tr>
-                <th className="px-5 py-3 font-semibold">項目</th>
-                <th className="px-5 py-3 text-right font-semibold">金額</th>
-                <th className="px-5 py-3 font-semibold">資料來源</th>
-                <th className="px-5 py-3 text-right font-semibold">操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr key={row.label} className="border-t border-border/70">
-                  <td className="px-5 py-3 font-medium text-foreground">{row.label}</td>
-                  <td className="px-5 py-3 text-right font-semibold text-foreground">{money.format(row.amount)}</td>
-                  <td className="px-5 py-3 text-muted-foreground">{row.source || "手動補齊"}</td>
-                  <td className="px-5 py-3 text-right">
-                    {row.href ? (
-                      <Link href={row.href} className="font-semibold text-primary">
-                        查看
-                      </Link>
-                    ) : (
-                      <span className="text-muted-foreground">補資料</span>
-                    )}
-                  </td>
+        <details className="group">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4">
+            <div>
+              <h2 className="text-xl font-bold text-foreground">{title}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">展開查看細項，或回到原工具修改。</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-lg font-bold text-foreground">{money.format(total)}</span>
+              <span className="rounded-full border border-border px-3 py-1 text-sm font-semibold text-primary group-open:bg-primary group-open:text-primary-foreground">
+                明細
+              </span>
+            </div>
+          </summary>
+          <div className="overflow-x-auto border-t border-border">
+            <table className="w-full min-w-[520px] text-sm">
+              <thead className="bg-muted/35 text-left text-muted-foreground">
+                <tr>
+                  <th className="px-5 py-3 font-semibold">項目</th>
+                  <th className="px-5 py-3 text-right font-semibold">金額</th>
+                  <th className="px-5 py-3 text-right font-semibold">查看／修改</th>
                 </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              <tr className="border-t border-border bg-muted/25">
-                <td className="px-5 py-3 font-bold text-foreground">小計</td>
-                <td className="px-5 py-3 text-right font-bold text-foreground">{money.format(total)}</td>
-                <td className="px-5 py-3" />
-                <td className="px-5 py-3" />
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {rows.map((row) => (
+                  <tr key={row.label} className="border-t border-border/70">
+                    <td className="px-5 py-3 font-medium text-foreground">{row.label}</td>
+                    <td className="px-5 py-3 text-right font-semibold text-foreground">{money.format(row.amount)}</td>
+                    <td className="px-5 py-3 text-right">
+                      <Link href={row.href || "/personal-center#member-data-summary"} className="font-semibold text-primary">
+                        修改
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr className="border-t border-border bg-muted/25">
+                  <td className="px-5 py-3 font-bold text-foreground">小計</td>
+                  <td className="px-5 py-3 text-right font-bold text-foreground">{money.format(total)}</td>
+                  <td className="px-5 py-3" />
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </details>
       </CardContent>
     </Card>
   )

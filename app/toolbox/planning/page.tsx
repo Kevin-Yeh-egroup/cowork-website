@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 
 import { SaveToProfilePrompt } from "@/app/toolbox/_components/save-to-profile-prompt"
+import { VoiceInputDraft } from "@/app/toolbox/_components/voice-input-draft"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -213,6 +214,19 @@ export function PlanningTool({ initialMode = "goal" }: { initialMode?: PlanningM
               </span>
             </Link>
           </div>
+        </section>
+
+        <section className="mb-7">
+          <VoiceInputDraft
+            title="也可以先把目標說出來"
+            description="之後可接語音轉文字，先抓出目標、金額、期限、目前已有與每月可準備金額。"
+            placeholder="我想半年後搬家，大概需要 80,000 元，目前有 20,000 元，每個月最多可以存 6,000 元，但三個月後可能有保險費要繳。"
+            examples={[
+              "我想一年後準備孩子教育費 60,000 元，目前有 10,000 元，每月可存 4,000 元",
+              "我想先存緊急預備金 90,000 元，目前沒有存款，每月可以存 3,000 元",
+              "我只是想快速試算，目標 50,000 元，目前有 5,000 元，每月可存 2,000 元",
+            ]}
+          />
         </section>
 
         <section className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">

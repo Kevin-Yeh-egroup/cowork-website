@@ -858,8 +858,8 @@ export default function DebtPage() {
                     <Mic className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-primary">口述輸入草稿</p>
-                    <h2 className="text-xl font-semibold text-foreground">也可以先用說的</h2>
+                    <p className="text-sm font-medium text-primary">語音輸入草稿</p>
+                    <h2 className="text-xl font-semibold text-foreground">也可以先把債務用說的講出來</h2>
                   </div>
                 </div>
                 <textarea
@@ -869,10 +869,18 @@ export default function DebtPage() {
                   placeholder="例如：我有一張信用卡還欠八萬元，每個月繳六千，利率十五趴..."
                 />
                 <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-sm leading-6 text-muted-foreground">這裡先做示意：之後可接語音轉文字，再協助拆成上方欄位。</p>
+                  <p className="text-sm leading-6 text-muted-foreground">之後可接語音轉文字，再協助拆成債務人、債權人、金額、利率、每月還款與還款狀況。</p>
                   <Button type="button" variant="outline" onClick={addVoiceDraft}>
                     將口述內容帶入欄位 <ArrowRight className="h-4 w-4" />
                   </Button>
+                </div>
+                <div className="mt-4 rounded-2xl border border-primary/20 bg-primary/10 p-4">
+                  <p className="text-sm font-medium text-primary">可以這樣說</p>
+                  <ul className="mt-2 space-y-2 text-sm leading-6 text-muted-foreground">
+                    <li>「我有一張信用卡還欠八萬元，每個月繳六千，利率十五趴。」</li>
+                    <li>「我跟朋友借三萬元，沒有利息，約定每月還兩千。」</li>
+                    <li>「車貸還剩十六萬八千，每月繳三千二，還有大概四年。」</li>
+                  </ul>
                 </div>
               </CardContent>
             </Card>

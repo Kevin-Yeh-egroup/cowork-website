@@ -2,11 +2,11 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect } from "react"
+import { usePathname } from "next/navigation"
 import type { LucideIcon } from "lucide-react"
-import { Menu, Route, ClipboardCheck, Wrench, BookOpen, Calendar, Users, User, ChevronDown, HandCoins, Map } from "lucide-react"
+import { Menu, X, Route, ClipboardCheck, Wrench, BookOpen, Calendar, Users, User, ChevronDown, HandCoins, Map } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { externalLinks } from "@/lib/external-links"
 import { getAuthHomePath, useDemoAuth, type DemoAuthState } from "@/lib/demo-auth"
 import { scenarioCategories } from "@/lib/scenarios-data"
@@ -124,7 +124,7 @@ function getEventAudience(href: string) {
 }
 
 export function Navigation() {
-  const [isOpen, setIsOpen] = useState(false)
+  const pathname = usePathname()
   const { authState, logout } = useDemoAuth()
   const navItems =
     authState.isLoggedIn && authState.role === "social_worker"
@@ -138,6 +138,27 @@ export function Navigation() {
       window.dispatchEvent(new CustomEvent("events-audience-change", { detail: audience }))
     }
   }
+
+  const closeMobileMenu = () => {
+    document.querySelector("[data-mobile-menu]")?.removeAttribute("open")
+  }
+
+  useEffect(() => {
+    closeMobileMenu()
+  }, [pathname])
+
+  useEffect(() => {
+    const closeOnDesktop = () => {
+      if (window.matchMedia("(min-width: 1280px)").matches) {
+        closeMobileMenu()
+      }
+    }
+
+    closeOnDesktop()
+    window.addEventListener("resize", closeOnDesktop)
+
+    return () => window.removeEventListener("resize", closeOnDesktop)
+  }, [])
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/70 bg-background/90 shadow-[0_10px_30px_oklch(0.8_0.08_40_/_0.12)] backdrop-blur-md">
@@ -199,65 +220,106 @@ export function Navigation() {
           </nav>
 
           {/* Mobile Menu */}
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="mobile-menu-button xl:!hidden">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">開啟選單</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-72">
-              <SheetTitle className="sr-only">主選單</SheetTitle>
-              <SheetDescription className="sr-only">網站主要導覽連結</SheetDescription>
-              <nav className="flex flex-col gap-2 mt-8">
-                {navItems.map((item) => {
-                  const Icon = item.icon
-                  return (
-                    <div key={item.href}>
-                      <Link
-                        href={item.href}
-                        onClick={() => setIsOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-foreground hover:bg-secondary rounded-lg transition-colors"
+          <details data-mobile-menu className="mobile-menu-button group xl:hidden">
+            <summary
+              className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground [&::-webkit-details-marker]:hidden"
+              aria-label="開啟網站選單"
+            >
+              <Menu className="h-5 w-5 group-open:hidden" />
+              <span className="fixed right-5 top-5 z-[80] hidden h-10 w-10 items-center justify-center rounded-full bg-secondary text-foreground shadow-lg group-open:inline-flex">
+                <X className="h-5 w-5" />
+              </span>
+            </summary>
+            <div className="fixed inset-0 z-[60]">
+              <button
+                type="button"
+                className="absolute inset-0 bg-foreground/25"
+                aria-label="關閉網站選單"
+                onClick={closeMobileMenu}
+              />
+              <div className="absolute right-0 top-0 flex h-[100dvh] w-full max-w-sm flex-col border-l border-border bg-background shadow-2xl">
+                <div className="flex shrink-0 items-start justify-between gap-4 border-b border-border px-5 py-5">
+                  <div>
+                    <p className="text-lg font-semibold text-foreground">網站選單</p>
+                    <p className="mt-1 text-sm text-muted-foreground">選擇想前往的頁面，或展開分類查看子項目。</p>
+                  </div>
+                  <span className="h-10 w-10" aria-hidden="true" />
+                </div>
+
+                <nav className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
+                  <div className="flex flex-col gap-2 pb-8">
+                    {navItems.map((item) => {
+                      const Icon = item.icon
+
+                      if (item.children) {
+                        return (
+                          <details key={item.href} className="rounded-2xl border border-border bg-card">
+                            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-foreground [&::-webkit-details-marker]:hidden">
+                              <span className="flex items-center gap-3 font-medium">
+                                <Icon className="h-5 w-5 text-primary" />
+                                {item.label}
+                              </span>
+                              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                            </summary>
+                            <div className="border-t border-border px-4 py-3">
+                              <Link
+                                href={item.href}
+                                onClick={closeMobileMenu}
+                                className="mb-2 block rounded-xl bg-secondary px-3 py-2 text-sm font-medium text-foreground"
+                              >
+                                前往{item.label}
+                              </Link>
+                              <div className="flex flex-col gap-1">
+                                {item.children.map((child) => (
+                                  <Link
+                                    key={child.href}
+                                    href={child.href}
+                                    onClick={() => {
+                                      syncEventAudience(child.href)
+                                      closeMobileMenu()
+                                    }}
+                                    className="rounded-xl px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                                  >
+                                    {child.label}
+                                  </Link>
+                                ))}
+                              </div>
+                            </div>
+                          </details>
+                        )
+                      }
+
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={closeMobileMenu}
+                          className="flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3 font-medium text-foreground transition-colors hover:bg-secondary"
+                        >
+                          <Icon className="h-5 w-5 text-primary" />
+                          {item.label}
+                        </Link>
+                      )
+                    })}
+
+                    {authState.isLoggedIn && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        className="justify-start rounded-2xl border border-border bg-card px-4 py-3 font-medium text-foreground"
+                        onClick={() => {
+                          logout()
+                          closeMobileMenu()
+                        }}
                       >
-                        <Icon className="h-5 w-5 text-primary" />
-                        {item.label}
-                      </Link>
-                      {item.children && (
-                        <div className="-mt-1 ml-8 flex flex-col gap-1">
-                          {item.children.map((child) => (
-                            <Link
-                              key={child.href}
-                              href={child.href}
-                              onClick={() => {
-                                syncEventAudience(child.href)
-                                setIsOpen(false)
-                              }}
-                              className="rounded-lg px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                            >
-                              {child.label}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
-                {authState.isLoggedIn && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className="justify-start px-4 py-3 text-foreground"
-                    onClick={() => {
-                      logout()
-                      setIsOpen(false)
-                    }}
-                  >
-                    登出
-                  </Button>
-                )}
-              </nav>
-            </SheetContent>
-          </Sheet>
+                        登出
+                      </Button>
+                    )}
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </details>
         </div>
       </div>
     </header>

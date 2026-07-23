@@ -8,9 +8,11 @@ import {
   Calculator,
   ClipboardList,
   Landmark,
+  Mic,
   PencilLine,
   ReceiptText,
   RotateCcw,
+  Sparkles,
   UserRound,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -54,6 +56,7 @@ const expenseCategories: Option[] = [
   { id: "tax", label: "稅金與規費", description: "綜所稅、牌照稅、燃料費、房屋稅、地價稅、政府規費。", reportField: "稅金與規費支出" },
   { id: "communication", label: "通訊與網路", description: "手機費、網路費、串流訂閱、軟體月費。", reportField: "通訊支出" },
   { id: "learning", label: "休閒與學習", description: "娛樂、課程、書籍、運動、旅遊、社交活動。", reportField: "休閒學習支出" },
+  { id: "savings", label: "儲蓄", description: "定期存款、緊急預備金、孩子教育費、搬家準備金或其他生活目標準備。", reportField: "一般儲蓄 / 儲蓄與目標準備" },
   { id: "otherExpense", label: "其他支出", description: "暫時找不到合適類別時先放這裡，之後再整理。", reportField: "其他支出" },
 ]
 
@@ -89,6 +92,17 @@ const businessIncomeSources: Option[] = [
   { id: "businessRefund", label: "退費或折讓收回", description: "退款、押金退回、折讓或費用返還。", reportField: "公司其他收入" },
   { id: "businessOtherIncome", label: "其他公司收入", description: "暫時無法歸類的公司收入先放這裡。", reportField: "其他公司收入" },
 ]
+
+const categoryConfig = {
+  personal: {
+    expense: expenseCategories,
+    income: incomeSources,
+  },
+  business: {
+    expense: businessExpenseCategories,
+    income: businessIncomeSources,
+  },
+}
 
 const paymentMethods = ["現金", "信用卡", "簽帳金融卡", "轉帳 / 匯款", "LINE Pay", "其他電子支付", "其他"]
 const frequencyOptions = ["單次", "每週", "每月", "每季", "半年", "每年"]
@@ -158,6 +172,9 @@ export default function AccountingPage() {
   const categories = categoryOptionsFor(entryType, accountScope)
   const selectedCategory = categories.find((category) => category.id === selectedCategoryId) ?? categories[0]
   const inputAmount = Number(amount || 0)
+  const categoryHintStyles = categories
+    .map((category) => `.category-field:has(select option[value="${category.id}"]:checked) [data-category-hint="${category.id}"] { display: block; }`)
+    .join("\n")
 
   const totals = useMemo(() => {
     const income = entries.filter((entry) => entry.type === "income").reduce((sum, entry) => sum + entry.amount, 0)
@@ -187,7 +204,11 @@ export default function AccountingPage() {
     setSelectedCategoryId(categoryOptionsFor(entryType, scope)[0].id)
   }
 
-const resetForm = () => {
+  const selectCategory = (categoryId: string) => {
+    setSelectedCategoryId(categoryId)
+  }
+
+  const resetForm = () => {
     setEntryType("expense")
     setAmount("")
     setNote("")
@@ -262,6 +283,42 @@ const resetForm = () => {
           </p>
         </section>
 
+        <section className="mb-6">
+          <Card className="border-border bg-card/90">
+            <CardContent className="p-5">
+              <div className="mb-4 flex items-start gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <Mic className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-primary">語音輸入草稿</p>
+                  <h2 className="text-xl font-semibold text-foreground">也可以先用說的記一筆</h2>
+                  <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                    之後可接語音轉文字，先把一句話拆成日期、收入或支出、類別、金額與備註。
+                  </p>
+                </div>
+              </div>
+
+              <textarea
+                defaultValue="今天午餐 120 元，捷運 40 元；薪水入帳 38,000 元；轉 3,000 元到緊急預備金。"
+                className="min-h-28 w-full rounded-xl border border-border bg-background px-3 py-3 text-sm leading-6 outline-none focus:border-primary"
+              />
+
+              <div className="mt-4 rounded-2xl border border-primary/20 bg-primary/10 p-4">
+                <div className="mb-2 flex items-center gap-2 text-sm font-medium text-primary">
+                  <Sparkles className="h-4 w-4" />
+                  可以這樣說
+                </div>
+                <ul className="space-y-2 text-sm leading-6 text-muted-foreground">
+                  <li>「今天早餐 60 元、午餐 120 元，都是現金支付」</li>
+                  <li>「本月薪水入帳 38,000 元，轉帳進來」</li>
+                  <li>「轉 3,000 元到緊急預備金，算儲蓄」</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
         <div className="grid gap-5 lg:grid-cols-[1fr_380px] lg:items-start">
           <section className="space-y-5">
             <Card className="border-border bg-card/90">
@@ -282,6 +339,9 @@ const resetForm = () => {
                     <div className="inline-grid grid-cols-2 rounded-full border border-border bg-background p-1">
                       <button
                         type="button"
+                        data-account-toggle="personal"
+                        onPointerDown={() => selectAccountScope("personal")}
+                        onMouseDown={() => selectAccountScope("personal")}
                         onClick={() => selectAccountScope("personal")}
                         className={`rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
                           accountScope === "personal" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
@@ -291,6 +351,9 @@ const resetForm = () => {
                       </button>
                       <button
                         type="button"
+                        data-account-toggle="business"
+                        onPointerDown={() => selectAccountScope("business")}
+                        onMouseDown={() => selectAccountScope("business")}
                         onClick={() => selectAccountScope("business")}
                         className={`rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
                           accountScope === "business" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
@@ -309,6 +372,9 @@ const resetForm = () => {
                     <div className="inline-grid grid-cols-2 rounded-full border border-border bg-background p-1">
                       <button
                         type="button"
+                        data-entry-toggle="expense"
+                        onPointerDown={() => selectType("expense")}
+                        onMouseDown={() => selectType("expense")}
                         onClick={() => selectType("expense")}
                         className={`rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
                           entryType === "expense" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
@@ -318,6 +384,9 @@ const resetForm = () => {
                       </button>
                       <button
                         type="button"
+                        data-entry-toggle="income"
+                        onPointerDown={() => selectType("income")}
+                        onMouseDown={() => selectType("income")}
                         onClick={() => selectType("income")}
                         className={`rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
                           entryType === "income" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
@@ -353,22 +422,27 @@ const resetForm = () => {
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  <label className="space-y-2 text-sm font-medium text-foreground">
+                  <label className="category-field space-y-2 text-sm font-medium text-foreground">
                     <span>{entryType === "income" ? "收入來源" : "支出類別"}</span>
+                    <style>{`.category-field [data-category-hint] { display: none; }\n${categoryHintStyles}`}</style>
                     <select
+                      data-category-select
                       value={selectedCategoryId}
-                      onChange={(event) => setSelectedCategoryId(event.target.value)}
+                      onInput={(event) => selectCategory(event.currentTarget.value)}
+                      onChange={(event) => selectCategory(event.target.value)}
+                      onBlur={(event) => selectCategory(event.currentTarget.value)}
                       className="h-12 w-full rounded-xl border border-input bg-background px-3 text-sm text-foreground shadow-sm outline-none transition-colors focus:border-primary"
                     >
                       {categories.map((category) => (
                         <option key={category.id} value={category.id}>
-                          {category.description ? `${category.label} - ${category.description}` : category.label}
+                          {category.label}
                         </option>
                       ))}
                     </select>
-                    {selectedCategory.description ? (
-                      <span className="block text-xs leading-relaxed text-muted-foreground">{selectedCategory.description}</span>
-                    ) : null}
+                    <span className="sr-only" aria-live="polite">{selectedCategory.description}</span>
+                    <div className="rounded-xl bg-secondary/70 px-3 py-2 text-xs leading-relaxed text-muted-foreground">
+                      <span data-category-description>{selectedCategory.description}</span>
+                    </div>
                   </label>
 
                   <label className="space-y-2 text-sm font-medium text-foreground">
@@ -435,7 +509,12 @@ const resetForm = () => {
                 <div className="mt-4 rounded-2xl border border-primary/20 bg-primary/10 p-4">
                   <p className="text-sm font-medium text-primary">這筆資料會帶到哪裡？</p>
                   <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                    {selectedCategory.label}會更新「{selectedCategory.reportField}」，也會進入財務月報表的收入、支出與月現金流計算。
+                    <span data-category-report-note>
+                      你目前選的是「{selectedCategory.label}」，會更新財務月報表中的「{selectedCategory.reportField}」。
+                    </span>
+                    {selectedCategory.id === "savings"
+                      ? "這筆錢會放在儲蓄與目標準備，並用來計算儲蓄後現金流。"
+                      : "這筆資料也會進入收入、支出與月現金流計算。"}
                   </p>
                 </div>
 
@@ -575,6 +654,70 @@ const resetForm = () => {
             </Card>
           </aside>
         </div>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+(() => {
+  const categoryConfig = ${JSON.stringify(categoryConfig)};
+  const root = document.currentScript?.closest('.mx-auto') || document;
+  const select = root.querySelector('[data-category-select]');
+  const description = root.querySelector('[data-category-description]');
+  const reportNote = root.querySelector('[data-category-report-note]');
+  let accountScope = 'personal';
+  let entryType = 'expense';
+
+  function setActive(selector, activeValue, activeClasses, inactiveClasses) {
+    root.querySelectorAll(selector).forEach((button) => {
+      const value = button.getAttribute(selector.includes('account') ? 'data-account-toggle' : 'data-entry-toggle');
+      button.classList.remove(...activeClasses, ...inactiveClasses);
+      button.classList.add(...(value === activeValue ? activeClasses : inactiveClasses));
+    });
+  }
+
+  function currentOptions() {
+    return categoryConfig[accountScope][entryType] || [];
+  }
+
+  function updateCategorySelect() {
+    if (!select) return;
+    const options = currentOptions();
+    select.innerHTML = options.map((item) => '<option value="' + item.id + '">' + item.label + '</option>').join('');
+    updateCategoryText();
+  }
+
+  function updateCategoryText() {
+    if (!select) return;
+    const options = currentOptions();
+    const selected = options.find((item) => item.id === select.value) || options[0];
+    if (!selected) return;
+    if (description) description.textContent = selected.description || '';
+    if (reportNote) {
+      reportNote.textContent = '你目前選的是「' + selected.label + '」，會更新財務月報表中的「' + (selected.reportField || '月報表') + '」。';
+    }
+  }
+
+  root.querySelectorAll('[data-account-toggle]').forEach((button) => {
+    button.addEventListener('click', () => {
+      accountScope = button.getAttribute('data-account-toggle') || 'personal';
+      setActive('[data-account-toggle]', accountScope, ['bg-primary', 'text-primary-foreground'], ['text-muted-foreground', 'hover:text-foreground']);
+      updateCategorySelect();
+    });
+  });
+
+  root.querySelectorAll('[data-entry-toggle]').forEach((button) => {
+    button.addEventListener('click', () => {
+      entryType = button.getAttribute('data-entry-toggle') || 'expense';
+      setActive('[data-entry-toggle]', entryType, ['bg-primary', 'text-primary-foreground'], ['text-muted-foreground', 'hover:text-foreground']);
+      updateCategorySelect();
+    });
+  });
+
+  select?.addEventListener('change', updateCategoryText);
+  updateCategorySelect();
+})();
+            `,
+          }}
+        />
       </div>
     </div>
   )
