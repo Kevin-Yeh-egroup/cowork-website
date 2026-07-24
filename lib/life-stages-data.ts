@@ -43,7 +43,7 @@ export const lifeStages: LifeStage[] = [
       { title: "正在轉職", href: "/life-topics/work-income/career-transition" },
       { title: "最近失業", href: "/life-topics/work-income/recently-unemployed" },
       { title: "第二收入／斜槓", href: "/life-topics/work-income/side-income" },
-      { title: "債務與財務壓力", href: "/life-topics/debt-pressure/financial-anxiety" },
+      { title: "財務焦慮與入不敷出", href: "/life-topics/debt-pressure/financial-anxiety" },
       { title: "退休準備", href: "/life-topics/work-income/retirement-prep" },
     ],
     offerings: ["財務健康檢測", "財務工具", "免費諮詢", "社工合作服務"],

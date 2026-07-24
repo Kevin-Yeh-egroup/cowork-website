@@ -179,7 +179,7 @@ const savedFinancialRecords = [
     updatedAt: "持續整理",
     count: "已建立 1 個目標",
     detail: "緊急預備金已完成約 54%，之後可加入存款、房產或其他資產。",
-    href: "/toolbox/planning",
+    href: "/toolbox/monthly-report#monthly-assets",
   },
   {
     title: "負債",
@@ -204,18 +204,18 @@ const monthlyReportSections = [
     title: "收入明細",
     summary: "先列出這個月已保存的收入來源。",
     rows: [
-      { name: "薪資收入", amount: "$42,000", note: "來自記帳助理" },
-      { name: "兼職收入", amount: "$10,000", note: "來自記帳助理" },
-      { name: "其他收入", amount: "$6,000", note: "可再確認是否固定" },
+      { name: "工作與薪酬收入", amount: "$42,000", note: "來自記帳助理" },
+      { name: "非主要工作收入", amount: "$10,000", note: "來自記帳助理" },
+      { name: "個人政府補助與其他生活收入", amount: "$6,000", note: "可再確認是否固定" },
     ],
   },
   {
     title: "支出明細",
     summary: "把生活支出與固定支出分開看，比較容易知道哪裡能調整。",
     rows: [
-      { name: "食、交通與日常生活", amount: "$18,700", note: "來自記帳助理" },
-      { name: "房租、水電與通訊", amount: "$14,000", note: "固定支出" },
-      { name: "保險與照顧支出", amount: "$0", note: "尚未補齊" },
+      { name: "食、衣、住、行", amount: "$32,700", note: "來自記帳助理" },
+      { name: "育、樂、電信、保險、醫療", amount: "$0", note: "尚未補齊" },
+      { name: "其他生活支出", amount: "$0", note: "可再確認是否固定" },
     ],
   },
   {
@@ -254,7 +254,7 @@ const monthlyMissingItems = ["保險保障", "資產與投資", "部分固定支
 const lifeProfileItems = [
   { label: "家庭成員", status: "已填 2/4", description: "本人、同住家人、扶養或照顧對象", href: "/personal-center#member-data-summary" },
   { label: "收入來源", status: "下次可補", description: "薪資、兼職、補助或家人支持", href: "/personal-center#member-data-summary" },
-  { label: "每月必要支出", status: "慢慢累積", description: "食、衣、住、行、育、樂、通訊、保險", href: "/personal-center#member-data-summary" },
+  { label: "每月必要支出", status: "慢慢累積", description: "食、衣、住、行、育、樂、電信、保險、醫療", href: "/personal-center#member-data-summary" },
   { label: "照顧責任", status: "已填 1/3", description: "家人生活費、醫療、長照或育兒支出", href: "/personal-center#member-data-summary" },
 ]
 
@@ -345,6 +345,8 @@ export default function PersonalCenterPage() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    data-member-panel-link="true"
+                    data-member-panel-target={item.href.slice(1)}
                     onClick={() => setActiveMemberPanel(item.href.slice(1))}
                     className={`member-nav-link flex items-start gap-3 rounded-xl px-3 py-3 text-left transition-colors hover:bg-secondary/70 ${
                       activeMemberPanel === item.href.slice(1) ? "bg-primary/10" : ""
@@ -539,7 +541,7 @@ export default function PersonalCenterPage() {
                     </div>
                   </div>
 
-                  <div className="mb-4 grid gap-3 lg:grid-cols-[1.2fr_0.8fr]">
+                  <div className="hidden">
                     <div className="rounded-2xl border border-border bg-background/75 p-4">
                       <p className="font-semibold text-foreground">資料來源</p>
                       <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
@@ -589,12 +591,6 @@ export default function PersonalCenterPage() {
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-border bg-background/75 p-4">
-                    <p className="font-semibold text-foreground">月報表會自己更新</p>
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                      這份月報表會依照「我的財務紀錄」自動更新。想補資料時，可以回到「下一步」或「我的財務紀錄」。
-                    </p>
-                  </div>
                 </CardContent>
             </Card>
 
@@ -777,7 +773,61 @@ export default function PersonalCenterPage() {
 
           </div>
         </section>
+        <PersonalCenterPanelScript />
       </div>
     </div>
+  )
+}
+
+function PersonalCenterPanelScript() {
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `
+          (() => {
+            if (window.__personalCenterPanelReady) return;
+            window.__personalCenterPanelReady = true;
+
+            const defaultPanel = "member-recent-actions";
+            const getPanels = () => Array.from(document.querySelectorAll(".member-panels > [id^='member-']"));
+            const getLinks = () => Array.from(document.querySelectorAll("[data-member-panel-link='true']"));
+            const panelExists = (panelId) => getPanels().some((panel) => panel.id === panelId);
+
+            const showPanel = (panelId, updateHash = true) => {
+              const targetId = panelExists(panelId) ? panelId : defaultPanel;
+
+              getPanels().forEach((panel) => {
+                const isActive = panel.id === targetId;
+                panel.classList.toggle("hidden", !isActive);
+                panel.classList.toggle("block", isActive);
+              });
+
+              getLinks().forEach((link) => {
+                const isActive = link.dataset.memberPanelTarget === targetId;
+                link.classList.toggle("bg-primary/10", isActive);
+              });
+
+              if (updateHash) {
+                window.history.replaceState(null, "", "#" + targetId);
+              }
+            };
+
+            document.addEventListener("click", (event) => {
+              const link = event.target.closest("[data-member-panel-link='true']");
+              if (!link) return;
+
+              event.preventDefault();
+              showPanel(link.dataset.memberPanelTarget);
+            }, true);
+
+            window.addEventListener("hashchange", () => {
+              showPanel(window.location.hash.replace("#", ""), false);
+            });
+
+            showPanel(window.location.hash.replace("#", ""), false);
+          })();
+        `,
+      }}
+    />
   )
 }

@@ -45,52 +45,65 @@ type Entry = {
 }
 
 const expenseCategories: Option[] = [
-  { id: "food", label: "飲食", description: "三餐、飲料、外食、食材、孩子餐費。", reportField: "食" },
-  { id: "clothing", label: "衣著", description: "衣服、鞋子、制服、換季衣物、洗衣或修補。", reportField: "衣" },
-  { id: "transport", label: "交通", description: "捷運、公車、油錢、停車、計程車、通勤費。", reportField: "行" },
-  { id: "housing", label: "居住與家庭", description: "房租、管理費、水電瓦斯、修繕、家具家電。", reportField: "住" },
-  { id: "child", label: "孩子與教育", description: "托育、學費、安親、才藝、教材、接送。", reportField: "育兒與教育支出" },
-  { id: "medical", label: "醫療與保險", description: "掛號、藥費、保費、健檢、照護用品。", reportField: "醫療保險支出" },
-  { id: "care", label: "家庭照顧", description: "長輩照顧、家人生活費、固定支援或看護。", reportField: "照顧責任支出" },
-  { id: "debt", label: "債務與帳單", description: "信用卡、貸款、分期、水電帳單、電信帳單。", reportField: "債務月付與固定帳單" },
-  { id: "tax", label: "稅金與規費", description: "綜所稅、牌照稅、燃料費、房屋稅、地價稅、政府規費。", reportField: "稅金與規費支出" },
-  { id: "communication", label: "通訊與網路", description: "手機費、網路費、串流訂閱、軟體月費。", reportField: "通訊支出" },
-  { id: "learning", label: "休閒與學習", description: "娛樂、課程、書籍、運動、旅遊、社交活動。", reportField: "休閒學習支出" },
-  { id: "savings", label: "儲蓄", description: "定期存款、緊急預備金、孩子教育費、搬家準備金或其他生活目標準備。", reportField: "一般儲蓄 / 儲蓄與目標準備" },
-  { id: "otherExpense", label: "其他支出", description: "暫時找不到合適類別時先放這裡，之後再整理。", reportField: "其他支出" },
+  { id: "food", label: "食", description: "三餐、宵夜、零食、飲品、買菜及其他個人或家庭飲食費用。", reportField: "生活支出 - 食" },
+  { id: "clothing", label: "衣", description: "衣褲、帽子、鞋子、包包、飾品、剪髮、燙染髮、保養品及其他穿著或個人照護費用。", reportField: "生活支出 - 衣" },
+  { id: "housing", label: "住", description: "房租、管理費、家用水電、瓦斯、家具、家電、生活用品，以及居家修繕與裝修費用。", reportField: "生活支出 - 住" },
+  { id: "transport", label: "行", description: "大眾運輸、悠遊卡儲值、計程車、汽機車油料、停車、維修及保養等交通費用。", reportField: "生活支出 - 行" },
+  { id: "education", label: "育", description: "本人或子女的學雜費、補習費、課程費、書籍、教材、文具、制服，以及子女生活費與零用錢。", reportField: "生活支出 - 育" },
+  { id: "recreation", label: "樂", description: "電影、展覽、遊樂園、旅遊、節慶活動、生日、週年紀念、公益彩券及其他休閒娛樂費用。", reportField: "生活支出 - 樂" },
+  { id: "telecom", label: "電信", description: "手機月租費、家用電話、網路、第四台及其他個人或家庭通訊服務費用。", reportField: "生活支出 - 電信" },
+  { id: "insurance", label: "保險", description: "本人或家人的健保、壽險、醫療險、儲蓄險、防癌險、意外險及其他保險費用，不區分繳費週期。", reportField: "生活支出 - 保險" },
+  { id: "medical", label: "醫療", description: "看診、掛號、藥品、醫療器材、眼鏡及其他治療、保健或健康照護費用。", reportField: "生活支出 - 醫療" },
+  { id: "savings", label: "儲蓄", description: "存入銀行或郵局的儲蓄、基金與其他投資、子女教育基金及退休準備金；這類屬於資金配置，並非實際消費。", reportField: "儲蓄與目標準備" },
+  { id: "debt", label: "還款", description: "信用卡、車貸、房貸、信貸、當鋪借款及其他債務的本金、利息與手續費；信用卡消費若已記錄，繳卡費時不應重複計入。", reportField: "債務還款" },
+  { id: "otherExpense", label: "其他", description: "個人稅金與規費、紅白包、請客、父母生活費、慈善捐款、宗教奉獻、郵資、意外損失，以及無法歸入其他類別的生活支出。", reportField: "生活支出 - 其他" },
 ]
 
 const incomeSources: Option[] = [
-  { id: "salary", label: "薪資收入", description: "固定薪水、津貼、固定工作收入。", reportField: "本月收入" },
-  { id: "side", label: "副業收入", description: "接案、兼職、工作室或小生意收入。", reportField: "本月收入" },
-  { id: "temporary", label: "臨時性工作", description: "短期打工、臨時工、一次性工作收入。", reportField: "本月收入" },
-  { id: "bonus", label: "獎金或加班費", description: "年終、績效獎金、加班費、分紅。", reportField: "本月收入" },
-  { id: "subsidy", label: "政府定期補助", description: "育兒津貼、租金補貼、生活補助等。", reportField: "補助收入" },
-  { id: "support", label: "親友贈與", description: "家人支持、親友協助、紅包或生活支援。", reportField: "家人支持" },
-  { id: "rent", label: "租金收入", description: "房屋、車位或其他出租收入。", reportField: "其他收入" },
-  { id: "interest", label: "利息收入", description: "存款利息、投資配息或定期收益。", reportField: "其他收入" },
-  { id: "pension", label: "退休金/年金", description: "勞退、國民年金、退休金、保險年金。", reportField: "退休收入" },
-  { id: "otherIncome", label: "其他生活收入", description: "暫時無法歸類的收入先放這裡。", reportField: "其他收入" },
+  { id: "salary", label: "工作與薪酬收入", description: "因受僱工作所獲得的薪資、津貼、加班費、年終獎金、績效獎金及其他工作相關報酬。", reportField: "生活收入 - 工作與薪酬" },
+  { id: "side", label: "非主要工作收入", description: "透過兼職、打工、零工或偶發性個人接案所獲得的收入；若接案已形成持續經營的事業，應改列為生意收入。", reportField: "生活收入 - 非主要工作" },
+  { id: "rent", label: "個人租賃收入", description: "出租個人持有的房屋、土地、車位、車輛或其他資產所獲得的收入。", reportField: "生活收入 - 個人租賃" },
+  { id: "investment", label: "投資收益", description: "運用個人資金進行存款、股票、基金、債券或其他投資所獲得的利息、股息、配息及資本利得。", reportField: "生活收入 - 投資收益" },
+  { id: "pension", label: "退休金/年金", description: "因退休、保險、職業年資或年金制度所領取的一次性或定期給付。", reportField: "生活收入 - 退休金/年金" },
+  { id: "subsidy", label: "個人政府補助", description: "政府提供給個人的生活補助、社會福利、育兒津貼、就業補助或其他福利性給付。", reportField: "生活收入 - 個人政府補助" },
+  { id: "support", label: "親友贈與與繼承", description: "由家人或朋友贈與，或因遺產繼承而取得的金錢、財產及其他具有經濟價值的資產。", reportField: "生活收入 - 親友贈與與繼承" },
+  { id: "assetSale", label: "個人資產出售收入", description: "出售個人持有的房屋、土地、車輛、收藏品或其他資產所取得的款項；若計算實際所得，應扣除原始成本及相關費用。", reportField: "生活收入 - 個人資產出售" },
+  { id: "prize", label: "非工作獎金與獎項", description: "透過抽獎、中獎、競賽、評選或其他非受僱工作活動所獲得的獎金、獎品或獎勵。", reportField: "生活收入 - 非工作獎金與獎項" },
+  { id: "otherIncome", label: "其他生活收入", description: "與個人生活相關，但無法歸入上述類別的其他收入。", reportField: "生活收入 - 其他" },
 ]
 
 const businessExpenseCategories: Option[] = [
-  { id: "businessRent", label: "租金與場地", description: "辦公室、店面、倉庫、共同工作空間租金。", reportField: "公司固定支出" },
-  { id: "businessUtilities", label: "水電與網路", description: "公司用水電、電話、網路、雲端服務。", reportField: "公司營運支出" },
-  { id: "businessPurchase", label: "進貨與材料", description: "商品進貨、原物料、包材、耗材。", reportField: "公司營業成本" },
-  { id: "businessSalary", label: "薪資與勞健保", description: "員工薪資、勞健保、退休金提繳。", reportField: "人事支出" },
-  { id: "businessMarketing", label: "行銷與廣告", description: "廣告投放、設計、印刷、活動宣傳。", reportField: "行銷支出" },
-  { id: "businessTax", label: "稅費與手續費", description: "營業稅、所得稅、平台費、銀行手續費。", reportField: "稅費支出" },
-  { id: "businessTravel", label: "交通與差旅", description: "拜訪客戶、出差、停車、油資、車資。", reportField: "差旅支出" },
-  { id: "businessOtherExpense", label: "其他公司支出", description: "暫時無法歸類的公司支出先放這裡。", reportField: "其他公司支出" },
+  { id: "businessMaterials", label: "原料", description: "購買製作商品所需的原料、準備轉售的商品、材料、食材或其他進貨成本。", reportField: "變動生意支出 - 原料" },
+  { id: "businessPackaging", label: "包裝", description: "外帶盒、瓶罐、塑膠袋、標籤、貼紙、免洗餐具、夾鏈袋及其他包裝材料。", reportField: "變動生意支出 - 包裝" },
+  { id: "businessSupplies", label: "營業耗材", description: "收據、文具、影印用品、清潔用品及其他會在營業過程中持續消耗的用品。", reportField: "變動生意支出 - 營業耗材" },
+  { id: "businessLogistics", label: "物流與營業交通", description: "商品宅配、郵資、快遞，以及進貨、擺攤或拜訪客戶產生的交通、油料及運輸費用。", reportField: "變動生意支出 - 物流與營業交通" },
+  { id: "businessVariableOther", label: "其他變動生意支出", description: "會隨營業活動增減，但無法歸入上述類別的支出。", reportField: "變動生意支出 - 其他" },
+  { id: "businessRent", label: "場地租賃", description: "店面、攤位、倉庫、辦公空間及其他營業場所的租金。", reportField: "固定生意支出 - 場地租賃" },
+  { id: "businessLabor", label: "人力", description: "員工、助理、工讀生、臨時人員、計件人員及其他營業人力的薪資、津貼與相關費用。", reportField: "固定生意支出 - 人力" },
+  { id: "businessProfessional", label: "專業服務與會費", description: "會計師、記帳士、律師、顧問等專業服務費，以及工會或協會會費。", reportField: "固定生意支出 - 專業服務與會費" },
+  { id: "businessUtilities", label: "水電、能源與通訊", description: "營業場所使用的水費、電費、瓦斯費、電話費及網路費。", reportField: "固定生意支出 - 水電、能源與通訊" },
+  { id: "businessTax", label: "稅金與政府規費", description: "營業稅、營利事業所得稅，以及其他營業相關稅金、登記費與政府規費。", reportField: "固定生意支出 - 稅金與政府規費" },
+  { id: "businessInsurance", label: "商業保險", description: "商業火災險、公共意外責任險、產品責任險及其他事業保險費用。", reportField: "固定生意支出 - 商業保險" },
+  { id: "businessDebt", label: "借款償還與融資成本", description: "事業借款的本金、利息及手續費。", reportField: "固定生意支出 - 借款償還與融資成本" },
+  { id: "businessFixedOther", label: "其他固定生意支出", description: "維持營業所需，但無法歸入上述類別的固定支出。", reportField: "固定生意支出 - 其他" },
+  { id: "businessEquipment", label: "新設備購置", description: "購買新的營業設備、器材、工具、機器或包裝設備的費用。", reportField: "額外生意支出 - 新設備購置" },
+  { id: "businessRepair", label: "設備升級與修繕", description: "汰換、升級、維修或保養營業設備、器材、工具及機器的費用。", reportField: "額外生意支出 - 設備升級與修繕" },
+  { id: "businessMarketing", label: "行銷與推廣", description: "廣告投放、DM、名片、招牌、紅布條、活動宣傳及設計製作費。", reportField: "額外生意支出 - 行銷與推廣" },
+  { id: "businessTraining", label: "員工福利與訓練", description: "年終或績效獎金、員工旅遊、團體活動及教育訓練費用。", reportField: "額外生意支出 - 員工福利與訓練" },
+  { id: "businessLoss", label: "存貨損耗與營業損失", description: "商品過期、損壞、遺失、盤點差異或其他營業事件造成的損失。", reportField: "額外生意支出 - 存貨損耗與營業損失" },
+  { id: "businessProjectExpense", label: "特殊專案支出", description: "執行非日常或一次性事業計畫所產生的費用。", reportField: "額外生意支出 - 特殊專案" },
+  { id: "businessExtraOther", label: "其他額外生意支出", description: "無法歸入上述類別的額外或臨時性事業支出。", reportField: "額外生意支出 - 其他" },
 ]
 
 const businessIncomeSources: Option[] = [
-  { id: "businessSales", label: "銷售收入", description: "商品、服務、課程、方案銷售收入。", reportField: "公司營業收入" },
-  { id: "businessProject", label: "專案或接案收入", description: "顧問、設計、服務案、階段性款項。", reportField: "公司營業收入" },
-  { id: "businessPlatform", label: "平台入帳", description: "電商、外送、平台合作或代收撥款。", reportField: "平台收入" },
-  { id: "businessSubsidy", label: "公司補助或補貼", description: "政府補助、創業補助、租金補貼。", reportField: "公司補助收入" },
-  { id: "businessRefund", label: "退費或折讓收回", description: "退款、押金退回、折讓或費用返還。", reportField: "公司其他收入" },
-  { id: "businessOtherIncome", label: "其他公司收入", description: "暫時無法歸類的公司收入先放這裡。", reportField: "其他公司收入" },
+  { id: "businessSales", label: "商品銷售收入", description: "銷售實體商品、數位商品、產品或材料所獲得的收入。", reportField: "生意收入 - 商品銷售" },
+  { id: "businessService", label: "服務與專案收入", description: "提供專業服務、技術、顧問、設計、施工或執行各類專案所獲得的收入，包含單次專案及長期服務合約。", reportField: "生意收入 - 服務與專案" },
+  { id: "businessLease", label: "租賃收入", description: "出租事業持有或使用的場地、設備、工具及其他營業資產所獲得的收入。", reportField: "生意收入 - 租賃" },
+  { id: "businessRevenueShare", label: "合作與分潤收入", description: "透過品牌合作、通路合作、聯盟行銷、授權或收益分成所獲得的收入。", reportField: "生意收入 - 合作與分潤" },
+  { id: "businessAssetSale", label: "事業資產出售收入", description: "出售二手設備、營業工具或其他閒置事業資產所取得的款項；若計算實際所得，應扣除資產成本及相關費用。", reportField: "生意收入 - 事業資產出售" },
+  { id: "businessSubsidy", label: "企業補助收入", description: "企業因創業、研發、創新、轉型、人才培育或其他事業計畫所獲得的政府或民間補助。", reportField: "生意收入 - 企業補助" },
+  { id: "businessInvestment", label: "企業投資收益", description: "運用企業資金進行存款、股票、基金或其他投資所獲得的利息、股息、配息及資本利得。", reportField: "生意收入 - 企業投資收益" },
+  { id: "businessOtherIncome", label: "其他生意收入", description: "與事業經營直接相關，但無法歸入上述類別的其他收入。", reportField: "生意收入 - 其他" },
 ]
 
 const categoryConfig = {
@@ -291,7 +304,7 @@ export default function AccountingPage() {
                   <Mic className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-primary">語音輸入草稿</p>
+                  <p className="text-sm font-medium text-primary">語音輸入</p>
                   <h2 className="text-xl font-semibold text-foreground">也可以先用說的記一筆</h2>
                   <p className="mt-1 text-sm leading-6 text-muted-foreground">
                     之後可接語音轉文字，先把一句話拆成日期、收入或支出、類別、金額與備註。
@@ -532,6 +545,7 @@ export default function AccountingPage() {
                 </div>
               </CardContent>
             </Card>
+
           </section>
 
           <aside className="space-y-5 lg:sticky lg:top-24">

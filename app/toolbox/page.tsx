@@ -108,24 +108,24 @@ const categories = [
   },
   {
     id: "rights-calculation",
-    title: "權益試算",
+    title: "\u6b0a\u76ca\u8a66\u7b97",
     tools: [
       {
         href: "https://calcr2.mol.gov.tw/SeverancePay",
-        title: "資遣費試算",
-        description: "連至勞動部官方試算頁，建議以政府單位資料為準。",
+        title: "\u8cc7\u9063\u8cbb\u8a66\u7b97",
+        description: "\u88ab\u8cc7\u9063\u6216\u975e\u81ea\u9858\u96e2\u8077\u6642\uff0c\u53ef\u53e6\u958b\u52de\u52d5\u90e8\u5b98\u65b9\u9801\u4f30\u7b97\u53c3\u8003\u91d1\u984d\u3002",
         icon: FileText,
       },
       {
         href: "https://calcr2.mol.gov.tw/Index",
-        title: "加班費試算",
-        description: "連至勞動部官方試算頁，協助確認加班費權益。",
+        title: "\u52a0\u73ed\u8cbb\u8a66\u7b97",
+        description: "\u60f3\u6838\u5c0d\u5e73\u65e5\u3001\u4f11\u606f\u65e5\u6216\u570b\u5b9a\u5047\u65e5\u52a0\u73ed\u8cbb\uff0c\u53ef\u53e6\u958b\u5b98\u65b9\u9801\u8a66\u7b97\u3002",
         icon: Calculator,
       },
       {
         href: "https://calcr2.mol.gov.tw/RestDays",
-        title: "特休假試算",
-        description: "連至勞動部官方試算頁，方便核對特休假天數。",
+        title: "\u7279\u4f11\u5047\u8a66\u7b97",
+        description: "\u60f3\u78ba\u8a8d\u4eca\u5e74\u53ef\u4ee5\u4f11\u5e7e\u5929\uff0c\u53ef\u53e6\u958b\u52de\u52d5\u90e8\u5b98\u65b9\u9801\u4f9d\u5e74\u8cc7\u4f30\u7b97\u3002",
         icon: Target,
       },
     ],
