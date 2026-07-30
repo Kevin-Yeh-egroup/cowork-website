@@ -19,6 +19,7 @@ const labelMap: Record<string, string> = {
   assessment: "開始檢測",
   content: "知識與內容",
   articles: "文章",
+  newsletters: "電子報",
   column: "專欄",
   podcast: "Podcast",
   events: "活動與課程",

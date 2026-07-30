@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { BookOpen, Headphones, Star, ArrowRight, PenLine } from "lucide-react"
+import { ArrowRight, BookOpen, Headphones, Mail, PenLine, Star } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { externalLinks } from "@/lib/external-links"
 
@@ -7,34 +7,42 @@ const contentTypes = [
   {
     href: "/content/articles",
     title: "看看文章",
-    description: "了解財務知識，找到解決方案",
+    description: "依生活情境找文章，先找到和自己現在最接近的內容。",
     cta: "閱讀文章",
     icon: BookOpen,
     color: "bg-[#fff0d6] text-[#d96b27]",
   },
   {
-    href: externalLinks.callForArticles,
-    title: "投稿分享",
-    description: "分享你的經驗與觀點，讓更多家庭找到前進方向",
-    cta: "前往投稿",
-    icon: PenLine,
-    color: "bg-[#ffe4ef] text-[#c81f72]",
+    href: "/content/newsletters",
+    title: "電子報",
+    description: "瀏覽好理生活週報與過往期數，從每週整理裡慢慢接住生活。",
+    cta: "查看期數",
+    icon: Mail,
+    color: "bg-[#e4f4ff] text-[#1f6f8f]",
   },
   {
     href: "/content/podcast",
-    title: "聽聽 Podcast",
-    description: "用聽的方式學習財務觀念",
+    title: "Podcast",
+    description: "用聽的陪你整理財務、家庭與生活壓力。",
     cta: "開始收聽",
     icon: Headphones,
     color: "bg-[#f0e7ff] text-[#7b4bd8]",
   },
   {
     href: "/content/column",
-    title: "專欄（多多益善）",
-    description: "真實故事，深度分享",
-    cta: "看看專欄",
+    title: "專欄",
+    description: "從案例與專題觀點，看見更多可以前進的方法。",
+    cta: "查看專欄",
     icon: Star,
     color: "bg-[#e7f7ef] text-[#237a56]",
+  },
+  {
+    href: externalLinks.callForArticles,
+    title: "投稿分享",
+    description: "分享你的經驗與觀點，讓更多家庭找到前進方向。",
+    cta: "前往投稿",
+    icon: PenLine,
+    color: "bg-[#ffe4ef] text-[#c81f72]",
   },
 ]
 
@@ -42,16 +50,17 @@ export default function ContentPage() {
   return (
     <div className="min-h-screen px-4 py-10">
       <div className="mx-auto max-w-6xl">
-        <div className="text-center mb-7">
-          <h1 className="text-3xl font-bold text-foreground mb-3">知識與內容</h1>
-          <p className="text-muted-foreground text-lg">
-            如果你還不確定自己的狀況，可以先從這裡了解
+        <div className="mb-7 text-center">
+          <h1 className="mb-3 text-3xl font-bold text-foreground">知識與內容</h1>
+          <p className="text-lg text-muted-foreground">
+            用文章、電子報、聲音與專欄，陪你從生活裡遇到的問題開始整理。
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {contentTypes.map((content) => {
             const Icon = content.icon
+
             return (
               <Link key={content.href} href={content.href} className="group">
                 <Card className="h-full border-border/70 bg-card/90 shadow-[0_18px_45px_oklch(0.78_0.08_42_/_0.12)] transition-all duration-300 hover:border-primary/40 hover:shadow-[0_22px_55px_oklch(0.74_0.12_34_/_0.2)] group-hover:-translate-y-1">

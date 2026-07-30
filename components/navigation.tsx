@@ -74,6 +74,7 @@ const baseNavItems: NavItem[] = [
     icon: BookOpen,
     children: [
       { href: "/content/articles", label: "看看文章" },
+      { href: "/content/newsletters", label: "電子報" },
       { href: "/content/podcast", label: "聽聽 Podcast" },
       { href: "/content/column", label: "多多益善專欄" },
       { href: externalLinks.callForArticles, label: "投稿分享" },

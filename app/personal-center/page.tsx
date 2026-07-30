@@ -13,6 +13,7 @@ import {
   Download,
   FileSpreadsheet,
   ListChecks,
+  Mail,
   Printer,
   ReceiptText,
   User,
@@ -259,11 +260,17 @@ const lifeProfileItems = [
 ]
 
 const subscriptionGroups = [
-  { title: "電子報", value: "已訂閱", description: "可接收最新文章、活動與家庭財務整理提醒。" },
+  { title: "電子報", value: "已訂閱", description: "每週收到好理生活週報與重點整理。" },
   { title: "已訂閱主題", value: "10 個", description: "包含信貸、詐騙、親子、關係與人際等主題。" },
-  { title: "最新內容", value: "8 篇", description: "依照訂閱主題整理最近更新文章。" },
   { title: "已收藏", value: "3 篇", description: "想回頭再看的文章會集中保存在這裡。" },
 ]
+
+const latestNewsletter = {
+  volume: "Vol.30",
+  title: "很多大人，也是一邊亂一邊長大的",
+  date: "2026年7月29日",
+  href: "https://www.familyfinhealth.com/popular",
+}
 
 const subscriptionArticles = [
   { title: "建立記帳習慣的 5 個技巧", topic: "收支整理", href: "/content/articles" },
@@ -728,7 +735,7 @@ export default function PersonalCenterPage() {
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
                   <div>
                     <h2 className="text-lg font-semibold text-foreground">我的訂閱內容</h2>
-                    <p className="text-sm text-muted-foreground">集中查看訂閱主題、最新文章與已收藏內容。</p>
+                    <p className="text-sm text-muted-foreground">集中查看電子報狀態、訂閱主題與已收藏內容。</p>
                   </div>
                   <Button variant="secondary" size="sm">
                     <Bell className="h-4 w-4" />
@@ -746,6 +753,35 @@ export default function PersonalCenterPage() {
                   ))}
                 </div>
 
+                <div className="mb-4 rounded-2xl border border-primary/20 bg-primary/5 p-4">
+                  <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
+                    <div className="flex gap-3">
+                      <span className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                        <Mail className="h-5 w-5" />
+                      </span>
+                      <div>
+                        <p className="text-sm font-medium text-primary">最新一期電子報</p>
+                        <h3 className="mt-1 text-lg font-semibold leading-snug text-foreground">
+                          好理生活週報｜{latestNewsletter.volume}｜{latestNewsletter.title}
+                        </h3>
+                        <p className="mt-1 text-sm text-muted-foreground">{latestNewsletter.date}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Button asChild size="sm">
+                        <Link href={latestNewsletter.href}>
+                          閱讀最新一期 <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                      <Button asChild size="sm" variant="outline">
+                        <Link href="/content/newsletters">
+                          查看過往期數 <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="rounded-2xl bg-secondary/50 p-4">
                   <p className="text-sm font-medium text-foreground mb-3">已訂閱主題</p>
                   <div className="flex flex-wrap gap-2">
@@ -757,6 +793,10 @@ export default function PersonalCenterPage() {
                   </div>
                 </div>
 
+                <div className="mt-4 mb-3">
+                  <p className="font-semibold text-foreground">依照訂閱主題整理的最新文章</p>
+                  <p className="mt-1 text-sm text-muted-foreground">電子報看最新一期；文章則依照你訂閱的主題整理。</p>
+                </div>
                 <div className="mt-4 grid gap-3 lg:grid-cols-3">
                   {subscriptionArticles.map((article) => (
                     <Link key={article.title} href={article.href} className="group rounded-2xl border border-border p-4 transition-colors hover:border-primary/30 hover:bg-primary/5">
