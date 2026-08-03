@@ -1,5 +1,6 @@
 import Image from "next/image"
 
+import { surfaceTone } from "@/lib/design-system"
 import { cn } from "@/lib/utils"
 
 type IllustrationProps = {
@@ -37,7 +38,7 @@ export function HomeSituationIllustration({ className }: IllustrationProps) {
   return (
     <div
       aria-hidden="true"
-      className={cn("relative h-72 overflow-hidden rounded-lg border border-border/70 bg-[#fff8ef] shadow-sm", className)}
+      className={cn("relative h-72 overflow-hidden rounded-lg border border-border/70 shadow-sm", surfaceTone.illustration, className)}
     >
       <Image
         src="/home-family-companion.png"
@@ -63,7 +64,8 @@ export function AudienceMiniScene({ slug, className }: AudienceMiniSceneProps) {
   return (
     <div
       className={cn(
-        "relative aspect-[5/3] w-full overflow-hidden rounded-lg border border-border/70 bg-[#fff8ef] shadow-sm",
+        "relative aspect-[5/3] w-full overflow-hidden rounded-lg border border-border/70 shadow-sm",
+        surfaceTone.illustration,
         className,
       )}
     >

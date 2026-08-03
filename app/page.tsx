@@ -3,6 +3,7 @@ import { ArrowRight, Award, ExternalLink, Shield, Heart, TrendingUp, Headphones,
 import { Card, CardContent } from "@/components/ui/card"
 import { HomeSituationIllustration } from "@/components/context-illustration"
 import { assessmentLinks } from "@/lib/assessment-links"
+import { categoryTone } from "@/lib/design-system"
 import { externalLinks } from "@/lib/external-links"
 
 const heroCards = [
@@ -12,7 +13,7 @@ const heroCards = [
     description: "了解目前的收支與承受能力",
     cta: "開始看看",
     icon: Shield,
-    color: "bg-[#fff0d6] text-[#d96b27]",
+    color: categoryTone.warm,
     highlight: false,
   },
   {
@@ -21,7 +22,7 @@ const heroCards = [
     description: "看看金錢壓力對生活的影響",
     cta: "先了解",
     icon: Heart,
-    color: "bg-[#ffe4ef] text-[#c81f72]",
+    color: categoryTone.rose,
     highlight: false,
   },
   {
@@ -30,7 +31,7 @@ const heroCards = [
     description: "確認自己是否容易遇到金融風險",
     cta: "試試看",
     icon: TrendingUp,
-    color: "bg-[#f0e7ff] text-[#7b4bd8]",
+    color: categoryTone.violet,
     highlight: false,
   },
   {
@@ -39,7 +40,7 @@ const heroCards = [
     description: "遇到急難狀況時，協助整理需求並連結資源",
     cta: "前往申請",
     icon: Heart,
-    color: "bg-gradient-to-br from-[#ff78ad] to-[#e6005c] text-white shadow-lg shadow-[#e6005c]/20",
+    color: categoryTone.emergency,
     highlight: true,
   },
 ]

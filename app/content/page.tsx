@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { ArrowRight, BookOpen, Headphones, Mail, PenLine, Star } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
+import { categoryTone } from "@/lib/design-system"
 import { externalLinks } from "@/lib/external-links"
 
 const contentTypes = [
@@ -10,7 +11,7 @@ const contentTypes = [
     description: "依生活情境找文章，先找到和自己現在最接近的內容。",
     cta: "閱讀文章",
     icon: BookOpen,
-    color: "bg-[#fff0d6] text-[#d96b27]",
+    color: categoryTone.warm,
   },
   {
     href: "/content/newsletters",
@@ -18,7 +19,7 @@ const contentTypes = [
     description: "瀏覽好理生活週報與過往期數，從每週整理裡慢慢接住生活。",
     cta: "查看期數",
     icon: Mail,
-    color: "bg-[#e4f4ff] text-[#1f6f8f]",
+    color: categoryTone.sky,
   },
   {
     href: "/content/podcast",
@@ -26,7 +27,7 @@ const contentTypes = [
     description: "用聽的陪你整理財務、家庭與生活壓力。",
     cta: "開始收聽",
     icon: Headphones,
-    color: "bg-[#f0e7ff] text-[#7b4bd8]",
+    color: categoryTone.violet,
   },
   {
     href: "/content/column",
@@ -34,7 +35,7 @@ const contentTypes = [
     description: "從案例與專題觀點，看見更多可以前進的方法。",
     cta: "查看專欄",
     icon: Star,
-    color: "bg-[#e7f7ef] text-[#237a56]",
+    color: categoryTone.mint,
   },
   {
     href: externalLinks.callForArticles,
@@ -42,7 +43,7 @@ const contentTypes = [
     description: "分享你的經驗與觀點，讓更多家庭找到前進方向。",
     cta: "前往投稿",
     icon: PenLine,
-    color: "bg-[#ffe4ef] text-[#c81f72]",
+    color: categoryTone.rose,
   },
 ]
 

@@ -10,7 +10,7 @@ import { SiteFooter } from '@/components/site-footer'
 const notoSansTC = Noto_Sans_TC({ 
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-sans"
+  variable: "--font-noto-sans-tc"
 });
 
 export const metadata: Metadata = {

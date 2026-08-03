@@ -5,6 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "design:check": "node scripts/check-design-system.mjs",
+    "design:check:routes": "node scripts/check-design-routes.mjs",
+    "design:test": "node --test design-system/*.test.mjs",
+    "design:verify": "npm run design:test && npm run design:check && npm run build",
     "start": "next start",
     "lint": "eslint ."
   },
