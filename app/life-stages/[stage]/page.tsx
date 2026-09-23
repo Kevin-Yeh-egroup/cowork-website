@@ -3,24 +3,17 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import {
   ArrowRight,
-  BriefcaseBusiness,
   CalendarDays,
   ClipboardCheck,
-  ExternalLink,
   HandCoins,
-  HeartPulse,
   Landmark,
   Network,
-  Scale,
-  ShieldCheck,
-  Users,
-  WalletCards,
   Wrench,
   type LucideIcon,
 } from "lucide-react"
 import { AudienceMiniScene } from "@/components/context-illustration"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Card, CardContent } from "@/components/ui/card"
+import { WorkingLifeResourceGuide } from "@/components/working-life-resource-guide"
 import { externalLinks } from "@/lib/external-links"
 import { findLifeStage, lifeStages, serviceAudiences } from "@/lib/life-stages-data"
 
@@ -56,24 +49,6 @@ type OfferingLink = {
   title: string
   description: string
   href: string
-  icon: LucideIcon
-}
-
-type AudienceResource = {
-  category: string
-  source: "政府單位" | "非營利組織" | "民間服務"
-  title: string
-  description: string
-  provider: string
-  tags: string[]
-  href: string
-  action: string
-}
-
-type ResourceTopic = {
-  id: string
-  title: string
-  description: string
   icon: LucideIcon
 }
 
@@ -211,180 +186,6 @@ const partnerDescriptions: Record<string, string> = {
   勞動權益諮詢: "可放入勞動權益相關服務，讓使用者知道可以先問誰、準備哪些資料。",
   就業與職涯支持: "可連到就業媒合、職涯諮詢、職訓課程或轉職支持服務。",
   財務與債務協談: "可連到合作單位或好理家在的財務整理、債務盤點與諮詢服務。",
-}
-
-const workingLifeResources: AudienceResource[] = [
-  {
-    category: "勞動權益與爭議處理",
-    source: "政府單位",
-    title: "勞動權益諮詢與申訴窗口",
-    description: "遇到薪資、工時、加班、解僱或資遣問題時，可查詢法規、申訴及勞資調解窗口。",
-    provider: "勞動部及地方勞工行政主管機關",
-    tags: ["免費諮詢", "申訴與調解"],
-    href: "https://www.mol.gov.tw/",
-    action: "查詢諮詢窗口",
-  },
-  {
-    category: "勞動權益與爭議處理",
-    source: "非營利組織",
-    title: "勞工訴訟法律扶助",
-    description: "準備處理勞資爭議或進入法律程序時，可查詢律師諮詢與訴訟扶助的申請方式。",
-    provider: "財團法人法律扶助基金會",
-    tags: ["法律扶助", "申請資格"],
-    href: "https://www.mol.gov.tw/1607/28690/89680/89699/lpsimplelist",
-    action: "查看扶助方式",
-  },
-  {
-    category: "就業與職涯支持",
-    source: "政府單位",
-    title: "求職與就業服務",
-    description: "需要找工作、轉職或重返職場時，可查詢職缺、就業服務據點與分眾支持方案。",
-    provider: "勞動部勞動力發展署",
-    tags: ["職缺查詢", "就業服務"],
-    href: "https://www.taiwanjobs.gov.tw/",
-    action: "尋找工作機會",
-  },
-  {
-    category: "就業與職涯支持",
-    source: "政府單位",
-    title: "職業訓練與技能發展",
-    description: "想培養第二專長、準備轉職或提升工作技能時，可依地區及職類查詢訓練課程。",
-    provider: "台灣就業通職業訓練整合網",
-    tags: ["職業訓練", "技能培養"],
-    href: "https://course.taiwanjobs.gov.tw/",
-    action: "尋找職訓課程",
-  },
-  {
-    category: "收入中斷與生活援助",
-    source: "政府單位",
-    title: "失業給付與就業保險",
-    description: "工作中斷或非自願離職時，可查詢失業給付、提早就業獎助及相關申請方式。",
-    provider: "勞動部勞工保險局",
-    tags: ["失業給付", "線上申辦"],
-    href: "https://www.bli.gov.tw/",
-    action: "查詢失業給付",
-  },
-  {
-    category: "收入中斷與生活援助",
-    source: "政府單位",
-    title: "急難救助與福利諮詢",
-    description: "收入突然中斷、家庭生活陷入困難時，可查詢急難救助、福利諮詢及地方申請窗口。",
-    provider: "衛生福利部及地方政府",
-    tags: ["急難救助", "生活支持"],
-    href: "https://www.mohw.gov.tw/cp-190-226-1.html",
-    action: "查看救助方式",
-  },
-  {
-    category: "財務與債務整理",
-    source: "非營利組織",
-    title: "消費者債務清理法律扶助",
-    description: "債務已難以負擔時，可申請債務法律諮詢，了解協商、更生或清算等處理方式。",
-    provider: "財團法人法律扶助基金會",
-    tags: ["免費申請", "債務清理"],
-    href: "https://www.laf.org.tw/service-project-detail/20",
-    action: "查看債務扶助",
-  },
-  {
-    category: "職災、健康與復工",
-    source: "政府單位",
-    title: "職災保護與重建服務",
-    description: "工作受傷或疑似職業病時，可查詢診治、職災給付、生活補助及重建服務。",
-    provider: "勞動部職業安全衛生署",
-    tags: ["職災診治", "補助與重建"],
-    href: "https://www.osha.gov.tw/48110/48363/",
-    action: "查看職災服務",
-  },
-  {
-    category: "職災、健康與復工",
-    source: "政府單位",
-    title: "職能復健與復工協助",
-    description: "治療後準備重返職場時，可查詢職能評估、復工計畫、訓練及津貼等服務。",
-    provider: "職災職能復健專責機構及地方政府",
-    tags: ["職能復健", "復工計畫"],
-    href: "https://www.osha.gov.tw/48110/48363/133471/133474/133518/",
-    action: "尋找復健服務",
-  },
-  {
-    category: "保險、給付與退休保障",
-    source: "政府單位",
-    title: "勞保、就保與退休給付",
-    description: "可依目前處境查詢勞工保險、就業保險、職災保險及勞工退休金的申辦資訊。",
-    provider: "勞動部勞工保險局",
-    tags: ["給付查詢", "勞工退休金"],
-    href: "https://www.bli.gov.tw/",
-    action: "查詢勞保與勞退",
-  },
-  {
-    category: "保險、給付與退休保障",
-    source: "非營利組織",
-    title: "保險消費爭議與評議",
-    description: "已先向保險公司申訴但未獲妥善處理時，可了解金融消費爭議的評議申請程序。",
-    provider: "財團法人金融消費評議中心",
-    tags: ["商業保險", "爭議評議"],
-    href: "https://www.foi.org.tw/",
-    action: "申請爭議評議",
-  },
-  {
-    category: "家庭照顧與工作安排",
-    source: "政府單位",
-    title: "工作與生活平衡措施",
-    description: "育兒、長照或家庭照顧影響工作時，可查詢育嬰留職停薪、家庭照顧與企業支持措施。",
-    provider: "勞動部工作生活平衡網",
-    tags: ["育嬰留停", "家庭照顧"],
-    href: "https://wlb.mol.gov.tw/",
-    action: "查看支持措施",
-  },
-]
-
-const workingLifeResourceTopics: ResourceTopic[] = [
-  {
-    id: "work-rights",
-    title: "勞動權益與爭議處理",
-    description: "薪資、工時、解僱、資遣、申訴與法律扶助",
-    icon: Scale,
-  },
-  {
-    id: "career",
-    title: "就業與職涯支持",
-    description: "求職、轉職、職業訓練與技能發展",
-    icon: BriefcaseBusiness,
-  },
-  {
-    id: "income-support",
-    title: "收入中斷與生活援助",
-    description: "失業給付、急難救助與基本生活支持",
-    icon: HandCoins,
-  },
-  {
-    id: "debt",
-    title: "財務與債務整理",
-    description: "債務諮詢、協商、更生與清算扶助",
-    icon: WalletCards,
-  },
-  {
-    id: "health",
-    title: "職災、健康與復工",
-    description: "職業傷病、補助、重建與重返職場",
-    icon: HeartPulse,
-  },
-  {
-    id: "insurance",
-    title: "保險、給付與退休保障",
-    description: "社會保險、商業保險爭議與退休給付",
-    icon: ShieldCheck,
-  },
-  {
-    id: "family-care",
-    title: "家庭照顧與工作安排",
-    description: "育兒、長照與家庭照顧期間的工作支持",
-    icon: Users,
-  },
-]
-
-const resourceSourceStyles: Record<AudienceResource["source"], string> = {
-  政府單位: "bg-sky-50 text-sky-700 dark:bg-sky-950/50 dark:text-sky-200",
-  非營利組織: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-200",
-  民間服務: "bg-stone-100 text-stone-700 dark:bg-stone-900/60 dark:text-stone-200",
 }
 
 const workingLifeIntroItems = [
@@ -563,93 +364,7 @@ export default async function LifeStageDetailPage({ params }: LifeStageDetailPag
                   {"\u4f60\u53ef\u80fd\u7528\u5f97\u5230\u7684\u8cc7\u6e90"}
                 </h2>
                 {data.slug === "working-life" ? (
-                  <>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                      需要直接辦理、申請或找人協助時，可以先從幾個主要服務入口開始。
-                    </p>
-                    <p className="mt-1 text-xs text-muted-foreground">以下為主要入口示意，正式收錄單位與服務範圍仍需確認。</p>
-                    <Accordion type="single" collapsible defaultValue="work-rights" className="mt-4 space-y-2">
-                      {workingLifeResourceTopics.map((topic) => {
-                        const TopicIcon = topic.icon
-                        const resources = workingLifeResources.filter((resource) => resource.category === topic.title)
-
-                        return (
-                          <AccordionItem
-                            key={topic.id}
-                            value={topic.id}
-                            className="overflow-hidden rounded-lg border border-border/70 bg-background/75 px-4"
-                          >
-                            <AccordionTrigger className="py-4 hover:no-underline">
-                              <span className="flex min-w-0 items-start gap-3">
-                                <span className="mt-0.5 rounded-md bg-primary/10 p-2 text-primary">
-                                  <TopicIcon className="h-4 w-4" />
-                                </span>
-                                <span className="min-w-0">
-                                  <span className="block font-semibold text-foreground">{topic.title}</span>
-                                  <span className="mt-1 block text-sm font-normal leading-relaxed text-muted-foreground">
-                                    {topic.description}
-                                  </span>
-                                </span>
-                              </span>
-                            </AccordionTrigger>
-                            <AccordionContent className="pb-2">
-                              <div className="divide-y divide-border/70 border-t border-border/70">
-                                {resources.map((resource) => {
-                                  const isExternal = resource.href.startsWith("http")
-
-                                  return (
-                                    <div
-                                      key={`${resource.source}-${resource.title}`}
-                                      className="grid gap-3 py-4 sm:grid-cols-[110px_1fr_auto] sm:items-start"
-                                    >
-                                      <div>
-                                        <span
-                                          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${resourceSourceStyles[resource.source]}`}
-                                        >
-                                          {resource.source}
-                                        </span>
-                                      </div>
-                                      <div className="min-w-0">
-                                        <h3 className="font-semibold text-foreground">{resource.title}</h3>
-                                        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{resource.description}</p>
-                                        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                                          <span className="font-medium text-foreground">提供單位：</span>
-                                          {resource.provider}
-                                        </p>
-                                        <div className="mt-2 flex flex-wrap gap-2">
-                                          {resource.tags.map((tag) => (
-                                            <span
-                                              key={tag}
-                                              className="rounded-md bg-secondary px-2 py-1 text-xs text-secondary-foreground"
-                                            >
-                                              {tag}
-                                            </span>
-                                          ))}
-                                        </div>
-                                      </div>
-                                      <Link
-                                        href={resource.href}
-                                        target={isExternal ? "_blank" : undefined}
-                                        rel={isExternal ? "noreferrer" : undefined}
-                                        className="group inline-flex items-center gap-1 whitespace-nowrap text-sm font-medium text-primary transition-all hover:gap-2 sm:pt-0.5"
-                                      >
-                                        {resource.action}
-                                        {isExternal ? (
-                                          <ExternalLink className="h-4 w-4" />
-                                        ) : (
-                                          <ArrowRight className="h-4 w-4" />
-                                        )}
-                                      </Link>
-                                    </div>
-                                  )
-                                })}
-                              </div>
-                            </AccordionContent>
-                          </AccordionItem>
-                        )
-                      })}
-                    </Accordion>
-                  </>
+                  <WorkingLifeResourceGuide />
                 ) : (
                   <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {data.partners.map((partner) => (

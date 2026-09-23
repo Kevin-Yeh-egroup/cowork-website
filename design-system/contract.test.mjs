@@ -9,11 +9,11 @@ import {
 } from "./contract.mjs"
 import { runAudit } from "../scripts/check-design-system.mjs"
 
-test("contract covers the 46 route patterns and 109 concrete routes", () => {
+test("contract covers the 47 route patterns and 110 concrete routes", () => {
   const concreteRoutes = expandConcreteRoutes()
-  assert.equal(routePatterns.length, 46)
-  assert.equal(concreteRoutes.length, 109)
-  assert.equal(new Set(concreteRoutes.map((route) => route.path)).size, 109)
+  assert.equal(routePatterns.length, 47)
+  assert.equal(concreteRoutes.length, 110)
+  assert.equal(new Set(concreteRoutes.map((route) => route.path)).size, 110)
 })
 
 test("every route references a defined page family", () => {

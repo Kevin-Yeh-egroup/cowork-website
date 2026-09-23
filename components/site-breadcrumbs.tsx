@@ -16,6 +16,7 @@ const labelMap: Record<string, string> = {
   scenarios: "情境專區",
   "life-topics": "生活課題",
   "life-stages": "服務對象",
+  resources: "資源名錄",
   assessment: "開始檢測",
   content: "知識與內容",
   articles: "文章",

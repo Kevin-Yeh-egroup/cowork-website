@@ -163,6 +163,10 @@ export const routePatterns = [
   route("/login", "app/login/page.tsx", "auth"),
   route("/media-reports", "app/media-reports/page.tsx", "index"),
   route("/online-consultation", "app/online-consultation/page.tsx", "consultation"),
+  route("/resources", "app/resources/page.tsx", "index", [
+    "app/resources/page.tsx",
+    "components/working-life-resource-directory.tsx",
+  ]),
   route("/online-consultation/apply", "app/online-consultation/apply/page.tsx", "consultation", [
     "app/online-consultation/apply/page.tsx",
     "app/toolbox/consultation/page.tsx",

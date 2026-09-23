@@ -157,8 +157,8 @@ export async function runAudit({ root = defaultRoot } = {}) {
   if (new Set(concretePaths).size !== concretePaths.length) {
     errors.push("expanded concrete route list contains duplicate paths")
   }
-  if (concreteRoutes.length !== 109) {
-    errors.push(`expanded route inventory has ${concreteRoutes.length} routes; expected 109`)
+  if (concreteRoutes.length !== 110) {
+    errors.push(`expanded route inventory has ${concreteRoutes.length} routes; expected 110`)
   }
 
   const packageJson = JSON.parse(await readRelative(root, "package.json", errors))
